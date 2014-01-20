@@ -1,8 +1,8 @@
 /*
+ * DOC update:
+ * - manual control has been deactivated
+ *
  * TODO
- * - Fix sprite animation in Chrome
- * - put on github
- * - make it available online?
  * - remove cards by click
  * - disable execution while already executing - broken right now
  *   or better yet, clicking execute/reset/clear program cards *cancel* current
@@ -34,7 +34,6 @@
  *   multiple of 4 - just do not create all slots in the last row
  * - put a opaque div below the 'Level Solved!' message
  * - make 'Level Solved!' message dissappear on reset/execute/clear program area
- * - deactivate manual control
  */
 
 game = (function() {
