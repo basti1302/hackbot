@@ -1,0 +1,39 @@
+        /*
+        .bind('click', function(e) {
+          //destroy on right click
+          if(e.button === 2) this.destroy();
+        }).bind('mouseover', function() {
+          if(this.has('grass')) {
+            this.sprite(0,1,1,1);
+          } else {
+            this.sprite(1,1,1,1);
+          }
+        }).bind('mouseout', function() {
+          if(this.has('grass')) {
+            this.sprite(0,0,1,1);
+          } else {
+            this.sprite(1,0,1,1);
+          }
+        });
+        */
+
+
+    /*
+    Crafty.addEvent(this, Crafty.stage.elem, 'mousedown', function(e) {
+      if(e.button > 1) return;
+      var base = {x: e.clientX, y: e.clientY};
+
+      function scroll(e) {
+        var dx = base.x - e.clientX,
+          dy = base.y - e.clientY;
+          base = {x: e.clientX, y: e.clientY};
+        Crafty.viewport.x -= dx;
+        Crafty.viewport.y -= dy;
+      };
+
+      Crafty.addEvent(this, Crafty.stage.elem, 'mousemove', scroll);
+      Crafty.addEvent(this, Crafty.stage.elem, 'mouseup', function() {
+        Crafty.removeEvent(this, Crafty.stage.elem, 'mousemove', scroll);
+      });
+    });
+    */

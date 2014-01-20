@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="css/game.css"></link>
+  </head>
+  <body>
+    <div id="cr-stage"></div>
+
+    <script src="lib/crafty-min.js"></script>
+    <!--script src="lib/crafty.js"></script-->
+
+    <!--
+      TODO  get rid of all these script tags ...
+      either by using RequireJS or Browserify ...
+    -->
+    <script src="src/components/common.js"></script>
+    <script src="src/components/iso_grid.js"></script>
+    <script src="src/components/tile.js"></script>
+    <script src="src/components/map.js"></script>
+    <script src="src/components/bot.js"></script>
+    <script src="src/components/card.js"></script>
+    <script src="src/components/slot.js"></script>
+    <script src="src/components/instruction_area.js"></script>
+    <script src="src/game.js"></script>
+    <script>
+      window.addEventListener('load', game.start.bind(game));
+    </script>
+  </body>
+</html>
