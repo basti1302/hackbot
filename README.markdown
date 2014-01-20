@@ -13,10 +13,6 @@ The instructions you can use are the following:
 * 1: Call the first subroutine (see below).
 * 2: Call the first subroutine (see below).
 
-Currently you can also manually control the bot with the arrow keys, space and CTRL, but this is just for testing purposes. If you use it, you're cheating :-)
-
 The instruction area on the right has three sections, the main section (top) with 12 slots. Anytime you press execute, the program in this 12 slots is executed. The middle section and the bottom section (each with 8 slots) are subroutines. They are not executed automatically, but only if you call them (for example, from the main program) by using the subroutine cards `1` and `2`.
 
 You can place cards by clicking on them in the source panel (bottom of screen). Once a card is clicked, it is added to the currently active instruction area. You can activate an instruction area (main program or one of the subroutines) by clicking on it. You can also drag and drop cards around to place them in slots or remove cards from the program.
-
-Known bug: Animations do not work in Chrome, so the bot always appear to be facing the initial direction. I'll look at it soon. For now, use Firefox :-/
