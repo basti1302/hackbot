@@ -184,7 +184,8 @@
               var rowArray = instructionArea.slots[row];
               for (var column = 0; column < game.cardColumns; column++) {
                 slot = rowArray[column];
-                if (xMidPoint >= slot.x1
+                if (slot
+                    && xMidPoint >= slot.x1
                     && xMidPoint <= slot.x2 + game.cardPadding
                     && yMidPoint >= slot.y1
                     && yMidPoint <= slot.y2 + game.cardPadding) {

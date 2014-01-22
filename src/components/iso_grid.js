@@ -116,7 +116,11 @@
       if (length2d == null || length2d < 1) {
         throw new Error('Illegal length2d: ' + length2d);
       }
-      this.length2d = length2d;
+      if (length2d % 2 === 0) {
+        this.length2d = length2d + 1;
+      } else {
+        this.length2d = length2d;
+      }
       return this;
     },
 

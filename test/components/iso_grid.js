@@ -75,9 +75,17 @@ describe('Coordinate mapping', function() {
       check2dToIso(tile, 0, 0, 0, 0);
     });
 
+    it('should work for 2 x 2 tile field', function() {
+      tile = Crafty.e('IsoTranslator').setLength2d(2);
+      check2dToIso(tile, 0, 0, 1, 0);
+      check2dToIso(tile, 0, 1, 0, 1);
+      check2dToIso(tile, 1, 0, 1, 1);
+      check2dToIso(tile, 1, 1, 1, 2);
+    });
+
     it('should work for 5 x 4 tile field', function() {
       test5x4Field(check2dToIso);
-   });
+    });
 
     function check2dToIso(tile, x2d, y2d, xIso, yIso) {
       tile.toIso(x2d, y2d);
@@ -112,6 +120,14 @@ describe('Coordinate mapping', function() {
     it('should work for single tile field', function() {
       tile = Crafty.e('IsoTranslator').setLength2d(1);
       checkIsoTo2d(tile, 0, 0, 0, 0);
+    });
+
+    it('should work for 2 x 2 tile field', function() {
+      tile = Crafty.e('IsoTranslator').setLength2d(2);
+      checkIsoTo2d(tile, 0, 0, 1, 0);
+      checkIsoTo2d(tile, 0, 1, 0, 1);
+      checkIsoTo2d(tile, 1, 0, 1, 1);
+      checkIsoTo2d(tile, 1, 1, 1, 2);
     });
 
     it('should work for 5 x 4 tile field', function() {

@@ -10,7 +10,7 @@
     pauseBetweenSteps: 100,
     pauseBetweenTweens: 0,
     loopMovement: false,
-    manualControl: false,
+    manualControl: true,
 
     // ordinary movement instructions
     moves: {
@@ -48,10 +48,10 @@
       this.botReels[this.directions.upLeft] = 'ReelBotUpLeft';
 
       this.setLength2d(game.map.length2d);
-      this.reel(this.botReels[this.directions.downLeft], animationSpeed, 0, 0, 2)
-          .reel(this.botReels[this.directions.downRight], animationSpeed, 0, 1, 2)
-          .reel(this.botReels[this.directions.upRight], animationSpeed, 0, 2, 2)
-          .reel(this.botReels[this.directions.upLeft], animationSpeed, 0, 3, 2);
+      this.reel(this.botReels[this.directions.downLeft], animationSpeed, 0, 0, 1)
+          .reel(this.botReels[this.directions.downRight], animationSpeed, 1, 0, 1)
+          .reel(this.botReels[this.directions.upRight], animationSpeed, 2, 0, 1)
+          .reel(this.botReels[this.directions.upLeft], animationSpeed, 3, 0, 1);
       this.position = {
         x: 0, y: 0, z: 0, direction: this.directions.downRight,
       };
@@ -93,6 +93,12 @@
       this.position.y = this.position.y || 0;
       this.position.z = this.position.z || 0;
       this.position.direction = this.position.direction || this.directions.downRight;
+      var pixelPosition = this._calcPixelCoords();
+      this.attr({
+          x: pixelPosition.x,
+          y: pixelPosition.y
+      });
+      /*
       this.toIso(this.position.x, this.position.y);
       game.iso.place(
         this.xIso,
@@ -100,9 +106,11 @@
         this.position.z + game.map.baseHeight + this.botZCorrection,
         this
       );
+      */
 
       var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.maxHeight) + 1;
-      this.attr('z', zIndex);
+      this.z += zIndex;
+
       this.animate(this.botReels[position.direction], 0);
       return this;
     },
@@ -335,12 +343,16 @@
       if (oldPosition.x !== this.position.x ||
           oldPosition.y !== this.position.y ||
           oldPosition.z !== this.position.z) {
+
         // convertt to iso coordinates and then to pixel coordinates
+        /*
         this.toIso(this.position.x, this.position.y);
         var pxPos = game.iso.pos2px(this.xIso, this.yIso);
         pxPos.top -= (this.position.z + game.map.baseHeight + this.botZCorrection) * game.pixelPerHeightLevel;
+        */
 
-        this.tween({x: pxPos.left, y: pxPos.top}, this.subStepDuration);
+        var pixelPosition = this._calcPixelCoords();
+        this.tween({x: pixelPosition.x, y: pixelPosition.y}, this.subStepDuration);
         this.animate(this.botReels[this.position.direction], -1);
 
         // calculate and set z-index
@@ -367,10 +379,23 @@
       }
     },
 
+    _calcPixelCoords: function() {
+      this.toIso(this.position.x, this.position.y);
+      var pos = game.iso.pos2px(this.xIso, this.yIso);
+      // pos.top -= z * (this._tile.height / 2);
+      pos.top -= (this.position.z + game.map.baseHeight + this.botZCorrection) * game.pixelPerHeightLevel;
+      return {
+          x: pos.left, // + Crafty.viewport._x,
+          y: pos.top, // + Crafty.viewport._y
+      };
+    },
+
+
     /*
      * Moves the bot along a predfined path.
      * Mostly for demoing purposes.
      */
+    /*
     moveAlongPath: function(path, pathIndex, callback) {
       if (pathIndex == null) {
         pathIndex = 0;
@@ -406,6 +431,7 @@
         }, self.pauseBetweenSteps);
       });
     },
+    */
 
   });
 })();

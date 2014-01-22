@@ -1,39 +1,34 @@
 /*
- * DOC update:
- * - manual control has been deactivated
- *
  * TODO
- * - remove cards by click
- * - disable execution while already executing - broken right now
- *   or better yet, clicking execute/reset/clear program cards *cancel* current
- *   execution - similar to _hasWon check
- * - when removing cards from instruction area, all other cards after should go
- *   to their predecessor
- * - when dropping cards in occupied spaces, insert them instead of replace
- *   them. Cards get destroyed if the move out at the end.
- * - remake tiles and bot with baseSize 64 - bot without animation
- * - redo cards with baseSize 48
- * - correct instruction area and slot sizes, so that cards fit perfectly
- * - extract into components/entities:
+ * - [UX] center map on screen
+ * - Get rid of level.maxHeight attribute
+ * - Get rid of level.baseHeight attribute
+ * - REVIEW TODOS
+ * - [!] Scenes
+ * - [!] Asset Pre-Loading
+ * - [!] Welcome scene
+ * - [TESTS] For pixel positions during bot movements
+ * - [REFACTORING] extract into components/entities:
  *   - source panel
  *   - program panel
  *   - each program area
  *   - button area
- * - make icons for buttons
- * - relocate buttons to upper right corner of map area, left to program panel,
- *   stacked vertically
- * - Animate bot jump even when its jumping in situ
- * - Scenes
- * - Asset Pre-Loading
- * - Welcome scene
- * - level editor
- * - save levels to local storage
- * - load levels from local storage
- * - export/import levels from local storage to/from file
- * - enable levels to have instr areas with a number of slots that are not a
- *   multiple of 4 - just do not create all slots in the last row
- * - put a opaque div below the 'Level Solved!' message
- * - make 'Level Solved!' message dissappear on reset/execute/clear program area
+ * - [UX] remove cards by click
+ * - [UX] when removing cards from instruction area, all other cards after should go
+ *   to their predecessor
+ * - [UX] when dropping cards in occupied spaces, insert them instead of replace
+ *   them. Cards get destroyed if the move out at the end.
+ * - [VISUAL] better colors for active and inactive instruction area * - [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
+ * - [VISUAL] put a opaque div below the 'Level Solved!' message
+ * - [VISUAL] make icons for buttons
+ * - [VISUAL] Animate bot jump even when its jumping in situ
+ * - [FEATURE] let level definition dictate which cards are available
+ * - [FEATURE] level editor
+ * - [FEATURE] save levels to local storage
+ * - [FEATURE] load levels from local storage
+ * - [FEATURE] export/import levels from local storage to/from file
+ * - [FEATURE] Clicking execute/reset program cards *cancel* current
+ *   execution - similar to _hasWon check
  */
 
 game = (function() {
@@ -48,7 +43,7 @@ game = (function() {
   }, false);
 
   function Game() {
- }
+  }
 
   Game.prototype.start = function() {
     this.init();
@@ -61,22 +56,22 @@ game = (function() {
      */
 
     // tile size
-    this.baseSize = 128;
+    this.baseSize = 64;
 
     // program card related
     this.cardColumns = 4;
-    this.cardSize = 64;
+    this.cardSize = 48;
     this.cardPadding = 4;
     this.areaPadding = 7;
 
     // viewport size
-    this.width = 7;
-    this.height = 4;
+    this.width = 15;
+    this.height = 8;
     this.widthPx = this.width * this.baseSize;
     this.heightPx = this.height * this.baseSize;
 
     // terrain constants
-    this.pixelPerHeightLevel = 32;
+    this.pixelPerHeightLevel = 16;
 
     /*********************************************
      * Initialize Crafty engine
@@ -98,7 +93,7 @@ game = (function() {
     Crafty.sprite(this.baseSize, 'assets/images/robot.png', {
       SprBot: [0, 0],
     });
-    Crafty.sprite(64, 'assets/images/cards.png', {
+    Crafty.sprite(this.cardSize, 'assets/images/cards.png', {
       SprCardForward: [0, 0],
       SprCardTurnLeft: [1, 0],
       SprCardTurnRight: [2, 0],
@@ -133,28 +128,39 @@ game = (function() {
       this._initButtons();
     }
     this.pristine = true;
+    this.executing = false;
   }
 
   Game.prototype._defineLevel = function() {
     // define level basics
     var level = {
       baseHeight: -2,
-      maxHeight: 3,
+      maxHeight: 2,
       instructionAreas: {
         main: {
-          instructions: 12,
+          instructions: 9,
         },
         subroutine1: {
-          instructions: 8,
+          instructions: 3,
         },
+        /*
         subroutine2: {
-          instructions: 8,
+          instructions: 7,
         },
+        */
       },
     };
 
     // define level terrain (map)
     level.terrain = [
+      /*
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      */
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
       [2, 0, 0],
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
@@ -247,9 +253,9 @@ game = (function() {
   Game.prototype._initButtons = function() {
     var buttonWidth = 100;
     var buttonHeight = 48;
-    this._createButton(0, 'Execute', this.execute, buttonWidth, buttonHeight);
-    this._createButton(1, 'Reset', this.resetLevel, buttonWidth, buttonHeight);
-    this._createButton(2, 'Clear Program', this.clearProgram, buttonWidth, buttonHeight);
+    this._buttonExecute = this._createButton(0, 'Execute', this.execute, buttonWidth, buttonHeight);
+    this._buttonReset = this._createButton(1, 'Reset', this.resetLevel, buttonWidth, buttonHeight);
+    this._buttonClear = this._createButton(2, 'Clear Program', this.clearProgram, buttonWidth, buttonHeight);
   }
 
   Game.prototype._createButton = function(buttonIndex, text, action, width, height) {
@@ -268,16 +274,19 @@ game = (function() {
     button.appendChild(document.createTextNode(text));
     button.onclick = action.bind(game);
     document.getElementById('cr-stage').appendChild(button);
+    return button;
   }
 
   Game.prototype.execute = function() {
     var self = this;
-    if (!this.pristine) {
-      this.resetLevel();
-      return setTimeout(function() { self.execute() }, 300);
-    }
     if (!this.executing) {
+      this._removeMessages();
+      if (!this.pristine) {
+        this.resetLevel();
+        return setTimeout(function() { self.execute() }, 300);
+      }
       this.pristine = false;
+      this._blockExecution();
 
       var program = { };
       this._withEachSlot(function(slot, instrAreaName) {
@@ -297,18 +306,21 @@ game = (function() {
 
       var self = this;
       this.bot.program(program, function() {
-        self.executing = false;
         if (self.hasWon()) {
           self.onPlayerHasWon();
         }
+        self._unblockExecution();
       });
     }
   }
 
   Game.prototype.resetLevel = function() {
-    this.map.reset();
-    this._resetBotPosition();
-    this.pristine = true;
+    if (!this.executing) {
+      this._removeMessages();
+      this.map.reset();
+      this._resetBotPosition();
+      this.pristine = true;
+    }
   }
 
   Game.prototype._resetBotPosition = function() {
@@ -317,6 +329,7 @@ game = (function() {
   }
 
   Game.prototype.clearProgram = function() {
+    this._removeMessages();
     this._withEachSlot(function(slot) {
       if (slot.card) {
         var card = slot.card;
@@ -324,7 +337,6 @@ game = (function() {
         card.destroy();
       }
     });
-    this.resetLevel();
   }
 
   Game.prototype._withEachSlot = function(fn) {
@@ -342,20 +354,41 @@ game = (function() {
     }
   }
 
+  Game.prototype._blockExecution = function() {
+    this.executing = true;
+    this._buttonExecute.setAttribute('disabled');
+    this._buttonReset.setAttribute('disabled');
+  }
+
+  Game.prototype._unblockExecution = function() {
+    this.executing = false;
+    this._buttonExecute.removeAttribute('disabled');
+    this._buttonReset.removeAttribute('disabled');
+  }
+
   Game.prototype.hasWon = function() {
     return this.map.hasWon();
   }
 
   Game.prototype.onPlayerHasWon = function() {
     // TODO Something better needs to happen here :-)
-    var message = Crafty
-      .e('2D, DOM, Text')
-      .textFont({ size: '60px', weight: 'bold' })
-      .textColor('#FF0000')
-      .text('Level Solved!');
-    var x = (this.widthPx - this.widthProgramArea) / 2 - 125,
-        y = this.heightPx/2 - 75;
-    message.attr({ x: x, y: y, z: 1000 })
+    if (!this.messagePlayerHasWon) {
+      this.messagePlayerHasWon = Crafty
+        .e('2D, DOM, Text')
+        .textFont({ size: '60px', weight: 'bold' })
+        .textColor('#FF0000')
+        .text('Level Solved!');
+      var x = (this.widthPx - this.widthProgramArea) / 2 - 125,
+          y = this.heightPx/2 - 75;
+      this.messagePlayerHasWon.attr({ x: x, y: y, z: 1000 });
+    }
+  }
+
+  Game.prototype._removeMessages = function() {
+    if (this.messagePlayerHasWon) {
+      this.messagePlayerHasWon.destroy();
+      this.messagePlayerHasWon = null;
+    }
   }
 
   return new Game();
