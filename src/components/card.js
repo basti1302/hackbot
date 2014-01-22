@@ -70,6 +70,10 @@
     },
 
     _onMouseClick: function() {
+      if (this._reallyDragging) {
+        return;
+      }
+
       // when clicking a card the source panel (and it has not been dragged)
       if (this.xOrig === this.x && this.yOrig === this.y) {
         var activeInstructionArea = game.activeInstructionArea;

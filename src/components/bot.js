@@ -10,7 +10,7 @@
     pauseBetweenSteps: 100,
     pauseBetweenTweens: 0,
     loopMovement: false,
-    manualControl: true,
+    manualControl: false,
 
     // ordinary movement instructions
     moves: {

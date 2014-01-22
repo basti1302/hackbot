@@ -65,8 +65,8 @@ game = (function() {
     this.areaPadding = 7;
 
     // viewport size
-    this.width = 15;
-    this.height = 8;
+    this.width = 12;
+    this.height = 6;
     this.widthPx = this.width * this.baseSize;
     this.heightPx = this.height * this.baseSize;
 
