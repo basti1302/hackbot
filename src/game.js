@@ -356,8 +356,8 @@ game = (function() {
 
   Game.prototype._blockExecution = function() {
     this.executing = true;
-    this._buttonExecute.setAttribute('disabled');
-    this._buttonReset.setAttribute('disabled');
+    this._buttonExecute.setAttribute('disabled', true);
+    this._buttonReset.setAttribute('disabled', true);
   }
 
   Game.prototype._unblockExecution = function() {
