@@ -15,13 +15,18 @@
 
     map: function(level) {
 
+      if (!level.terrain) {
+        throw new Error('Level object has no terrain property.');
+      }
+
       this.length2d = level.terrain.length;
-      this.baseHeight = level.baseHeight;
-      this.maxHeight = level.maxHeight;
+      this.baseHeight = level.baseHeight || 0;
+      this.maxHeight = level.maxHeight || 0;
+
       var levelInfo = {
-        length2d: level.terrain.length,
-        baseHeight: level.baseHeight,
-        maxHeight: level.maxHeight,
+        length2d: this.length2d,
+        baseHeight: this.baseHeight,
+        maxHeight: this.maxHeight,
       };
 
       var terrain = level.terrain;

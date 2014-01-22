@@ -183,7 +183,8 @@
       // moving behind a tile with height 1 or higher. During the tween phase
       // the bot sprite "shines" through the higher tile before him. This only
       // occurs with map.baseHeight <= -2. With map.baseHeight >= 3, the bot is
-      // below the floor sometimes ?!?!?!?!
+      // below the floor sometimes ?!?!?!?! Generally this seems to be a problem
+      // with levels > 0, no matter of baseHeight.
 
       var layerFrom = this.calcLayer(positionFrom.x, positionFrom.y, positionFrom.z, maxZ);
       var layerTo = this.calcLayer(positionTo.x, positionTo.y, positionTo.z, maxZ);
