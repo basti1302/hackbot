@@ -3,11 +3,11 @@
  * - [UX] center map on screen
  * - Get rid of level.maxHeight attribute
  * - Get rid of level.baseHeight attribute
- * - REVIEW TODOS
- * - [!] Scenes
+ * - [!] Scenes: welcome scene, level select scene, playing scene
  * - [!] Asset Pre-Loading
- * - [!] Welcome scene
+ * - [TESTS] For z-index with various heights (probably partly broken)
  * - [TESTS] For pixel positions during bot movements
+ * - REVIEW TODOS!
  * - [REFACTORING] extract into components/entities:
  *   - source panel
  *   - program panel
