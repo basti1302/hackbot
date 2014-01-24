@@ -8,6 +8,10 @@ describe('Coordinate mapping', function() {
     game.init(true);
   });
 
+  after(function() {
+    game.stop();
+  });
+
   beforeEach(function() {
     game.reset(true);
     tile = Crafty.e('IsoTranslator').setLength2d(5);

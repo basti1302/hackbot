@@ -8,6 +8,10 @@ describe('The bot entity', function() {
     game.init(true);
   });
 
+  after(function() {
+    game.stop();
+  });
+
   beforeEach(function() {
     var level = {
       length: 3,

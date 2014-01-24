@@ -107,11 +107,6 @@ game = (function() {
   }
 
   Game.prototype.reset = function(testMode) {
-    // remove all entities
-    Crafty('*').each(function() {
-      this.destroy();
-    });
-
     var botPosition = {
       x: 0,
       y: 4,
@@ -129,6 +124,14 @@ game = (function() {
     }
     this.pristine = true;
     this.executing = false;
+  }
+
+  Game.prototype.stop = function() {
+    // remove all entities
+    Crafty('*').each(function() {
+      this.destroy();
+    });
+    Crafty.stop();
   }
 
   Game.prototype._defineLevel = function() {
@@ -153,19 +156,19 @@ game = (function() {
 
     // define level terrain (map)
     level.terrain = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
       /*
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      */
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
       [2, 0, 0],
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
       [0, 0, 2],
       [2, 2, { level: 2, floor: 'red' }],
+      */
     ];
 
     return level;

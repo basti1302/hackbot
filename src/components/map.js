@@ -14,68 +14,131 @@
     },
 
     map: function(level) {
-
-      if (!level.terrain) {
-        throw new Error('Level object has no terrain property.');
+      if (!this._isArray(level.terrain)) {
+        throw new Error('level object has no terrain property orlevel.terrain is not an array.');
       }
 
-      this.length2d = level.terrain.length;
-      this.baseHeight = level.baseHeight || 0;
-      this.maxHeight = level.maxHeight || 0;
-
+      this._parseLevel(level);
       var levelInfo = {
         length2d: this.length2d,
         baseHeight: this.baseHeight,
         maxHeight: this.maxHeight,
       };
+      this._createTiles(levelInfo);
+      return this;
+    },
 
-      var terrain = level.terrain;
+    _parseLevel: function(level) {
+      this.length2d = level.terrain.length;
+      this.baseHeight = level.baseHeight || 0;
+      this.maxHeight = 0;
+
       this._normalizedMap = [];
       this._toggleTiles =  [];
+      var terrain = level.terrain;
 
       for (var y = 0; y < terrain.length; y++) {
-        var row = [];
-        this._normalizedMap.push(row);
-        for (var x = 0; x < terrain[y].length; x++) {
-          var tileInfo = terrain[y][x];
+        var row = terrain[y];
+        if (!this._isArray(row)) {
+          throw new Error('row ' + y + ' in level.terrain is not an array.');
+        }
+
+        var normalizedRow = [];
+        this._normalizedMap.push(normalizedRow);
+        for (var x = 0; x < row.length; x++) {
+          var tileInfo = row[x];
+
+          // handle spots where no tile is
           if (tileInfo === null || tileInfo === undefined) {
-            row.push(null);
+            normalizedRow.push(null);
             continue;
           }
-
-          var maxZ;
-          var floorType = this.defaultTile;
-          if (typeof tileInfo === 'number') {
-            maxZ = tileInfo;
-          } else if (typeof tileInfo === 'object') {
-            maxZ = tileInfo.level || 0;
-            floorType = tileInfo.floor || this.defaultTile;
-          } else {
-            throw new Error('Unknown tile info type: ' + (typeof tileInfo));
-          }
-          var floor = this.tiles[floorType];
-
-          var stack = [];
-          for (var z = 0; z < maxZ; z++) {
-            stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], levelInfo).place());
-          }
-          var topTile = Crafty.e('Tile').tile(x, y, maxZ, floor, levelInfo).place();
-          stack.push(topTile);
-
-          var normalizedTileInfo = {
-            level: maxZ,
-            floor: floor,
-            tile: topTile,
-            stack: stack,
-          };
-          row.push(normalizedTileInfo);
-          if (floorType === 'red') {
-            this._toggleTiles.push(normalizedTileInfo);
-          }
+          var normalizedTileInfo = this._normalizeTile(x, y, tileInfo);
+          normalizedRow.push(normalizedTileInfo);
+          this.maxHeight = Math.max(this.maxHeight, normalizedTileInfo.level);
         }
       }
+    },
 
-      return this;
+    _normalizeTile: function(x, y, tileInfo) {
+      var tileLevel;
+      var floorType = this.defaultTile;
+
+      // parse level and floor type from tile info object
+      if (typeof tileInfo === 'number') {
+        // we allow tile info in incoming terrain definitions to be simple
+        // numbers, interpreted as default floor type with the given level
+        tileLevel = tileInfo;
+      } else if (typeof tileInfo === 'object') {
+        // otherwise it's an object with level and floor properties (both
+        // optional)
+        tileLevel = tileInfo.level || 0;
+        floorType = tileInfo.floor || this.defaultTile;
+      } else {
+        throw new Error('position (' + x + ', ' + y + ') has an unknown tile info type (' + (typeof tileInfo) + '): ' + JSON.stringify(tileInfo));
+      }
+      if (tileLevel < 0) {
+        throw new Error('position (' + x + ', ' + y + ') has an illegal level of ' + tileLevel + '.');
+      }
+      var floor = this.tiles[floorType];
+      var normalizedTileInfo = {
+        x: x,
+        y: y,
+        level: tileLevel,
+        floor: floor,
+      };
+
+      // remember where red tiles are that need to be toggled to win the game
+      if (floorType === 'red') {
+        this._toggleTiles.push(normalizedTileInfo);
+      }
+
+      return normalizedTileInfo;
+    },
+
+    _createTiles: function(levelInfo) {
+      for (var i = 0; i < this._normalizedMap.length; i++) {
+        var normalizedRow = this._normalizedMap[i];
+        for (var j = 0; j < normalizedRow.length; j++) {
+          var tileInfo = normalizedRow[j];
+            var stack = this._createTileStack(
+              tileInfo.x,
+              tileInfo.y,
+              tileInfo.level,
+              levelInfo,
+              tileInfo.floor
+            );
+            tileInfo.stack = stack;
+            tileInfo.tile = stack[stack.length - 1];
+        }
+      }
+    },
+
+    _createTileStack: function(x, y, tileLevel, levelInfo, floor) {
+      var stack = [];
+      for (var z = 0; z < tileLevel; z++) {
+        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], levelInfo).place());
+      }
+      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, levelInfo).place();
+      stack.push(topTile);
+      return stack;
+    },
+
+    _isArray: function(obj) {
+      if (obj === undefined || obj === null) {
+        return false;
+      } else if (Object.prototype.toString.call(obj) !== '[object Array]') {
+        return false;
+      }
+      return true;
+    },
+
+    getTileInfo: function(x, y) {
+      var row = this._normalizedMap[y];
+      if (row === null || row === undefined) {
+        return null;
+      }
+      return this._normalizedMap[y][x];
     },
 
     getTileZ: function(x, y) {
@@ -115,14 +178,6 @@
       } else {
         return tileInfo.floor;
       }
-    },
-
-    getTileInfo: function(x, y) {
-      var row = this._normalizedMap[y];
-      if (row === null || row === undefined) {
-        return null;
-      }
-      return this._normalizedMap[y][x];
     },
 
     toggleTileType: function(x, y) {
