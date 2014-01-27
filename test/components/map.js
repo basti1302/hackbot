@@ -94,11 +94,6 @@ describe('The map', function() {
       }
     });
 
-    it('should assume base height 0', function() {
-      map.map({ terrain: [] });
-      expect(map.baseHeight).to.equal(0);
-    });
-
     it('should not accept negative level', function() {
       try {
         map.map({ terrain: [[-1]] });

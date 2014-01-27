@@ -14,9 +14,6 @@ describe('The bot entity', function() {
 
   beforeEach(function() {
     var level = {
-      length: 3,
-      baseHeight: 0,
-      maxHeight: 2,
       terrain: [
       [0, 0,  0],
       [0, { floor: 'red' },  0],

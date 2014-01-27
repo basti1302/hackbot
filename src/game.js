@@ -104,8 +104,6 @@ game = (function() {
   Game.prototype._defineLevel = function() {
     // define level basics
     var level = {
-      baseHeight: -2,
-      maxHeight: 2,
       instructionAreas: {
         main: {
           instructions: 9,
@@ -123,19 +121,19 @@ game = (function() {
 
     // define level terrain (map)
     level.terrain = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
       /*
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      */
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
       [2, 0, 0],
       [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
       [0, 0, 2],
       [2, 2, { level: 2, floor: 'red' }],
-      */
     ];
 
     return level;

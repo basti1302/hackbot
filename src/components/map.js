@@ -15,23 +15,19 @@
 
     map: function(level) {
       if (!this._isArray(level.terrain)) {
-        throw new Error('level object has no terrain property orlevel.terrain is not an array.');
+        throw new Error('level object has no terrain property or level.terrain is not an array.');
       }
 
       this._parseLevel(level);
-      var levelInfo = {
-        length2d: this.length2d,
-        baseHeight: this.baseHeight,
-        maxHeight: this.maxHeight,
-      };
-      this._createTiles(levelInfo);
+      this._createTiles();
       return this;
     },
 
     _parseLevel: function(level) {
-      this.length2d = level.terrain.length;
-      this.baseHeight = level.baseHeight || 0;
-      this.maxHeight = 0;
+      this.levelInfo = {
+        length2d: level.terrain.length,
+        maxHeight: 0,
+      };
 
       this._normalizedMap = [];
       this._toggleTiles =  [];
@@ -55,7 +51,7 @@
           }
           var normalizedTileInfo = this._normalizeTile(x, y, tileInfo);
           normalizedRow.push(normalizedTileInfo);
-          this.maxHeight = Math.max(this.maxHeight, normalizedTileInfo.level);
+          this.levelInfo.maxHeight = Math.max(this.levelInfo.maxHeight, normalizedTileInfo.level);
         }
       }
     },
@@ -96,7 +92,7 @@
       return normalizedTileInfo;
     },
 
-    _createTiles: function(levelInfo) {
+    _createTiles: function() {
       for (var i = 0; i < this._normalizedMap.length; i++) {
         var normalizedRow = this._normalizedMap[i];
         for (var j = 0; j < normalizedRow.length; j++) {
@@ -105,7 +101,6 @@
               tileInfo.x,
               tileInfo.y,
               tileInfo.level,
-              levelInfo,
               tileInfo.floor
             );
             tileInfo.stack = stack;
@@ -114,12 +109,12 @@
       }
     },
 
-    _createTileStack: function(x, y, tileLevel, levelInfo, floor) {
+    _createTileStack: function(x, y, tileLevel, floor) {
       var stack = [];
       for (var z = 0; z < tileLevel; z++) {
-        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], levelInfo).place());
+        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], this.levelInfo).place());
       }
-      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, levelInfo).place();
+      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, this.levelInfo).place();
       stack.push(topTile);
       return stack;
     },

@@ -47,7 +47,7 @@
       this.botReels[this.directions.upRight] = 'ReelBotUpRight';
       this.botReels[this.directions.upLeft] = 'ReelBotUpLeft';
 
-      this.setLength2d(game.map.length2d);
+      this.setLength2d(game.map.levelInfo.length2d);
       this.reel(this.botReels[this.directions.downLeft], animationSpeed, 0, 0, 1)
           .reel(this.botReels[this.directions.downRight], animationSpeed, 1, 0, 1)
           .reel(this.botReels[this.directions.upRight], animationSpeed, 2, 0, 1)
@@ -103,12 +103,12 @@
       game.iso.place(
         this.xIso,
         this.yIso,
-        this.position.z + game.map.baseHeight + this.botZCorrection,
+        this.position.z + this.botZCorrection,
         this
       );
       */
 
-      var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.maxHeight) + 1;
+      var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.levelInfo.maxHeight) + 1;
       this.z += zIndex;
 
       this.animate(this.botReels[position.direction], 0);
@@ -348,7 +348,7 @@
         /*
         this.toIso(this.position.x, this.position.y);
         var pxPos = game.iso.pos2px(this.xIso, this.yIso);
-        pxPos.top -= (this.position.z + game.map.baseHeight + this.botZCorrection) * game.pixelPerHeightLevel;
+        pxPos.top -= (this.position.z + this.botZCorrection) * game.pixelPerHeightLevel;
         */
 
         var pixelPosition = this._calcPixelCoords();
@@ -356,7 +356,7 @@
         this.animate(this.botReels[this.position.direction], -1);
 
         // calculate and set z-index
-        var layer = this.calcLayerMoving(oldPosition, this.position, game.map.maxHeight);
+        var layer = this.calcLayerMoving(oldPosition, this.position, game.map.levelInfo.maxHeight);
         this.attr('z', layer);
       }
 
@@ -383,7 +383,7 @@
       this.toIso(this.position.x, this.position.y);
       var pos = game.iso.pos2px(this.xIso, this.yIso);
       // pos.top -= z * (this._tile.height / 2);
-      pos.top -= (this.position.z + game.map.baseHeight + this.botZCorrection) * game.pixelPerHeightLevel;
+      pos.top -= (this.position.z + this.botZCorrection) * game.pixelPerHeightLevel;
       return {
           x: pos.left, // + Crafty.viewport._x,
           y: pos.top, // + Crafty.viewport._y

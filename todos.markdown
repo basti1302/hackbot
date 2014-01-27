@@ -2,8 +2,7 @@ TODOs
 =====
 
 * [UX] center map on screen
-* Get rid of level.maxHeight attribute
-* Get rid of level.baseHeight attribute - just center map on screen
+* Get rid of botZCorrection. If at all neccessary use a px value.
 * [TESTS] For z-index with various heights (probably partly broken)
 * [!] Scenes: welcome scene, level select scene, playing scene
 * [!] Asset Pre-Loading

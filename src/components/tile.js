@@ -18,7 +18,7 @@
     },
 
     place: function() {
-      game.iso.place(this.xIso, this.yIso, this.height + this.levelInfo.baseHeight, this);
+      game.iso.place(this.xIso, this.yIso, this.height, this);
       return this;
     },
 
