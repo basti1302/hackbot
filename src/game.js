@@ -77,7 +77,7 @@ game = (function() {
     var botPosition = {
       x: 0,
       y: 4,
-      z: 2,
+      z: 3,
       direction: 'downRight',
     };
 
@@ -144,7 +144,8 @@ game = (function() {
    */
   Game.prototype._createMap = function(level) {
     this._originalLevel = Crafty.clone(level);
-    this.map = Crafty.e('Map').map(level);
+    this.map = Crafty.e('Map');
+    this.map.map(level);
   }
 
   /*

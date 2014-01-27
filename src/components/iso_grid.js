@@ -161,6 +161,18 @@
       return coordinates2d;
     },
 
+    _calcPixelCoords: function(x, y, z) {
+      this.toIso(x, y);
+      var pos = game.iso.pos2px(this.xIso, this.yIso);
+      // pos.top -= z * (this._tile.height / 2);
+      pos.top -= z * game.pixelPerHeightLevel;
+      return {
+          x: pos.left + game.map.levelInfo.xOffset,
+          y: pos.top + game.map.levelInfo.yOffset,
+      };
+    },
+
+
     /*
      * Calculates the z-index for the DOM entity
      */

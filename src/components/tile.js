@@ -10,15 +10,15 @@
       this.levelInfo = levelInfo;
       this.addComponent(floor);
       this.setLength2d(this.levelInfo.length2d)
-      this.toIso(x, y);
+      var pixelPosition = this._calcPixelCoords(x, y, z);
+      this.attr({
+          x: pixelPosition.x,
+          y: pixelPosition.y
+      });
+
       var zIndex = this.calcLayer(x, y, z, this.levelInfo.maxHeight);
       this.attr('z', zIndex);
       this.height = z;
-      return this;
-    },
-
-    place: function() {
-      game.iso.place(this.xIso, this.yIso, this.height, this);
       return this;
     },
 

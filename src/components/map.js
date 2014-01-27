@@ -31,6 +31,7 @@
 
       this._normalizedMap = [];
       this._toggleTiles =  [];
+      var widthInTiles = 0;
       var terrain = level.terrain;
 
       for (var y = 0; y < terrain.length; y++) {
@@ -53,7 +54,16 @@
           normalizedRow.push(normalizedTileInfo);
           this.levelInfo.maxHeight = Math.max(this.levelInfo.maxHeight, normalizedTileInfo.level);
         }
+        widthInTiles = Math.max(widthInTiles, normalizedRow.length);
       }
+      // How big (in tiles) is the map? We need this info later to center the
+      // map on the screen.
+      var lengthInTiles = this._normalizedMap.length;
+      // Math.ceil(this.levelInfo.length2d + this.levelInfo.maxHeight / 2);
+      this.levelInfo.diagonal = Math.sqrt(Math.pow(widthInTiles, 2) + Math.pow(lengthInTiles, 2));
+      var diagonalPx = Math.floor(this.levelInfo.diagonal * game.baseSize);
+      this.levelInfo.xOffset = Math.floor((game.widthPx - diagonalPx) / 2);
+      this.levelInfo.yOffset = Math.floor((game.heightPx - diagonalPx/2) / 2);
     },
 
     _normalizeTile: function(x, y, tileInfo) {
@@ -97,6 +107,7 @@
         var normalizedRow = this._normalizedMap[i];
         for (var j = 0; j < normalizedRow.length; j++) {
           var tileInfo = normalizedRow[j];
+          if (tileInfo) {
             var stack = this._createTileStack(
               tileInfo.x,
               tileInfo.y,
@@ -105,6 +116,7 @@
             );
             tileInfo.stack = stack;
             tileInfo.tile = stack[stack.length - 1];
+          }
         }
       }
     },
@@ -112,9 +124,9 @@
     _createTileStack: function(x, y, tileLevel, floor) {
       var stack = [];
       for (var z = 0; z < tileLevel; z++) {
-        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], this.levelInfo).place());
+        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], this.levelInfo));
       }
-      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, this.levelInfo).place();
+      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, this.levelInfo);
       stack.push(topTile);
       return stack;
     },

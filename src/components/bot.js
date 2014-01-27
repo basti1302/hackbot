@@ -3,8 +3,6 @@
 
   Crafty.c('Bot', {
 
-    botZCorrection: 1.5,
-
     // movement speed constants
     subStepDuration: 300,
     pauseBetweenSteps: 100,
@@ -91,22 +89,15 @@
       this.position = position || this.position;
       this.position.x = this.position.x || 0;
       this.position.y = this.position.y || 0;
-      this.position.z = this.position.z || 0;
+      if (this.position.z === undefined || this.position.z === null) {
+        this.position.z = 1;
+      }
       this.position.direction = this.position.direction || this.directions.downRight;
-      var pixelPosition = this._calcPixelCoords();
+      var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z);
       this.attr({
           x: pixelPosition.x,
           y: pixelPosition.y
       });
-      /*
-      this.toIso(this.position.x, this.position.y);
-      game.iso.place(
-        this.xIso,
-        this.yIso,
-        this.position.z + this.botZCorrection,
-        this
-      );
-      */
 
       var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.levelInfo.maxHeight) + 1;
       this.z += zIndex;
@@ -244,7 +235,7 @@
         return callback(null, false);
       }
 
-      var zThen = tileInfoThen.level;
+      var zThen = tileInfoThen.level + 1;
       if (!jump && zNow === zThen) {
         return this.executeStep(step, function() {
           callback(null, true);
@@ -345,13 +336,7 @@
           oldPosition.z !== this.position.z) {
 
         // convertt to iso coordinates and then to pixel coordinates
-        /*
-        this.toIso(this.position.x, this.position.y);
-        var pxPos = game.iso.pos2px(this.xIso, this.yIso);
-        pxPos.top -= (this.position.z + this.botZCorrection) * game.pixelPerHeightLevel;
-        */
-
-        var pixelPosition = this._calcPixelCoords();
+        var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z);
         this.tween({x: pixelPosition.x, y: pixelPosition.y}, this.subStepDuration);
         this.animate(this.botReels[this.position.direction], -1);
 
@@ -378,60 +363,6 @@
         direction: this.position.direction,
       }
     },
-
-    _calcPixelCoords: function() {
-      this.toIso(this.position.x, this.position.y);
-      var pos = game.iso.pos2px(this.xIso, this.yIso);
-      // pos.top -= z * (this._tile.height / 2);
-      pos.top -= (this.position.z + this.botZCorrection) * game.pixelPerHeightLevel;
-      return {
-          x: pos.left, // + Crafty.viewport._x,
-          y: pos.top, // + Crafty.viewport._y
-      };
-    },
-
-
-    /*
-     * Moves the bot along a predfined path.
-     * Mostly for demoing purposes.
-     */
-    /*
-    moveAlongPath: function(path, pathIndex, callback) {
-      if (pathIndex == null) {
-        pathIndex = 0;
-      }
-      if (typeof pathIndex === 'function') {
-        callback = pathIndex;
-        pathIndex = 0;
-      }
-      var step = path[pathIndex];
-      if (step == null) {
-        return;
-      }
-
-      var self = this;
-      this.executeStep(step, function() {
-        // when done, move to next step
-        pathIndex++;
-        if (pathIndex >= path.length) {
-          if (self.loopMovement) {
-            pathIndex = 0;
-          } else {
-            //self.pauseAnimation();
-            if (typeof callback === 'function') {
-              return callback();
-            } else {
-              return;
-            }
-          }
-
-        }
-        setTimeout(function() {
-          self.moveAlongPath(path, pathIndex, callback);
-        }, self.pauseBetweenSteps);
-      });
-    },
-    */
 
   });
 })();

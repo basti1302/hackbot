@@ -19,6 +19,7 @@ describe('The map', function() {
   beforeEach(function() {
     game.reset(true);
     map = Crafty.e('Map');
+    game.map = map;
     defaultFloor = map.tiles[map.defaultTile];
     redFloor = map.tiles['red'];
     greenFloor = map.tiles['green'];
@@ -126,6 +127,12 @@ describe('The map', function() {
       }
     });
 
+    it('should accept null tiles', function() {
+      map.map({ terrain: [[null, 0]] });
+      expect(map.getTileInfo(0, 0)).to.not.exist;
+      checkTile(1, 0, 0, 'grey');
+    });
+
     it('should figure out max height level', function() {
       var level = {
         terrain : [
@@ -133,7 +140,7 @@ describe('The map', function() {
         ],
       };
       map.map(level);
-      expect(map.maxHeight).to.equal(2);
+      expect(map.levelInfo.maxHeight).to.equal(2);
     });
 
     it('tile info objects should be normalized', function() {
@@ -147,7 +154,19 @@ describe('The map', function() {
       checkTile(1, 0, 1, 'grey');
     });
 
- });
+    it('should figure out dimension in tiles', function() {
+      var level = {
+        terrain : [
+          [null, 1],
+          [0, 0],
+          [0],
+        ],
+      };
+      map.map(level);
+      expect(map.levelInfo.diagonal >= 3).to.be.true;
+      expect(map.levelInfo.diagonal <= 4).to.be.true;
+    });
+  });
 
   describe('map interaction', function() {
 

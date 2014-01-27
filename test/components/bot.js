@@ -70,7 +70,7 @@ describe('The bot entity', function() {
         bot.position.direction = bot.directions.downLeft;
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 1, 2, 0, bot.directions.downLeft);
+          check(bot, 1, 2, 1, bot.directions.downLeft);
           done();
         });
       });
@@ -79,7 +79,7 @@ describe('The bot entity', function() {
         bot.position.direction = bot.directions.upRight;
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 1, 0, 0, bot.directions.upRight);
+          check(bot, 1, 0, 1, bot.directions.upRight);
           done();
         });
       });
@@ -88,7 +88,7 @@ describe('The bot entity', function() {
         bot.position.direction = bot.directions.upLeft;
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 0, 1, 0, bot.directions.upLeft);
+          check(bot, 0, 1, 1, bot.directions.upLeft);
           done();
         });
       });
@@ -133,7 +133,7 @@ describe('The bot entity', function() {
         game.map.setTileZ(2, 1, 1);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 2, 1, 1);
+          check(bot, 2, 1, 2);
           done();
         });
       });
@@ -154,7 +154,7 @@ describe('The bot entity', function() {
         game.map.setTileZ(2, 1, -1);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 2, 1, -1);
+          check(bot, 2, 1, 0);
           done();
         });
       });
@@ -164,26 +164,26 @@ describe('The bot entity', function() {
         game.map.setTileZ(2, 1, -2);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 2, 1, -2);
+          check(bot, 2, 1, -1);
           done();
         });
       });
 
       // Tutankhamun was here
       it('should turn left', function(done) {
-        check(bot, 1, 1, 0, bot.directions.downRight);
+        check(bot, 1, 1, 1, bot.directions.downRight);
         bot.instruct(bot.moves.turnLeft, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 1, 1, 0, bot.directions.upRight);
+          check(bot, 1, 1, 1, bot.directions.upRight);
           bot.instruct(bot.moves.turnLeft, function(err, moved) {
             expectBotHasMoved(err, moved);
-            check(bot, 1, 1, 0, bot.directions.upLeft);
+            check(bot, 1, 1, 1, bot.directions.upLeft);
             bot.instruct(bot.moves.turnLeft, function(err, moved) {
               expectBotHasMoved(err, moved);
-              check(bot, 1, 1, 0, bot.directions.downLeft);
+              check(bot, 1, 1, 1, bot.directions.downLeft);
               bot.instruct(bot.moves.turnLeft, function(err, moved) {
                 expectBotHasMoved(err, moved);
-                check(bot, 1, 1, 0, bot.directions.downRight);
+                check(bot, 1, 1, 1, bot.directions.downRight);
                 done();
               });
             });
@@ -193,19 +193,19 @@ describe('The bot entity', function() {
 
       // Cleopatra was here, too
       it('should turn right', function(done) {
-        check(bot, 1, 1, 0, bot.directions.downRight);
+        check(bot, 1, 1, 1, bot.directions.downRight);
         bot.instruct(bot.moves.turnRight, function(err, moved) {
           expectBotHasMoved(err, moved);
-          check(bot, 1, 1, 0, bot.directions.downLeft);
+          check(bot, 1, 1, 1, bot.directions.downLeft);
           bot.instruct(bot.moves.turnRight, function(err, moved) {
             expectBotHasMoved(err, moved);
-            check(bot, 1, 1, 0, bot.directions.upLeft);
+            check(bot, 1, 1, 1, bot.directions.upLeft);
             bot.instruct(bot.moves.turnRight, function(err, moved) {
               expectBotHasMoved(err, moved);
-              check(bot, 1, 1, 0, bot.directions.upRight);
+              check(bot, 1, 1, 1, bot.directions.upRight);
               bot.instruct(bot.moves.turnRight, function(err, moved) {
                 expectBotHasMoved(err, moved);
-                check(bot, 1, 1, 0, bot.directions.downRight);
+                check(bot, 1, 1, 1, bot.directions.downRight);
                 done();
               });
             });
@@ -283,7 +283,7 @@ describe('The bot entity', function() {
         ],
       }, function(err) {
         expect(err).to.not.exist;
-        check(bot, 0, 2, 0, bot.directions.upLeft);
+        check(bot, 0, 2, 1, bot.directions.upLeft);
         done();
       });
     });
@@ -300,7 +300,7 @@ describe('The bot entity', function() {
         ],
       }, function(err) {
         expect(err).to.not.exist;
-        check(bot, 2, 2, 0, bot.directions.downLeft);
+        check(bot, 2, 2, 1, bot.directions.downLeft);
         done();
       });
     });
@@ -319,7 +319,7 @@ describe('The bot entity', function() {
         ],
       }, function(err) {
         expect(err).to.not.exist;
-        check(bot, 1, 2, 0, bot.directions.upLeft);
+        check(bot, 1, 2, 1, bot.directions.upLeft);
         done();
       });
     });
@@ -342,7 +342,7 @@ describe('The bot entity', function() {
         ],
       }, function(err) {
         expect(err).to.not.exist;
-        check(bot, 1, 2, 0, bot.directions.downLeft);
+        check(bot, 1, 2, 1, bot.directions.downLeft);
         done();
       });
     });
@@ -359,7 +359,7 @@ describe('The bot entity', function() {
         ],
       }, function(err) {
         expect(err).to.not.exist;
-        check(bot, 1, 1, 0, bot.directions.upRight);
+        check(bot, 1, 1, 1, bot.directions.upRight);
         done();
       });
     });
@@ -367,9 +367,9 @@ describe('The bot entity', function() {
   });
 
   function check(bot, x, y, z, direction) {
-    x = x || 0;
-    y = y || 0;
-    z = z || 0;
+    if (z === null || z === undefined) {
+      z = 1;
+    }
     direction = direction || bot.directions.downRight;
 
     /*
