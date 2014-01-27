@@ -36,6 +36,11 @@ game = (function() {
     this.height = 6;
     this.widthPx = this.width * this.baseSize;
     this.heightPx = this.height * this.baseSize;
+    this.widthProgramArea = this.cardColumns * (this.cardSize + this.cardPadding) + this.cardPadding;
+    this.widthMapArea = this.widthPx - this.widthProgramArea;
+    this.heightMapArea = this.heightPx - this.cardSize - 2 * this.cardPadding;
+    this.offsetProgramArea = this.widthMapArea;
+    this.heightProgramArea = this.heightPx;
 
     // terrain constants
     this.pixelPerHeightLevel = 16;
@@ -165,10 +170,6 @@ game = (function() {
   }
 
   Game.prototype._initInstructionAreas = function(level) {
-    this.widthProgramArea = this.cardColumns * (this.cardSize + this.cardPadding) + this.cardPadding;
-    this.offsetProgramArea =  this.widthPx - this.widthProgramArea;
-    this.heightProgramArea = this.heightPx;
-
     // a visual separation of isometric playing field from program area
     this.createDiv(this.offsetProgramArea, 0, this.widthProgramArea, this.heightProgramArea, 'instruction-areas');
 
@@ -220,11 +221,11 @@ game = (function() {
   }
 
   Game.prototype._initButtons = function() {
-    var buttonWidth = 100;
-    var buttonHeight = 48;
+    var buttonWidth = 80;
+    var buttonHeight = 40;
     this._buttonExecute = this._createButton(0, 'Execute', this.execute, buttonWidth, buttonHeight);
     this._buttonReset = this._createButton(1, 'Reset', this.resetLevel, buttonWidth, buttonHeight);
-    this._buttonClear = this._createButton(2, 'Clear Program', this.clearProgram, buttonWidth, buttonHeight);
+    this._buttonClear = this._createButton(2, 'Clear', this.clearProgram, buttonWidth, buttonHeight);
   }
 
   Game.prototype._createButton = function(buttonIndex, text, action, width, height) {

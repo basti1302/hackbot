@@ -19,6 +19,7 @@
       }
 
       this._parseLevel(level);
+      this._centerView();
       this._createTiles();
       return this;
     },
@@ -27,11 +28,13 @@
       this.levelInfo = {
         length2d: level.terrain.length,
         maxHeight: 0,
+        widthInTiles: 0,
+        xOffset: 0,
+        yOffset: 0,
       };
 
       this._normalizedMap = [];
       this._toggleTiles =  [];
-      var widthInTiles = 0;
       var terrain = level.terrain;
 
       for (var y = 0; y < terrain.length; y++) {
@@ -54,16 +57,9 @@
           normalizedRow.push(normalizedTileInfo);
           this.levelInfo.maxHeight = Math.max(this.levelInfo.maxHeight, normalizedTileInfo.level);
         }
-        widthInTiles = Math.max(widthInTiles, normalizedRow.length);
+        this.levelInfo.widthInTiles = Math.max(this.levelInfo.widthInTiles, normalizedRow.length);
       }
-      // How big (in tiles) is the map? We need this info later to center the
-      // map on the screen.
-      var lengthInTiles = this._normalizedMap.length;
-      // Math.ceil(this.levelInfo.length2d + this.levelInfo.maxHeight / 2);
-      this.levelInfo.diagonal = Math.sqrt(Math.pow(widthInTiles, 2) + Math.pow(lengthInTiles, 2));
-      var diagonalPx = Math.floor(this.levelInfo.diagonal * game.baseSize);
-      this.levelInfo.xOffset = Math.floor((game.widthPx - diagonalPx) / 2);
-      this.levelInfo.yOffset = Math.floor((game.heightPx - diagonalPx/2) / 2);
+      this.levelInfo.heightInTiles = this._normalizedMap.length;
     },
 
     _normalizeTile: function(x, y, tileInfo) {
@@ -138,6 +134,24 @@
         return false;
       }
       return true;
+    },
+
+      // Calculate everything needed to center map on in viewport
+    _centerView: function() {
+      var upperRightCorner =
+        Crafty
+        .e('IsoTranslator')
+        .setLength2d(this.levelInfo.length2d)
+        ._calcPixelCoords(this.levelInfo.widthInTiles - 1, 0, this.levelInfo.maxHeight);
+      var lowerLeftCorner =
+        Crafty
+        .e('IsoTranslator')
+        .setLength2d(this.levelInfo.length2d)
+        ._calcPixelCoords(0, this.levelInfo.heightInTiles - 1, 0);
+      var mapWidthPx = upperRightCorner.x - lowerLeftCorner.x;
+      var mapHeightPx = lowerLeftCorner.y - upperRightCorner.y;
+      this.levelInfo.xOffset = Math.floor((game.widthMapArea - mapWidthPx - game.baseSize) / 2);
+      this.levelInfo.yOffset = Math.floor((game.heightMapArea - mapHeightPx - game.baseSize) / 2);
     },
 
     getTileInfo: function(x, y) {
