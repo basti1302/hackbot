@@ -3,11 +3,15 @@
 
   Crafty.c('Bot', {
 
+    botZPxCorrection: -8,
+
     // movement speed constants
     subStepDuration: 300,
     pauseBetweenSteps: 100,
     pauseBetweenTweens: 0,
     loopMovement: false,
+
+    // only for debugging
     manualControl: false,
 
     // ordinary movement instructions
@@ -93,7 +97,7 @@
         this.position.z = 1;
       }
       this.position.direction = this.position.direction || this.directions.downRight;
-      var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z);
+      var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z, this.botZPxCorrection);
       this.attr({
           x: pixelPosition.x,
           y: pixelPosition.y
@@ -336,7 +340,7 @@
           oldPosition.z !== this.position.z) {
 
         // convertt to iso coordinates and then to pixel coordinates
-        var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z);
+        var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z, this.botZPxCorrection);
         this.tween({x: pixelPosition.x, y: pixelPosition.y}, this.subStepDuration);
         this.animate(this.botReels[this.position.direction], -1);
 
