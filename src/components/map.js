@@ -138,18 +138,22 @@
 
       // Calculate everything needed to center map on in viewport
     _centerView: function() {
-      var upperRightCorner =
-        Crafty
-        .e('IsoTranslator')
-        .setLength2d(this.levelInfo.length2d)
-        ._calcPixelCoords(this.levelInfo.widthInTiles - 1, 0, this.levelInfo.maxHeight);
-      var lowerLeftCorner =
-        Crafty
-        .e('IsoTranslator')
-        .setLength2d(this.levelInfo.length2d)
-        ._calcPixelCoords(0, this.levelInfo.heightInTiles - 1, 0);
-      var mapWidthPx = upperRightCorner.x - lowerLeftCorner.x;
-      var mapHeightPx = lowerLeftCorner.y - upperRightCorner.y;
+      var mapWidthPx = 0;
+      var mapHeightPx = 0;
+      if (this.levelInfo.widthInTiles > 0 && this.levelInfo.heightInTiles > 0) {
+        var upperRightCorner =
+          Crafty
+          .e('IsoTranslator')
+          .setLength2d(this.levelInfo.length2d)
+          ._calcPixelCoords(this.levelInfo.widthInTiles - 1, 0, this.levelInfo.maxHeight);
+        var lowerLeftCorner =
+          Crafty
+          .e('IsoTranslator')
+          .setLength2d(this.levelInfo.length2d)
+          ._calcPixelCoords(0, this.levelInfo.heightInTiles - 1, 0);
+        mapWidthPx = upperRightCorner.x - lowerLeftCorner.x;
+        mapHeightPx = lowerLeftCorner.y - upperRightCorner.y;
+      }
       this.levelInfo.xOffset = Math.floor((game.widthMapArea - mapWidthPx - game.baseSize) / 2);
       this.levelInfo.yOffset = Math.floor((game.heightMapArea - mapHeightPx - game.baseSize) / 2);
     },

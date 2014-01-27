@@ -113,7 +113,7 @@
   Crafty.c('IsoTranslator', {
 
     setLength2d: function(length2d) {
-      if (length2d == null || length2d < 1) {
+      if (length2d == null || length2d < 0) {
         throw new Error('Illegal length2d: ' + length2d);
       }
       if (length2d % 2 === 0) {

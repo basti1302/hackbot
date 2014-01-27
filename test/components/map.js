@@ -27,7 +27,7 @@ describe('The map', function() {
 
   describe('initialization', function() {
 
-    it('should accept an map', function() {
+    it('should accept an empty map', function() {
       map.map({ terrain: [] });
     });
 
@@ -163,8 +163,8 @@ describe('The map', function() {
         ],
       };
       map.map(level);
-      expect(map.levelInfo.diagonal >= 3).to.be.true;
-      expect(map.levelInfo.diagonal <= 4).to.be.true;
+      expect(map.levelInfo.widthInTiles).to.equal(2);
+      expect(map.levelInfo.heightInTiles).to.equal(3);
     });
   });
 

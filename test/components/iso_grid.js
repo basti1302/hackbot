@@ -42,9 +42,9 @@ describe('Coordinate mapping', function() {
       expect(call).to.throw(Error);
     });
 
-    it('should throw error when non-positive length is set', function() {
+    it('should throw error when negative length is set', function() {
       tile = Crafty.e('IsoTranslator');
-      var call = function() { tile.setLength2d(0) };
+      var call = function() { tile.setLength2d(-1) };
       expect(call).to.throw(Error);
     });
 
