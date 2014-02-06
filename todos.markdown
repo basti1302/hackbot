@@ -1,7 +1,9 @@
 TODOs
 =====
 
-* [TESTS] For z-index with various heights (probably partly broken)
+* [UX] remove cards by click
+* [!] Make initial bot position part of the level definition,
+      z is optional and defaults to level of tile at (x, y) + 1
 * [!] Scenes: welcome scene, level select scene, playing scene
 * [!] Asset Pre-Loading
 * [TESTS] For pixel positions during bot movements
@@ -11,7 +13,6 @@ TODOs
     * program panel
     * each program area
     * button area
-* [UX] remove cards by click
 * [UX] when removing cards from instruction area, all other cards after should go to their predecessor
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them. Cards get destroyed if the move out at the end.
 * [VISUAL] better colors for active and inactive instruction area
