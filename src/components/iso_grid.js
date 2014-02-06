@@ -112,6 +112,7 @@
    */
   Crafty.c('IsoTranslator', {
 
+    // TODO Make this setLevelInfo with length2d and maxHeight
     setLength2d: function(length2d) {
       if (length2d == null || length2d < 0) {
         throw new Error('Illegal length2d: ' + length2d);
@@ -180,10 +181,26 @@
      * Calculates the z-index for the DOM entity
      */
     // TODO There are no tests for this :-(
-    calcLayer: function(x2d, y2d, z, maxZ) {
-      var layer = 2 * (x2d * maxZ
-                     + y2d * maxZ
-                     + z);
+    calcLayer: function(x2d, y2d, z, maxHeight) {
+      // z-index calculation only works reliably if z < maxHeight
+      if (z >= maxHeight) {
+        throw new Error('Illegal z: ' + z + ' >= maxHeight: ' + maxHeight);
+      }
+
+      // We need to make sure that
+      // * a tile with greater x and y coordinates is always visible before a
+      // tile with smaller x and y (no matter the z coordinates)
+      // * a tile with greater x is visible before a tile with lower x when y is
+      // smaller or equal
+      // * a tile with greater y is visible before a tile with lower y when x is
+      // smaller or equal
+      // * we have at least a difference of two between the z-index of two
+      // different tiles, even with maxHeight == 0, so we can fit the bot's
+      // z-index in between the z-index of two tiles.
+      var layer =
+        2 * (x2d * maxHeight
+           + y2d * maxHeight
+           + z);
       return layer;
     },
 
@@ -192,36 +209,21 @@
      * moving entity to be shown in the correct z plane when moving from
      * positionFrom to positionTo
      */
-    // TODO This method is broken and there are no tests :-(
     calcLayerMoving: function(positionFrom, positionTo, maxZ) {
-      // TODO Z-INDEX IS BROKEN FOR MOVING BOT when bot is on level 0 and bot is
-      // moving behind a tile with height 1 or higher. During the tween phase
-      // the bot sprite "shines" through the higher tile before him. This only
-      // occurs with map.baseHeight <= -2. With map.baseHeight >= 3, the bot is
-      // below the floor sometimes ?!?!?!?! Generally this seems to be a problem
-      // with levels > 0, no matter of baseHeight.
 
+      // To assign a reasonable z-index to the bot when it's moving we calculate
+      // the z-index for the position where the movement starts and where it
+      // ends and take the max of the two. Since the bot only moves 1 field per
+      // step that works. The only situation where a problem arises is when the
+      // bot moves up or left and the tiles directly before the bot's target
+      // position (x+1 or y+1) are one level higher. In this case they have the
+      // same level as the bot and so can have the same z-index. To work around
+      // this problem we subtract 1 from the bot's z-index. Since the z-index of
+      // the tiles always are calculated as multiples of 2, this works.
       var layerFrom = this.calcLayer(positionFrom.x, positionFrom.y, positionFrom.z, maxZ);
       var layerTo = this.calcLayer(positionTo.x, positionTo.y, positionTo.z, maxZ);
-      return Math.max(layerFrom, layerTo) + 1;
+      return Math.max(layerFrom, layerTo) - 1;
     },
-
-    /*
-    moveViewPoint: function(viewPointDeltaX, viewPointDeltaY) {
-      var center = this.iso.centerAt();
-      console.log(JSON.stringify(center, null, 2));
-      center = this.iso.px2pos(center.left, center.top);
-      console.log(JSON.stringify(center, null, 2));
-      center.x = Math.floor(center.x);
-      center.y = Math.floor(center.y);
-      console.log(center.x + viewPointDeltaX);
-      console.log(center.y + viewPointDeltaY);
-      this.iso.centerAt(center.x + viewPointDeltaX, center.y + viewPointDeltaY);
-      console.log('YYY');
-      var center = this.iso.centerAt();
-      console.log(JSON.stringify(center, null, 2));
-    },
-    */
 
   });
 

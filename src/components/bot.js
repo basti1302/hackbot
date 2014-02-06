@@ -103,8 +103,8 @@
           y: pixelPosition.y
       });
 
-      var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.levelInfo.maxHeight) + 1;
-      this.z += zIndex;
+      var zIndex = this.calcLayer(position.x, position.y, position.z, game.map.levelInfo.maxHeight);
+      this.attr('z', zIndex);
 
       this.animate(this.botReels[position.direction], 0);
       return this;
@@ -339,14 +339,14 @@
           oldPosition.y !== this.position.y ||
           oldPosition.z !== this.position.z) {
 
-        // convertt to iso coordinates and then to pixel coordinates
-        var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z, this.botZPxCorrection);
-        this.tween({x: pixelPosition.x, y: pixelPosition.y}, this.subStepDuration);
-        this.animate(this.botReels[this.position.direction], -1);
-
         // calculate and set z-index
         var layer = this.calcLayerMoving(oldPosition, this.position, game.map.levelInfo.maxHeight);
         this.attr('z', layer);
+
+        // convert to iso coordinates and then to pixel coordinates
+        var pixelPosition = this._calcPixelCoords(this.position.x, this.position.y, this.position.z, this.botZPxCorrection);
+        this.tween({x: pixelPosition.x, y: pixelPosition.y}, this.subStepDuration);
+        this.animate(this.botReels[this.position.direction], -1);
       }
 
       var self = this;

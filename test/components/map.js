@@ -136,11 +136,11 @@ describe('The map', function() {
     it('should figure out max height level', function() {
       var level = {
         terrain : [
-          [1, 2],
+          [2, 3],
         ],
       };
       map.map(level);
-      expect(map.levelInfo.maxHeight).to.equal(2);
+      expect(map.levelInfo.maxHeight).to.equal(5);
     });
 
     it('tile info objects should be normalized', function() {

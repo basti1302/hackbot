@@ -59,6 +59,17 @@
         }
         this.levelInfo.widthInTiles = Math.max(this.levelInfo.widthInTiles, normalizedRow.length);
       }
+
+      // So far, we have recorded the highest tile level. We need maxHeight for
+      // the z index calculation. x and y coordinates are both multiplied by
+      // maxHeight factor to ensure that both x and y influence the z index more
+      // than the z coordinate in the isometric system. We need to add 1 because
+      // the bot is always one level above the tile it is standing on (so if it
+      // is standing on the highest tile it has level maxHeight +1). We need to
+      // add one more so that it is guaranteed that x * maxHeight or y *
+      // maxHeight are greater (and not only >=) than z for the highest possible
+      // z (for the bot).
+      this.levelInfo.maxHeight += 2;
       this.levelInfo.heightInTiles = this._normalizedMap.length;
     },
 

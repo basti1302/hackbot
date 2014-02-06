@@ -21,6 +21,7 @@ describe('The bot entity', function() {
     ]};
     game.reset(true);
     game._createMap(level);
+    game.map.levelInfo.maxHeight = 4;
     bot = game._createBot({ x: 1, y: 1});
     bot.subStepDuration = 0;
     bot.pauseBetweenSteps = 0;
