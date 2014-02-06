@@ -1,7 +1,6 @@
 TODOs
 =====
 
-* [UX] remove cards by click
 * [!] Make initial bot position part of the level definition,
       z is optional and defaults to level of tile at (x, y) + 1
 * [!] Scenes: welcome scene, level select scene, playing scene

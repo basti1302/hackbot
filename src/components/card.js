@@ -20,9 +20,6 @@
       this.yOrig = game.heightPx - game.cardPadding - game.cardSize;
       this.attr({z: 1000});
 
-      this.bind('Click', function() {
-        self._onMouseClick();
-      })
       this.bind('Dragging', function() {
         self._onDragging();
       });
@@ -69,40 +66,59 @@
       this.cardIndex = cardIndex;
     },
 
-    _onMouseClick: function() {
-      if (this._reallyDragging) {
-        return;
-      }
-
-      // when clicking a card the source panel (and it has not been dragged)
-      if (this.xOrig === this.x && this.yOrig === this.y) {
-        var activeInstructionArea = game.activeInstructionArea;
-        if (activeInstructionArea) {
-          var lastRow = activeInstructionArea.slots[activeInstructionArea.slots.length - 1];
-          var lastSlot = lastRow[lastRow.length - 1];
-          if (lastSlot && !lastSlot.card) {
-            lastSlot.dropCard(this, true);
-            this.sourcePanel[this.cardIndex] = null;
-          }
-        }
-      }
-    },
+    /*
+     * Maintenance notice: If we would bind to all four events ('Click',
+     * 'StartDrag', 'Dragging', 'StopDrag'), then the following holds:
+     * For a single click (no dragging), the sequence of events received is this:
+     * - StartDrag
+     * - StopDrag
+     * - Click
+     * All are called immediately after another.
+     * When the user drags a card, the sequence is this:
+     * - StartDrag
+     * - Dragging
+     * - Dragging
+     * - Dragging
+     * - ...
+     * - StopDrag
+     * - Click
+     *
+     * Since 'StopDrag' and 'Click' are always fired in both cases and the only
+     * difference is that 'Dragging' is fired for real mouse drags, we do not
+     * even bother to listen to 'Click' but use some state variables to
+     * distinguish clicks from drag events.
+     */
 
     _onStartDrag: function() {
-      this.attr('z', 1001);
-      // when dragging from the source panel (as opposed to dragging from a
-      // program slot)
+      this._reallyDragging = false;
+      this._draggingJustStarted = true;
       if (this.xOrig === this.x && this.yOrig === this.y) {
-        this.sourcePanel[this.cardIndex] = null;
+        this._draggingSource = 'sourcePanel';
+      } else if (this.x >= game.offsetProgramArea && this.slot) {
+        this._draggingSource = 'programSlot';
+      } else {
+        this._draggingSource = null;
       }
-      // when dragging from the program slot
-      if (this.x >= game.offsetProgramArea && this.slot) {
-        this.slot.unlinkCard();
-      }
+
+      this.attr('z', 1001);
     },
 
     _onDragging: function() {
+      // now we know that it is a dragging event and not a simple mouse click
+      // without dragging
       this._reallyDragging = true;
+
+      // is it the first 'Dragging' event for this dragging action?
+      if (this._draggingJustStarted) {
+        if (this._draggingSource === 'sourcePanel') {
+          this.sourcePanel[this.cardIndex] = null;
+        } else if (this._draggingSource === 'programSlot') {
+          this.slot.unlinkCard();
+        }
+      }
+      // remember that we already have seen the first 'Dragging' event
+      this._draggingJustStarted = false;
+
       var slot = this._getSlot();
       if (slot && slot.div) {
         if (slot.div && (this.highlightedSlots.indexOf(slot.div) < 0)) {
@@ -117,20 +133,53 @@
     },
 
     _onStopDrag: function() {
-      this.attr('z', 1000);
       if (this._reallyDragging) {
-
-        // clear last highlighted slot
-        this._clearHighlightedSlots();
-
-        var slot = this._getSlot();
-        if (slot) {
-          slot.dropCard(this, false);
-        } else {
-          this.returnToSourcePanel();
-        }
+        this._handleDragFinished();
+      } else {
+        this._handleMouseClick();
       }
+
+      // reset dragging state variables
       this._reallyDragging = false;
+      this._draggingSource = null;
+      this._draggingJustStarted = false;
+
+      this.attr('z', 1000);
+    },
+
+    /*
+     * handle mouse click (no dragging happened)
+     */
+    _handleMouseClick: function() {
+      if (this._draggingSource === 'sourcePanel') {
+        var activeInstructionArea = game.activeInstructionArea;
+        if (activeInstructionArea) {
+          var lastRow = activeInstructionArea.slots[activeInstructionArea.slots.length - 1];
+          var lastSlot = lastRow[lastRow.length - 1];
+          if (lastSlot && !lastSlot.card) {
+            this.sourcePanel[this.cardIndex] = null;
+            lastSlot.dropCard(this, true);
+          }
+        }
+      } else if (this._draggingSource === 'programSlot') {
+        this.returnToSourcePanel();
+      }
+    },
+
+    /*
+     * handle proper dragging event (in contrast to simple mouse click without
+     * dragging)
+     */
+    _handleDragFinished: function() {
+      // clear last highlighted slot
+      this._clearHighlightedSlots();
+
+      var slot = this._getSlot();
+      if (slot) {
+        slot.dropCard(this, false);
+      } else {
+        this.returnToSourcePanel();
+      }
     },
 
     _clearHighlightedSlots: function() {
