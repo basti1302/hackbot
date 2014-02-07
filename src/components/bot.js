@@ -9,7 +9,6 @@
     subStepDuration: 300,
     pauseBetweenSteps: 100,
     pauseBetweenTweens: 0,
-    loopMovement: false,
 
     // only for debugging
     manualControl: false,

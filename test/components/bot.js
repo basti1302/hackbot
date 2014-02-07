@@ -25,9 +25,7 @@ describe('The bot entity', function() {
     bot = game._createBot({ x: 1, y: 1});
     bot.subStepDuration = 0;
     bot.pauseBetweenSteps = 0;
-    bot.pauseBetweenTweens = 0,
-    bot.loopMovement = false;
-    bot.manualControl = false;
+    bot.pauseBetweenTweens = 0;
   });
 
   describe('The bot entity', function() {
