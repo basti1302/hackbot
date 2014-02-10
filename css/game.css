@@ -19,12 +19,12 @@ body {
 }
 .instruction-area {
   border: lightgray solid 1px;
-  background-color: darkslategray;
+  background-color: gray;
   position: absolute;
 }
 .active-instruction-area {
   border: white solid 1px;
-  background-color: gray;
+  background-color: #600000;
   position: absolute;
 }
 .slot {
