@@ -1,14 +1,16 @@
 TODOs
 =====
 
-* REVIEW TODOS!
+* [VISUAL] make in-game-buttons same as menu buttons
+* [VISUAL] make level solved a scene of its own, with navigation (go back to menu, play again, ...)
+* [REFACTORING] Extract scenes to separate files
+* [MOBILE] It looks weird/broken on mobile browsers.
 * [REFACTORING] extract into components/entities:
     * source panel
     * program panel
     * each program area
     * button area
 * [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
-* [COMPAT] It looks weird/broken on mobile browsers.
 * [UX] when removing cards from instruction area, all other cards after should go to their predecessor
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them. Cards get destroyed if the move out at the end.
 * [VISUAL] better colors for active and inactive instruction area

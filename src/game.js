@@ -28,7 +28,7 @@ game = (function() {
 
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(0, 'Play', 'Play');
+      .hbMenuButton(0, 'Play', 'LevelSelect');
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(1, 'How To Play', 'Instructions1');
@@ -107,7 +107,21 @@ or never. Who knows.\
   });
 
   Crafty.scene('LevelSelect', function() {
-    throw new Error('Not yet implemented. Sorry.');
+    Crafty.e('2D, DOM, Text')
+      .text('Choose a level')
+      .attr({ x: 0, y: 24, w: game.widthPx })
+      .textFont({ size: '24px', weight: 'bold' })
+      .textColor('#600000')
+    ;
+
+    var index = 0;
+    for (var levelId in game.levels) {
+      var level = game.levels[levelId];
+      Crafty
+        .e('HbLevelSelectButton')
+        .hbMenuButton(index++, level.name, levelId);
+      // use levels description?
+    }
   });
 
   Crafty.scene('Play', function() {
@@ -234,7 +248,7 @@ or never. Who knows.\
   }
 
   Game.prototype._defineLevel = function() {
-    var levelId = 'slalom';
+    var levelId = this.levelId || 'slalom';
     var level = this.levels[levelId];
     if (!level) {
       throw new Error('Unknown level: ' + levelId);

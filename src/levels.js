@@ -6,34 +6,34 @@
 
     'basic-plane': {
       name: 'Basic Plane',
+      description: 'a flat plane makes a boring level',
       instructionAreas: {
         main: {
           instructions: 12,
         },
         subroutine1: {
-          instructions: 4,
+          instructions: 8,
         },
         subroutine2: {
-          instructions: 4,
+          instructions: 8,
         },
       },
       bot: {
         x: 0,
-        y: 5,
-        direction: 'upRight',
+        y: 3,
+        direction: 'downRight',
       },
       terrain: [
-        [{ floor: 'red' }, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, { floor: 'red' }],
+        [{ floor: 'red' }, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, { floor: 'red' }],
       ],
     },
 
     slalom: {
       name: 'Slalom',
+      description: 'An advanced level which requires using sub routines',
       instructionAreas: {
         main: {
           instructions: 9,
@@ -58,7 +58,8 @@
     },
 
     pillars: {
-      name: 'Pillars - test level for z-index calculation',
+      name: 'Pillars',
+      description: 'Test level for z-index calculation',
       instructionAreas: {
         main: { instructions: 12, },
         subroutine1: { instructions: 4, },
@@ -72,7 +73,7 @@
         [3, 0, 3, 0],
         [2, 4, 2, 4],
         [1, 0, 1, 0],
-        [0, 2, 0, 2],
+        [{ floor: 'red' }, 2, 0, 2],
       ],
     },
   };

@@ -45,11 +45,9 @@
   });
 
   Crafty.c('HbMenuButton', {
-
     init: function() {
       this.requires('HbButton');
     },
-
     hbMenuButton: function(index, text, scene) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 48, 256, 32, '24px', 'bold' )
@@ -69,6 +67,25 @@
       return this;
     },
   });
+
+  Crafty.c('HbLevelSelectButton', {
+    init: function() {
+      this.requires('HbButton');
+    },
+    hbMenuButton: function(index, text, levelId) {
+      this
+        .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
+        .text(text)
+      ;
+      this.bind('Click', function() {
+        game.levelId = levelId;
+        Crafty.scene('Play');
+      });
+      return this;
+    },
+  });
+
+
 
   Crafty.c('HbInstrPrevButton', {
     init: function() {
