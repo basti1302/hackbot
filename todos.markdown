@@ -1,9 +1,8 @@
 TODOs
 =====
 
+* [BUG] Instruction areas are not removed when leaving the level
 * [VISUAL] make level solved a scene of its own, with navigation (go back to menu, play again, ...)
-* [] Button to leave level and go back to level select
-* [] Button to leave level select and go back to welcome screen
 * [MOBILE] It looks weird/broken on mobile browsers.
 * [REFACTORING] extract into components/entities:
     * source panel

@@ -15,7 +15,7 @@ game = (function() {
   Game.prototype.start = function() {
     this.init();
     Crafty.scene('Loading');
-  }
+  };
 
   Game.prototype.init = function(testMode) {
 
@@ -34,6 +34,11 @@ game = (function() {
     this.cardSize = 48;
     this.cardPadding = 4;
     this.areaPadding = 7;
+
+    // buttons
+    this.buttonPadding = 5;
+    this.buttonWidth = 48;
+    this.buttonHeight = 24;
 
     // viewport size
     this.width = 12;
@@ -55,7 +60,7 @@ game = (function() {
 
     Crafty.init(this.widthPx, this.heightPx);
     this.iso = Crafty.isometric.size(this.baseSize);
-  }
+  };
 
   Game.prototype.loadAssets = function(callback) {
     var self = this;
@@ -107,7 +112,11 @@ game = (function() {
 
   Game.prototype.startLevel = function() {
     this.reset();
-  }
+  };
+
+  Game.prototype.leaveLevel = function() {
+    Crafty.scene('LevelSelect');
+  };
 
   Game.prototype.reset = function() {
     if (!this.testMode) {
@@ -120,7 +129,7 @@ game = (function() {
     }
     this.pristine = true;
     this.executing = false;
-  }
+  };
 
   Game.prototype.stop = function() {
     // remove all entities
@@ -128,7 +137,7 @@ game = (function() {
       this.destroy();
     });
     Crafty.stop();
-  }
+  };
 
   Game.prototype._defineLevel = function() {
     var levelId = this.levelId || 'slalom';
@@ -137,7 +146,7 @@ game = (function() {
       throw new Error('Unknown level: ' + levelId);
     }
     return level;
-  }
+  };
 
   /*
    * Creates the entities that represent the floor.
@@ -146,7 +155,7 @@ game = (function() {
     this._originalLevel = Crafty.clone(level);
     this.map = Crafty.e('Map');
     this.map.map(level);
-  }
+  };
 
   /*
    * Creates the bot entity.
@@ -155,14 +164,14 @@ game = (function() {
     this._originalBotPosition = Crafty.clone(botPosition);
     var botEntity = Crafty.e('Bot').bot(botPosition);
     return botEntity;
-  }
+  };
 
   Game.prototype._initSourcePanel = function() {
     ['forward', 'turnLeft', 'turnRight', 'jump', 'action', 'subroutine1', 'subroutine2']
     .forEach(function(instruction, cardIndex) {
       Crafty.e('Card').card(instruction).place(cardIndex);
     });
-  }
+  };
 
   Game.prototype._initInstructionAreas = function(level) {
     // a visual separation of isometric playing field from program area
@@ -186,7 +195,7 @@ game = (function() {
       throw new Error('Every level needs an instructionArea with name main');
     }
     this.activeInstructionArea = this.instructionAreas.main;
-  }
+  };
 
   Game.prototype.activateInstructionArea = function(newActiveInstructionArea) {
     for (var instrAreaName in this.instructionAreas) {
@@ -197,7 +206,7 @@ game = (function() {
     }
     this.activeInstructionArea = newActiveInstructionArea;
     this.activeInstructionArea.activate();
-  },
+  };
 
   // TODO Put the creation of the divs into to the Slot entity
   Game.prototype.createDiv = function(x, y, w, h, className) {
@@ -213,29 +222,37 @@ game = (function() {
     );
     document.getElementById('cr-stage').appendChild(div);
     return div;
-  }
+  };
 
   Game.prototype._initButtons = function() {
-    this._buttonExecute = this._createButton(0, 'play', this.execute);
-    this._buttonReset = this._createButton(1, 'rewind', this.resetLevel);
-    this._buttonClear = this._createButton(2, 'delete', this.clearProgram);
+    this._buttonLeave = this._createButtonLeft(0, 'leave', this.leaveLevel);
+    this._buttonExecute = this._createButtonRight(0, 'play', this.execute);
+    this._buttonReset = this._createButtonRight(1, 'rewind', this.resetLevel);
+    this._buttonClear = this._createButtonRight(2, 'delete', this.clearProgram);
+  };
+
+  Game.prototype._createButtonLeft = function(buttonIndex, name, action) {
+    var x = this.buttonPadding;
+    var y = buttonIndex * (this.buttonHeight + this.buttonPadding) + this.buttonPadding;
+    this._createButton(x, y, name, action);
   }
 
-  Game.prototype._createButton = function(buttonIndex, name, action) {
-    var width = 48;
-    var height = 24;
-    var padding = 5;
-    var x = this.offsetProgramArea - width - padding;
-    var y = buttonIndex * (height + padding) + padding;
+  Game.prototype._createButtonRight = function(buttonIndex, name, action) {
+    var x = this.offsetProgramArea - this.buttonWidth - this.buttonPadding;
+    var y = buttonIndex * (this.buttonHeight + this.buttonPadding) + this.buttonPadding;
+    this._createButton(x, y, name, action);
+  };
+
+  Game.prototype._createButton = function(x, y, name, action) {
     var button =
       Crafty.e('HbImgButton')
-      .hbButton(x, y, width, height)
+      .hbButton(x, y, this.buttonWidth, this.buttonHeight)
       .hbImgButton(name)
       .bind('Click', action.bind(game))
       .css({ 'background-position': '14px 3px' })
     ;
     return button;
-  }
+  };
 
   Game.prototype.execute = function() {
     var self = this;
@@ -272,7 +289,7 @@ game = (function() {
         self._unblockExecution();
       });
     }
-  }
+  };
 
   Game.prototype.resetLevel = function() {
     if (!this.executing) {
@@ -281,12 +298,12 @@ game = (function() {
       this._resetBotPosition();
       this.pristine = true;
     }
-  }
+  };
 
   Game.prototype._resetBotPosition = function() {
     var position = Crafty.clone(this._originalBotPosition);
     this.bot.setPosition(position);
-  }
+  };
 
   Game.prototype.clearProgram = function() {
     this._removeMessages();
@@ -297,7 +314,7 @@ game = (function() {
         card.destroy();
       }
     });
-  }
+  };
 
   Game.prototype._withEachSlot = function(fn) {
     for (var instrAreaName in this.instructionAreas) {
@@ -312,23 +329,23 @@ game = (function() {
         }
       }
     }
-  }
+  };
 
   Game.prototype._blockExecution = function() {
     this.executing = true;
     this._buttonExecute.disable();
     this._buttonReset.disable();
-  }
+  };
 
   Game.prototype._unblockExecution = function() {
     this.executing = false;
     this._buttonExecute.enable();
     this._buttonReset.enable();
-  }
+  };
 
   Game.prototype.hasWon = function() {
     return this.map.hasWon();
-  }
+  };
 
   Game.prototype.onPlayerHasWon = function() {
     // TODO Something better needs to happen here :-)
@@ -342,14 +359,14 @@ game = (function() {
           y = this.heightPx/2 - 75;
       this.messagePlayerHasWon.attr({ x: x, y: y, z: 1000 });
     }
-  }
+  };
 
   Game.prototype._removeMessages = function() {
     if (this.messagePlayerHasWon) {
       this.messagePlayerHasWon.destroy();
       this.messagePlayerHasWon = null;
     }
-  }
+  };
 
   return new Game();
 

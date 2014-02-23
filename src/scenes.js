@@ -50,6 +50,13 @@ game = (function() {
         .hbMenuButton(index++, level.name, levelId);
       // use levels description?
     }
+
+    Crafty.e('HbImgButton')
+      .hbButton(5, 5, 48, 24)
+      .hbImgButton('leave')
+      .bind('Click', function() { Crafty.scene('Welcome'); })
+      .css({ 'background-position': '14px 3px' })
+    ;
   });
 
   Crafty.scene('Play', function() {
