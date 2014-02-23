@@ -206,29 +206,23 @@ game = (function() {
   }
 
   Game.prototype._initButtons = function() {
-    var buttonWidth = 80;
-    var buttonHeight = 40;
-    this._buttonExecute = this._createButton(0, 'Execute', this.execute, buttonWidth, buttonHeight);
-    this._buttonReset = this._createButton(1, 'Reset', this.resetLevel, buttonWidth, buttonHeight);
-    this._buttonClear = this._createButton(2, 'Clear', this.clearProgram, buttonWidth, buttonHeight);
+    this._buttonExecute = this._createButton(0, 'Execute', this.execute);
+    this._buttonReset = this._createButton(1, 'Reset', this.resetLevel);
+    this._buttonClear = this._createButton(2, 'Clear', this.clearProgram);
   }
 
-  Game.prototype._createButton = function(buttonIndex, text, action, width, height) {
-    var button = document.createElement('button');
-    button.className = 'button';
-    button.id = 'button-play';
+  Game.prototype._createButton = function(buttonIndex, text, action) {
+    var width = 72;
+    var height = 24;
     var padding = 5;
-    var top = buttonIndex * (height + padding) + padding;
-    var left = this.offsetProgramArea - width - padding;
-    button.setAttribute('style',
-      'width: ' + width + 'px; ' +
-      'height: ' + height + 'px; ' +
-      'top: ' + top + 'px; ' +
-      'left: ' + left + 'px;'
-    );
-    button.appendChild(document.createTextNode(text));
-    button.onclick = action.bind(game);
-    document.getElementById('cr-stage').appendChild(button);
+    var x = this.offsetProgramArea - width - padding;
+    var y = buttonIndex * (height + padding) + padding;
+    var button =
+      Crafty.e('HbButton')
+      .hbButton(x, y, width, height)
+      .text(text)
+      .bind('Click', action.bind(game))
+    ;
     return button;
   }
 
@@ -311,14 +305,14 @@ game = (function() {
 
   Game.prototype._blockExecution = function() {
     this.executing = true;
-    this._buttonExecute.setAttribute('disabled', true);
-    this._buttonReset.setAttribute('disabled', true);
+    this._buttonExecute.disable();
+    this._buttonReset.disable();
   }
 
   Game.prototype._unblockExecution = function() {
     this.executing = false;
-    this._buttonExecute.removeAttribute('disabled');
-    this._buttonReset.removeAttribute('disabled');
+    this._buttonExecute.enable();
+    this._buttonReset.enable();
   }
 
   Game.prototype.hasWon = function() {

@@ -29,19 +29,32 @@
       this
         .attr({ x : x, y: y, w: w, h: h, })
         .textFont({ size: fontSize, weight: fontWeight, })
-        .textColor('#FFFFFF')
-        .css({
-          border: 'solid thin white',
-          '-moz-border-radius': '8px',
-          '-webkit-border-radius': '8px',
-          'border-radius': '8px',
-          cursor: 'pointer',
-        })
-        .color('#600000')
         .unselectable()
       ;
+      this.enable();
       return this;
     },
+
+    onClick: function(callback) {
+      this._onClickHandler = callback;
+      this.bind('Click', this._onClickHandler);
+    },
+
+    enable: function() {
+      $(this._element).addClass('button-enabled');
+      $(this._element).removeClass('button-disabled');
+      if (this._onClickHandler) {
+        this.bind('Click', this._onClickHandler);
+      }
+    },
+
+    disable: function() {
+      $(this._element).removeClass('button-enabled');
+      $(this._element).addClass('button-disabled');
+    },
+
+
+
   });
 
   Crafty.c('HbMenuButton', {
@@ -54,15 +67,11 @@
         .text(text)
       ;
       if (scene) {
-        this.bind('Click', function() {
+        this.onClick(function() {
           Crafty.scene(scene);
         });
       } else {
-        this
-          .color('#300000')
-          .textColor('#CCCCCC')
-          .css('cursor', 'default')
-        ;
+        this.disable();
       }
       return this;
     },
@@ -77,7 +86,7 @@
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
         .text(text)
       ;
-      this.bind('Click', function() {
+      this.onClick(function() {
         game.levelId = levelId;
         Crafty.scene('Play');
       });
@@ -95,7 +104,7 @@
       this
         .hbButton(game.widthPx - 244, game.heightPx - 48, 64, 32)
         .text('<<<')
-        .bind('Click', function() {
+        .onClick(function() {
           Crafty.scene('Instructions' + (index - 1));
         })
       ;
@@ -111,7 +120,7 @@
       this
         .hbButton(game.widthPx - 168, game.heightPx - 48, 32, 32)
         .text('^')
-        .bind('Click', function() {
+        .onClick(function() {
           Crafty.scene('Welcome');
         })
       ;
@@ -127,7 +136,7 @@
       this
         .hbButton(game.widthPx - 124, game.heightPx - 48, 64, 32)
         .text('>>>')
-        .bind('Click', function() {
+        .onClick(function() {
           Crafty.scene('Instructions' + (index + 1));
         })
       ;
