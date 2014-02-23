@@ -50,6 +50,9 @@
     disable: function() {
       $(this._element).removeClass('button-enabled');
       $(this._element).addClass('button-disabled');
+      if (this._onClickHandler) {
+        this.unbind('Click');
+      }
       if (typeof this.disableImg === 'function') {
         this.disableImg();
       }
@@ -214,12 +217,14 @@
 
   Crafty.c('HbInstrButtons', {
     hbInstrButtons: function(index) {
-      if (index > 1) {
-        Crafty.e('HbInstrPrevButton').hbInstrPrevButton(index);
-      }
+      var prev = Crafty.e('HbInstrPrevButton').hbInstrPrevButton(index);
       Crafty.e('HbInstrLeaveButton').hbInstrLeaveButton();
-      if (index < 4) {
-        Crafty.e('HbInstrNextButton').hbInstrNextButton(index);
+      var next = Crafty.e('HbInstrNextButton').hbInstrNextButton(index);
+      if (index ===  1) {
+        prev.disable();
+      }
+      if (index === 4) {
+        next.disable();
       }
       return this
     },
