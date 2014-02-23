@@ -234,13 +234,13 @@ game = (function() {
   Game.prototype._createButtonLeft = function(buttonIndex, name, action) {
     var x = this.buttonPadding;
     var y = buttonIndex * (this.buttonHeight + this.buttonPadding) + this.buttonPadding;
-    this._createButton(x, y, name, action);
+    return this._createButton(x, y, name, action);
   }
 
   Game.prototype._createButtonRight = function(buttonIndex, name, action) {
     var x = this.offsetProgramArea - this.buttonWidth - this.buttonPadding;
     var y = buttonIndex * (this.buttonHeight + this.buttonPadding) + this.buttonPadding;
-    this._createButton(x, y, name, action);
+    return this._createButton(x, y, name, action);
   };
 
   Game.prototype._createButton = function(x, y, name, action) {
