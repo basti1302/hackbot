@@ -3,7 +3,8 @@ TODOs
 
 * [VISUAL] make in-game-buttons same as menu buttons
 * [VISUAL] make level solved a scene of its own, with navigation (go back to menu, play again, ...)
-* [REFACTORING] Extract scenes to separate files
+* [] Button to leave level and go back to level select
+* [] Button to leave level select and go back to welcome screen
 * [MOBILE] It looks weird/broken on mobile browsers.
 * [REFACTORING] extract into components/entities:
     * source panel
@@ -25,5 +26,3 @@ TODOs
 * [FEATURE] export/import levels from local storage to/from file
 * [FEATURE/UX] Clicking execute/reset program cards *cancel* current execution - similar to hasWo check
 * [TESTS] For pixel positions during bot movements
-
-
