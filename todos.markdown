@@ -1,7 +1,6 @@
 TODOs
 =====
 
-* [VISUAL] make in-game-buttons same as menu buttons
 * [VISUAL] make level solved a scene of its own, with navigation (go back to menu, play again, ...)
 * [] Button to leave level and go back to level select
 * [] Button to leave level select and go back to welcome screen
