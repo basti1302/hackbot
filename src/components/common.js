@@ -10,7 +10,7 @@
   Crafty.c('HbButton', {
 
     init: function() {
-      this.requires('2D, DOM, Color, Text, Mouse');
+      this.requires('2D, DOM, Color, Mouse');
     },
 
     /*
@@ -23,14 +23,8 @@
      * component.
      */
 
-    hbButton: function(x, y, w, h, fontSize, fontWeight) {
-      fontSize = fontSize || '16px';
-      fontWeight = fontWeight || 'normal';
-      this
-        .attr({ x : x, y: y, w: w, h: h, })
-        .textFont({ size: fontSize, weight: fontWeight, })
-        .unselectable()
-      ;
+    hbButton: function(x, y, w, h) {
+      this.attr({ x : x, y: y, w: w, h: h, });
       this.enable();
       return this;
     },
@@ -38,6 +32,7 @@
     onClick: function(callback) {
       this._onClickHandler = callback;
       this.bind('Click', this._onClickHandler);
+      return this;
     },
 
     enable: function() {
@@ -46,25 +41,94 @@
       if (this._onClickHandler) {
         this.bind('Click', this._onClickHandler);
       }
+      if (typeof this.enableImg === 'function') {
+        this.enableImg();
+      }
+      return this;
     },
 
     disable: function() {
       $(this._element).removeClass('button-enabled');
       $(this._element).addClass('button-disabled');
+      if (typeof this.disableImg === 'function') {
+        this.disableImg();
+      }
+      return this;
+    },
+  });
+
+  Crafty.c('HbTextButton', {
+    init: function() {
+      this.requires('HbButton, Text');
     },
 
+    hbTextButton: function(text, fontSize, fontWeight) {
+      fontSize = fontSize || '16px';
+      fontWeight = fontWeight || 'normal';
+      this
+        .textFont({ size: fontSize, weight: fontWeight, })
+        .unselectable()
+        .text(text)
+      ;
+      return this;
+    },
+  });
 
+  Crafty.c('HbImgButton', {
+    init: function() {
+      this.requires('HbButton, Image');
+    },
 
+    hbImgButton: function(name) {
+      this._imageName = name;
+      this._setImage(name);
+      return this;
+    },
+
+    _setImage: function(name) {
+      var self = this;
+      var w = this.attr('w');
+      var h = this.attr('h');
+
+      this.image('assets/images/buttons/' + name + '.png');
+      // Overrides Crafty's behaviour to resizes the DOM element to image
+      // dimensions unless it is a repeated image. Bad design decision,
+      // if you ask me. Next to lines are for the case where image asset is
+      // already loaded.
+      this.w = w;
+      this.h = h;
+
+      // Overrides Crafty's onload handler which also resizes the DOM element,
+      // see above.
+      this.img.onload = function () {
+        self.ready = true;
+        self.trigger("Invalidate");
+      };
+      return this;
+    },
+
+    enableImg: function() {
+      if (this._imageName) {
+        this._setImage(this._imageName);
+      }
+    },
+
+    disableImg: function() {
+      if (this._imageName) {
+        this._setImage(this._imageName + '_disabled');
+      }
+    },
   });
 
   Crafty.c('HbMenuButton', {
     init: function() {
-      this.requires('HbButton');
+      this.requires('HbTextButton');
     },
+
     hbMenuButton: function(index, text, scene) {
       this
-        .hbButton(game.widthPx/2 - 128, 120 + index * 48, 256, 32, '24px', 'bold' )
-        .text(text)
+        .hbButton(game.widthPx/2 - 128, 120 + index * 48, 256, 32)
+        .hbTextButton(text, '24px', 'bold')
       ;
       if (scene) {
         this.onClick(function() {
@@ -79,12 +143,13 @@
 
   Crafty.c('HbLevelSelectButton', {
     init: function() {
-      this.requires('HbButton');
+      this.requires('HbTextButton');
     },
+
     hbMenuButton: function(index, text, levelId) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
-        .text(text)
+        .hbTextButton(text)
       ;
       this.onClick(function() {
         game.levelId = levelId;
@@ -94,19 +159,19 @@
     },
   });
 
-
-
   Crafty.c('HbInstrPrevButton', {
     init: function() {
-      this.requires('HbButton');
+      this.requires('HbImgButton');
     },
+
     hbInstrPrevButton: function(index) {
       this
-        .hbButton(game.widthPx - 244, game.heightPx - 48, 64, 32)
-        .text('<<<')
+        .hbButton(game.widthPx - 212, game.heightPx - 48, 48, 32)
+        .hbImgButton('previous')
         .onClick(function() {
           Crafty.scene('Instructions' + (index - 1));
         })
+        .css({ 'background-position': '16px 5px' })
       ;
       return this;
     },
@@ -114,15 +179,16 @@
 
   Crafty.c('HbInstrLeaveButton', {
     init: function() {
-      this.requires('HbButton');
+      this.requires('HbImgButton');
     },
     hbInstrLeaveButton: function() {
       this
-        .hbButton(game.widthPx - 168, game.heightPx - 48, 32, 32)
-        .text('^')
+        .hbButton(game.widthPx - 152, game.heightPx - 48, 48, 32)
+        .hbImgButton('leave')
         .onClick(function() {
           Crafty.scene('Welcome');
         })
+        .css({ 'background-position': '16px 5px' })
       ;
       return this;
     },
@@ -130,15 +196,16 @@
 
   Crafty.c('HbInstrNextButton', {
     init: function() {
-      this.requires('HbButton');
+      this.requires('HbImgButton');
     },
     hbInstrNextButton: function(index) {
       this
-        .hbButton(game.widthPx - 124, game.heightPx - 48, 64, 32)
-        .text('>>>')
+        .hbButton(game.widthPx - 92, game.heightPx - 48, 48, 32)
+        .hbImgButton('next')
         .onClick(function() {
           Crafty.scene('Instructions' + (index + 1));
         })
+        .css({ 'background-position': '16px 5px' })
       ;
       return this;
     },
@@ -154,6 +221,7 @@
       if (index < 4) {
         Crafty.e('HbInstrNextButton').hbInstrNextButton(index);
       }
+      return this
     },
   });
 

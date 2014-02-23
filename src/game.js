@@ -206,22 +206,23 @@ game = (function() {
   }
 
   Game.prototype._initButtons = function() {
-    this._buttonExecute = this._createButton(0, 'Execute', this.execute);
-    this._buttonReset = this._createButton(1, 'Reset', this.resetLevel);
-    this._buttonClear = this._createButton(2, 'Clear', this.clearProgram);
+    this._buttonExecute = this._createButton(0, 'play', this.execute);
+    this._buttonReset = this._createButton(1, 'rewind', this.resetLevel);
+    this._buttonClear = this._createButton(2, 'delete', this.clearProgram);
   }
 
-  Game.prototype._createButton = function(buttonIndex, text, action) {
-    var width = 72;
+  Game.prototype._createButton = function(buttonIndex, name, action) {
+    var width = 48;
     var height = 24;
     var padding = 5;
     var x = this.offsetProgramArea - width - padding;
     var y = buttonIndex * (height + padding) + padding;
     var button =
-      Crafty.e('HbButton')
+      Crafty.e('HbImgButton')
       .hbButton(x, y, width, height)
-      .text(text)
+      .hbImgButton(name)
       .bind('Click', action.bind(game))
+      .css({ 'background-position': '14px 3px' })
     ;
     return button;
   }
