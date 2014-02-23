@@ -4,8 +4,9 @@ describe('Coordinate mapping', function() {
   var expect = chai.expect;
   var tile;
 
-  before(function() {
+  before(function(done) {
     game.init(true);
+    game.loadAssets(done);
   });
 
   after(function() {

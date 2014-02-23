@@ -8,8 +8,9 @@ describe('The map', function() {
   var redFloor;
   var greenFloor;
 
-  before(function() {
+  before(function(done) {
     game.init(true);
+    game.loadAssets(done);
   });
 
   after(function() {

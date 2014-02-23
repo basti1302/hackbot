@@ -4,8 +4,9 @@ describe('The bot entity', function() {
   var expect = chai.expect;
   var bot;
 
-  before(function() {
+  before(function(done) {
     game.init(true);
+    game.loadAssets(done);
   });
 
   after(function() {
