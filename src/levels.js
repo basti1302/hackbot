@@ -31,6 +31,93 @@
       ],
     },
 
+    'new': {
+      name: 'Fehlende Kacheln',
+      description: '...',
+      instructionAreas: {
+        main: {
+          instructions: 12,
+        },
+        subroutine1: {
+          instructions: 8,
+        },
+        subroutine2: {
+          instructions: 8,
+        },
+      },
+      bot: {
+        x: 0,
+        y: 5,
+        direction: 'upRight',
+      },
+      terrain: [
+        [0, 1, 0, 0, { floor: 'red' }],
+        [1, null, 1, 1, null],
+        [0, 1, 0, null, 0],
+        [null, 0, 0, 0, 0],
+        [0, 0, null, 0, 0],
+        [0, 0, 0, 0, 0],
+      ],
+    },
+
+    'drei': {
+      name: 'Drei',
+      description: '...',
+      instructionAreas: {
+        main: {
+          instructions: 12,
+        },
+        subroutine1: {
+          instructions: 8,
+        },
+        subroutine2: {
+          instructions: 8,
+        },
+      },
+      bot: {
+        x: 0,
+        y: 5,
+        direction: 'upRight',
+      },
+      terrain: [
+        [0, 2, { floor: 'red' }, 2, 0],
+        [1, 0, 1, 0, 0],
+        [0, 0, 0, 0, 1],
+        [{ floor: 'red', level: 2 }, 0, 0, 0, 2],
+        [1, 0, 0, 0, { floor: 'red', level: 3 }],
+        [0, 0, 0, 0, 0],
+      ],
+    },
+
+
+    'new_2': {
+      name: 'Treppe',
+      description: '...',
+      instructionAreas: {
+        main: {
+          instructions: 12,
+        },
+        subroutine1: {
+          instructions: 8,
+        },
+        subroutine2: {
+          instructions: 8,
+        },
+      },
+      bot: {
+        x: 0,
+        y: 4,
+        direction: 'downRight',
+      },
+      terrain: [
+        [0, 0, { floor: 'red' }, 0],
+        [{ floor: 'red', level: 3 }, 3, 3, 0],
+        [0, 0, 2, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0],
+      ],
+    },
+
     slalom: {
       name: 'Slalom',
       description: 'An advanced level which requires using sub routines',
