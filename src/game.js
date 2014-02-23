@@ -10,7 +10,9 @@ game = (function() {
   }, false);
 
   Crafty.scene('Loading', function() {
-    game.loadAssets();
+    game.loadAssets(function() {
+      Crafty.scene('Welcome');
+    });
   });
 
   Crafty.scene('Welcome', function() {
@@ -184,7 +186,7 @@ or never. Who knows.\
     this.iso = Crafty.isometric.size(this.baseSize);
   }
 
-  Game.prototype.loadAssets = function() {
+  Game.prototype.loadAssets = function(callback) {
     var self = this;
     Crafty.e('2D, DOM, Text')
       .text('Booting Hackbot, please stand by...')
@@ -218,7 +220,7 @@ or never. Who knows.\
         SprCardSubroutine1: [5, 0],
         SprCardSubroutine2: [6, 0],
       });
-      Crafty.scene('Welcome');
+      callback();
     });
   };
 

@@ -15,8 +15,9 @@ describe('Z-Index in the isometric grid', function() {
   var tiles;
   var bot;
 
-  before(function() {
+  before(function(done) {
     game.init(true);
+    game.loadAssets(done);
     game.map = {
       levelInfo: levelInfo,
     };
