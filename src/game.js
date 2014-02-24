@@ -30,6 +30,13 @@ game = (function() {
     this.baseSize = 64;
 
     // program card related
+    this.defaultCards = [
+      'forward',
+      'turnLeft',
+      'turnRight',
+      'jump',
+      'action',
+    ];
     this.cardColumns = 4;
     this.cardSize = 48;
     this.cardPadding = 4;
@@ -124,7 +131,7 @@ game = (function() {
       this._createMap(level);
       this.bot = this._createBot(level.bot, level);
       this._initInstructionAreas(level);
-      this._initSourcePanel();
+      this._initSourcePanel(level);
       this._initButtons();
     }
     this.pristine = true;
@@ -140,7 +147,7 @@ game = (function() {
   };
 
   Game.prototype._defineLevel = function() {
-    var levelId = this.levelId || 'slalom';
+    var levelId = this.levelId || 'first';
     var level = this.levels[levelId];
     if (!level) {
       throw new Error('Unknown level: ' + levelId);
@@ -166,9 +173,15 @@ game = (function() {
     return botEntity;
   };
 
-  Game.prototype._initSourcePanel = function() {
-    ['forward', 'turnLeft', 'turnRight', 'jump', 'action', 'subroutine1', 'subroutine2']
-    .forEach(function(instruction, cardIndex) {
+  Game.prototype._initSourcePanel = function(level) {
+    var cards = level.cards || this.defaultCards;
+    if (level.instructionAreas.subroutine1) {
+      cards.push('subroutine1');
+    }
+    if (level.instructionAreas.subroutine2) {
+      cards.push('subroutine2');
+    }
+    cards.forEach(function(instruction, cardIndex) {
       Crafty.e('Card').card(instruction).place(cardIndex);
     });
   };

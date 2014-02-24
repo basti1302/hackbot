@@ -17,6 +17,10 @@
         y: 0,
         direction: 'downLeft',
       },
+      cards: [
+        'forward',
+        'action',
+      ],
       terrain: [
         [null, null, 0, null],
         [null, 0, 0, 0],
@@ -39,6 +43,10 @@
         y: 0,
         direction: 'downLeft',
       },
+      cards: [
+        'forward',
+        'action',
+      ],
       terrain: [
         [0, 0, 0],
         [0, { floor: 'red' }, 0],
@@ -61,6 +69,12 @@
         y: 1,
         direction: 'downLeft',
       },
+      cards: [
+        'forward',
+        'action',
+        'turnLeft',
+        'turnRight',
+      ],
       terrain: [
         [0, 0, 0],
         [0, null, { floor: 'red' }],
@@ -81,6 +95,11 @@
         y: 2,
         direction: 'upRight',
       },
+      cards: [
+        'forward',
+        'action',
+        'jump',
+      ],
       terrain: [
         [1, { floor: 'red', level: 1 }, 1],
         [1, 1, 1],
@@ -102,6 +121,10 @@
         z: 3,
         direction: 'downLeft',
       },
+      cards: [
+        'action',
+        'jump',
+      ],
       terrain: [
         [2, 2, 2],
         [2, 1, 2],
@@ -122,6 +145,13 @@
         y: 3,
         direction: 'upLeft',
       },
+      cards: [
+        'forward',
+        'action',
+        'turnLeft',
+        'turnRight',
+        'jump',
+      ],
       terrain: [
         [{ floor: 'red', level: 3 }, 3, 3, { floor: 'red', level: 3 }],
         [3, 0, null, 0],
@@ -129,7 +159,6 @@
         [2, 1, 0, null],
       ],
     },
-
 
     /*
 

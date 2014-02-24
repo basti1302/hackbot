@@ -2,7 +2,6 @@ TODOs
 =====
 
 * [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
-* [FEATURE] let level definition dictate which cards are available
 * MOAR LEVELS!!!
 * Some levels introducing subroutines gently
 * Level selection with multiple hierarchies
