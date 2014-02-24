@@ -4,6 +4,135 @@
 
   game.levels = {
 
+    'first': {
+      name: 'First Level',
+      description: 'introduces walking and toggling',
+      instructionAreas: {
+        main: {
+          instructions: 3,
+        },
+      },
+      bot: {
+        x: 2,
+        y: 0,
+        direction: 'downLeft',
+      },
+      terrain: [
+        [null, null, 0, null],
+        [null, 0, 0, 0],
+        [0,    0, { floor: 'red' }, 0, 0],
+        [null, 0, 0, 0],
+        [null, null, 0],
+      ],
+    },
+
+    'second': {
+      name: 'Two Red Tiles',
+      description: 'now you need to toggle two tiles',
+      instructionAreas: {
+        main: {
+          instructions: 5,
+        },
+      },
+      bot: {
+        x: 1,
+        y: 0,
+        direction: 'downLeft',
+      },
+      terrain: [
+        [0, 0, 0],
+        [0, { floor: 'red' }, 0],
+        [0, 0, 0],
+        [0, { floor: 'red' }, 0],
+      ],
+    },
+
+
+    'turning': {
+      name: 'Turning the corner',
+      description: 'introduces turns',
+      instructionAreas: {
+        main: {
+          instructions: 7,
+        },
+      },
+      bot: {
+        x: 0,
+        y: 1,
+        direction: 'downLeft',
+      },
+      terrain: [
+        [0, 0, 0],
+        [0, null, { floor: 'red' }],
+        [0, 0, 0],
+      ],
+    },
+
+    'jump-up': {
+      name: 'Jump Up',
+      description: 'introduces jumping',
+      instructionAreas: {
+        main: {
+          instructions: 3,
+        },
+      },
+      bot: {
+        x: 1,
+        y: 2,
+        direction: 'upRight',
+      },
+      terrain: [
+        [1, { floor: 'red', level: 1 }, 1],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+    },
+
+    'jump-down': {
+      name: 'Jump Down',
+      description: 'introduces jumping down',
+      instructionAreas: {
+        main: {
+          instructions: 3,
+        },
+      },
+      bot: {
+        x: 1,
+        y: 0,
+        z: 3,
+        direction: 'downLeft',
+      },
+      terrain: [
+        [2, 2, 2],
+        [2, 1, 2],
+        [0, { floor: 'red' }, 0],
+      ],
+    },
+
+    'gallery': {
+      name: 'Gallery',
+      description: 'Combines jumping, turning and toggling multiple tiles',
+      instructionAreas: {
+        main: {
+          instructions: 12,
+        },
+      },
+      bot: {
+        x: 2,
+        y: 3,
+        direction: 'upLeft',
+      },
+      terrain: [
+        [{ floor: 'red', level: 3 }, 3, 3, { floor: 'red', level: 3 }],
+        [3, 0, null, 0],
+        [3, null, 0, null],
+        [2, 1, 0, null],
+      ],
+    },
+
+
+    /*
+
     'basic-plane': {
       name: 'Basic Plane',
       description: 'a flat plane makes a boring level',
@@ -31,6 +160,8 @@
       ],
     },
 
+    */
+
     slalom: {
       name: 'Slalom',
       description: 'An advanced level which requires using sub routines',
@@ -57,6 +188,7 @@
       ],
     },
 
+    /*
     pillars: {
       name: 'Pillars',
       description: 'Test level for z-index calculation',
@@ -76,6 +208,8 @@
         [{ floor: 'red' }, 2, 0, 2],
       ],
     },
+    */
+
   };
 
 })(game);
