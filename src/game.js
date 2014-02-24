@@ -147,8 +147,13 @@ game = (function() {
   };
 
   Game.prototype._defineLevel = function() {
+    // defaults
+    if (this.category == null) {
+      this.category = this.levels.category.Basics;
+    }
     var levelId = this.levelId || 'first';
-    var level = this.levels[levelId];
+
+    var level = this.category[levelId];
     if (!level) {
       throw new Error('Unknown level: ' + levelId);
     }

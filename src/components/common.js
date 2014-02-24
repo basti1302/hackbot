@@ -165,12 +165,30 @@
     },
   });
 
+  Crafty.c('HbCategorySelectButton', {
+    init: function() {
+      this.requires('HbTextButton');
+    },
+
+    hbCategorySelectButton: function(index, categoryId, category) {
+      this
+        .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
+        .hbTextButton(categoryId)
+      ;
+      this.onClick(function() {
+        game.category = category;
+        Crafty.scene('LevelSelect');
+      });
+      return this;
+    },
+  });
+
   Crafty.c('HbLevelSelectButton', {
     init: function() {
       this.requires('HbTextButton');
     },
 
-    hbMenuButton: function(index, text, levelId) {
+    hbLevelSelectButton: function(index, text, levelId) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
         .hbTextButton(text)

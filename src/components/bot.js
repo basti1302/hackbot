@@ -11,7 +11,7 @@
     pauseBetweenTweens: 0,
 
     // only for debugging
-    manualControl: false,
+    manualControl: true,
 
     // ordinary movement instructions
     moves: {

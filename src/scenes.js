@@ -22,7 +22,7 @@ game = (function() {
 
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(0, 'Play', 'LevelSelect');
+      .hbMenuButton(0, 'Play', 'CategorySelect');
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(1, 'How To Play', 'Instructions1');
@@ -34,6 +34,30 @@ game = (function() {
       .hbMenuButton(3, 'Level Editor');
   });
 
+  Crafty.scene('CategorySelect', function() {
+    Crafty.e('2D, DOM, Text')
+      .text('Choose a level category')
+      .attr({ x: 0, y: 24, w: game.widthPx })
+      .textFont({ size: '24px', weight: 'bold' })
+      .textColor('#600000')
+    ;
+
+    var index = 0;
+    for (var categoryId in game.levels.categories) {
+      var category = game.levels.categories[categoryId];
+      Crafty
+        .e('HbCategorySelectButton')
+        .hbCategorySelectButton(index++, categoryId, category);
+    }
+
+    Crafty.e('HbImgButton')
+      .hbButton(5, 5, 48, 24)
+      .hbImgButton('leave')
+      .bind('Click', function() { Crafty.scene('Welcome'); })
+      .css({ 'background-position': '14px 3px' })
+    ;
+  });
+
   Crafty.scene('LevelSelect', function() {
     Crafty.e('2D, DOM, Text')
       .text('Choose a level')
@@ -43,18 +67,18 @@ game = (function() {
     ;
 
     var index = 0;
-    for (var levelId in game.levels) {
-      var level = game.levels[levelId];
+    for (var levelId in game.category) {
+      var level = game.category[levelId];
       Crafty
         .e('HbLevelSelectButton')
-        .hbMenuButton(index++, level.name, levelId);
+        .hbLevelSelectButton(index++, level.name, levelId);
       // use levels description?
     }
 
     Crafty.e('HbImgButton')
       .hbButton(5, 5, 48, 24)
       .hbImgButton('leave')
-      .bind('Click', function() { Crafty.scene('Welcome'); })
+      .bind('Click', function() { Crafty.scene('CategorySelect'); })
       .css({ 'background-position': '14px 3px' })
     ;
   });
