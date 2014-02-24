@@ -1,14 +1,17 @@
 TODOs
 =====
 
+* [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
+* [FEATURE] let level definition dictate which cards are available
 * MOAR LEVELS!!!
+* Some levels introducing subroutines gently
+* Level selection with multiple hierarchies
 * [MOBILE] It looks weird/broken on mobile browsers.
 * [REFACTORING] extract into components/entities:
     * source panel
     * program panel
     * each program area
     * button area
-* [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them. Cards get destroyed if the move out at the end.
 * [UX] improve level solved message:
        - block all buttons (play, reset, clear)
@@ -17,7 +20,6 @@ TODOs
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
 * [VISUAL] put an opaque div below the 'Level Solved!' message
 * [VISUAL] Animate bot jump even when its jumping in situ
-* [FEATURE] let level definition dictate which cards are available
 * [FEATURE] level editor
 * [FEATURE] save levels to local storage
 * [FEATURE] load levels from local storage
