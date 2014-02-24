@@ -47,3 +47,12 @@ body {
   color: #CCCCCC;
   cursor: default;
 }
+.HbMessage {
+  background-color: #300000;
+  color: #FF0000;
+  border: solid white;
+  -moz-border-radius: 16px;
+  -webkit-border-radius: 16px;
+  border-radius: 16px;
+}
+}

@@ -351,14 +351,8 @@ game = (function() {
   Game.prototype.onPlayerHasWon = function() {
     // TODO Something better needs to happen here :-)
     if (!this.messagePlayerHasWon) {
-      this.messagePlayerHasWon = Crafty
-        .e('2D, DOM, Text')
-        .textFont({ size: '60px', weight: 'bold' })
-        .textColor('#FF0000')
-        .text('Level Solved!');
-      var x = (this.widthPx - this.widthProgramArea) / 2 - 125,
-          y = this.heightPx/2 - 75;
-      this.messagePlayerHasWon.attr({ x: x, y: y, z: 1000 });
+      this.messagePlayerHasWon =
+        Crafty.e('HbMessage').hbMessage('Level Solved!');
     }
   };
 

@@ -9,7 +9,9 @@ TODOs
     * button area
 * [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them. Cards get destroyed if the move out at the end.
-* [VISUAL] improve level solved message - opaque box below text, navigation (go back to menu, play again, ...)
+* [UX] improve level solved message:
+       - block all buttons (play, reset, clear)
+       - navigation: dismiss message (going back to level) / leave leve (go back to level select)
 * [VISUAL] better colors for active and inactive instruction area
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
 * [VISUAL] put an opaque div below the 'Level Solved!' message

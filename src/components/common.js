@@ -7,6 +7,27 @@
     },
   });
 
+  Crafty.c('HbMessage', {
+    init: function() {
+      this.requires('2D, DOM, Text');
+      var x = (game.widthPx - game.widthProgramArea) / 2 - 175,
+          y = game.heightPx/2 - 75;
+      this.attr({
+        x: x,
+        y: y,
+        w: 350,
+        h: 150,
+        z: 1000
+      });
+    },
+
+    hbMessage: function(text) {
+      this.textFont({ size: '60px', weight: 'bold' })
+      this.text(text);
+      this.alpha = 0.9;
+    },
+  });
+
   Crafty.c('HbButton', {
 
     init: function() {
