@@ -216,6 +216,15 @@ game = (function() {
     this.activeInstructionArea.activate();
   };
 
+  Game.prototype.reorderInstructionAreas = function() {
+    for (var instrAreaName in this.instructionAreas) {
+      if (this.instructionAreas.hasOwnProperty(instrAreaName)) {
+        var instructionArea = this.instructionAreas[instrAreaName];
+        instructionArea.reorder();
+      }
+    }
+  };
+
   Game.prototype._initButtons = function() {
     this._buttonLeave = this._createButtonLeft(0, 'leave', this.leaveLevel);
     this._buttonExecute = this._createButtonRight(0, 'play', this.execute);

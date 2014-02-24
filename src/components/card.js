@@ -203,19 +203,24 @@
     returnToSourcePanel: function() {
       // the card was not placed in a slot, so we return it to the source panel
       var returnTweenTime = 250;
+
+      // return card to its original position in the source panel
       this.tween({ x: this.xOrig, y: this.yOrig }, returnTweenTime);
 
-      // If the card was taken from the source panel, it needs to be returned.
-      // If it instead was taken from a program slot we already created a
-      // duplicate that has been placed in the source panel.
+      // if source panel still has this card, we also need to destroy this
+      // instance
       if (this.sourcePanel[this.cardIndex]) {
         var self = this;
         setTimeout(function() {
-          if (this.slot && this.slot.card === this) {
-            this.slot.card = null;
-          }
           self.destroy();
         }, returnTweenTime);
+      }
+
+      if (this.slot) {
+        this.slot.unlinkCard(this);
+      }
+      if (this._draggingSource === 'programSlot') {
+        game.reorderInstructionAreas();
       }
     },
 

@@ -64,6 +64,25 @@
         .removeClass('instruction-area');
     },
 
+    reorder: function() {
+      var emptySeen = false;
+      for (var row = 0; row < this.slots.length; row++) {
+        var rowArray = this.slots[row];
+        for (var column = 0; column < rowArray.length; column++) {
+          var slot = rowArray[column];
+          if (!emptySeen && slot.isEmpty()) {
+            emptySeen = true;
+          }
+          else if (emptySeen && slot.isOccupied()) {
+            // triggers slot._delegateToPredecessor
+            var card = slot.card;
+            slot.unlinkCard();
+            slot.dropCard(card, false);
+          }
+        }
+      }
+    },
+
   });
 
 })();
