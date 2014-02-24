@@ -20,26 +20,16 @@ body {
 .instruction-area {
   border: lightgray solid 1px;
   background-color: gray;
-  position: absolute;
 }
 .active-instruction-area {
   border: white solid 1px;
   background-color: #600000;
-  position: absolute;
 }
-.slot {
+.regular-slot {
   border: white solid 1px;
-  /*background-color: beige;*/
-  position: absolute;
-  z-index: 1;
-  opacity: 0.5;
 }
 .highlighted-slot {
   border: red solid 1px;
-  /*background-color: gainsboro;*/
-  position: absolute;
-  z-index: 1;
-  opacity: 0.5;
 }
 .HbButton {
   border: solid thin white;

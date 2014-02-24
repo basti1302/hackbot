@@ -120,12 +120,12 @@
       this._draggingJustStarted = false;
 
       var slot = this._getSlot();
-      if (slot && slot.div) {
-        if (slot.div && (this.highlightedSlots.indexOf(slot.div) < 0)) {
+      if (slot) {
+        if (this.highlightedSlots.indexOf(slot) < 0) {
           this._clearHighlightedSlots();
           this.highlightedSlots = [];
-          this.highlightedSlots.push(slot.div);
-          slot.div.className = 'highlighted-slot';
+          this.highlightedSlots.push(slot);
+          slot.highlight();
         }
         return;
       }
@@ -183,8 +183,8 @@
     },
 
     _clearHighlightedSlots: function() {
-      this.highlightedSlots.forEach(function(oldDiv) {
-        oldDiv.className = 'slot';
+      this.highlightedSlots.forEach(function(slot) {
+        slot.unHighlight();
       });
     },
 

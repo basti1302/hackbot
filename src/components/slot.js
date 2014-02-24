@@ -3,6 +3,10 @@
 
   Crafty.c('Slot', {
 
+    init: function() {
+      this.requires('2D, DOM, Mouse');
+    },
+
     slot: function (row, column, yOffset, instructionArea) {
       this.row = row;
       this.column = column;
@@ -18,9 +22,25 @@
               + yOffset;
       this.x2 = this.x1 + game.cardSize;
       this.y2 = this.y1 + game.cardSize;
-      this.div = game.createDiv(this.x1, this.y1, game.cardSize, game.cardSize, 'slot');
-      this.div.onclick = instructionArea.onClick.bind(instructionArea);
+      this.attr({
+        x: this.x1,
+        y: this.y1,
+        w: game.cardSize,
+        h: game.cardSize,
+      });
+      this.bind('Click', instructionArea.onClick.bind(instructionArea));
+      this.unHighlight();
       return this;
+    },
+
+    highlight: function() {
+      $(this._element).removeClass('regular-slot');
+      $(this._element).addClass('highlighted-slot');
+    },
+
+    unHighlight: function() {
+      $(this._element).addClass('regular-slot');
+      $(this._element).removeClass('highlighted-slot');
     },
 
     isEmpty: function() {

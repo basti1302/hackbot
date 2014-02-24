@@ -175,7 +175,15 @@ game = (function() {
 
   Game.prototype._initInstructionAreas = function(level) {
     // a visual separation of isometric playing field from program area
-    this.createDiv(this.offsetProgramArea, 0, this.widthProgramArea, this.heightProgramArea, 'instruction-areas');
+    Crafty
+      .e('2D, DOM')
+      .attr({
+        x: this.offsetProgramArea,
+        y: 0,
+        w: this.widthProgramArea,
+        h: this.heightProgramArea,
+      })
+      ._element.className = 'instruction-areas';
 
     this.instructionAreas = {};
     // create an instruction area for main and each sub routine
@@ -206,22 +214,6 @@ game = (function() {
     }
     this.activeInstructionArea = newActiveInstructionArea;
     this.activeInstructionArea.activate();
-  };
-
-  // TODO Put the creation of the divs into to the Slot entity
-  Game.prototype.createDiv = function(x, y, w, h, className) {
-    var div = document.createElement('div');
-    if (className) {
-      div.className = className;
-    }
-    div.setAttribute('style',
-      'width: ' + w + 'px; ' +
-      'height: ' + h + 'px; ' +
-      'top: ' + y + 'px; ' +
-      'left: ' + x + 'px;'
-    );
-    document.getElementById('cr-stage').appendChild(div);
-    return div;
   };
 
   Game.prototype._initButtons = function() {

@@ -6,6 +6,10 @@
    */
   Crafty.c('InstructionArea', {
 
+    init: function() {
+      this.requires('2D, DOM');
+    },
+
     instructionArea: function(name, numberOfSlots, yOffset) {
       this.name = name;
       this.cardRows = Math.ceil(numberOfSlots / game.cardColumns);
@@ -27,19 +31,19 @@
       this.height =
         this.cardRows * (game.cardSize + game.cardPadding) + game.cardPadding;
 
+      this.attr({
+        x: game.offsetProgramArea,
+        y: yOffset,
+        w: game.widthPx,
+        h: this.height,
+      });
+      this.bind('Click', this.onClick.bind(this));
 
-      var cssClass = 'instruction-area';
       if (this.name === 'main') {
-        cssClass = 'active-instruction-area';
+        this.activate();
+      } else {
+        this.deactivate();
       }
-      this.div = game.createDiv(
-        game.offsetProgramArea,
-        yOffset,
-        game.widthPx,
-        this.height,
-        cssClass
-      );
-      this.div.onclick = this.onClick.bind(this);
 
       return this;
     },
@@ -49,11 +53,15 @@
     },
 
     deactivate: function() {
-      this.div.className = 'instruction-area';
+      $(this._element)
+        .addClass('instruction-area')
+        .removeClass('active-instruction-area');
     },
 
     activate: function() {
-      this.div.className = 'active-instruction-area';
+      $(this._element)
+        .addClass('active-instruction-area')
+        .removeClass('instruction-area');
     },
 
   });
