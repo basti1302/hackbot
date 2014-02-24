@@ -118,7 +118,6 @@
       bot: {
         x: 1,
         y: 0,
-        z: 3,
         direction: 'downLeft',
       },
       cards: [
@@ -205,15 +204,14 @@
       bot: {
         x: 0,
         y: 4,
-        z: 3,
         direction: 'downRight',
       },
       terrain: [
-        [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
-        [2, 0, 0],
-        [{ level: 2, floor: 'red' }, 2, { level: 2, floor: 'red' }],
-        [0, 0, 2],
-        [2, 2, { level: 2, floor: 'red' }],
+        [{ level: 1, floor: 'red' }, 1, { level: 1, floor: 'red' }],
+        [1],
+        [{ level: 1, floor: 'red' }, 1, { level: 1, floor: 'red' }],
+        [null, null, 1],
+        [1, 1, { level: 1, floor: 'red' }],
       ],
     },
 

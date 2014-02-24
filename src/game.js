@@ -168,6 +168,9 @@ game = (function() {
    * Creates the bot entity.
    */
   Game.prototype._createBot = function(botPosition) {
+    if (this.map) {
+      botPosition.z = this.map.getTileZ(botPosition.x, botPosition.y) + 1;
+    }
     this._originalBotPosition = Crafty.clone(botPosition);
     var botEntity = Crafty.e('Bot').bot(botPosition);
     return botEntity;

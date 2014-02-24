@@ -1,8 +1,7 @@
 TODOs
 =====
 
-* [REFACTORING] Make z optional in level.bot position, should default to level of tile at (x, y) + 1
-* MOAR LEVELS!!!
+* MOAR LEVELS!!! Especially more with sub routines
 * Some levels introducing subroutines gently
 * Level selection with multiple hierarchies
 * [MOBILE] It looks weird/broken on mobile browsers.
