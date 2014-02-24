@@ -366,10 +366,13 @@ game = (function() {
 
   Game.prototype.onPlayerHasWon = function() {
     // TODO Something better needs to happen here :-)
-    if (!this.messagePlayerHasWon) {
-      this.messagePlayerHasWon =
-        Crafty.e('HbMessage').hbMessage('Level Solved!');
-    }
+    var self = this;
+    setTimeout(function() {
+      if (!this.messagePlayerHasWon) {
+        this.messagePlayerHasWon =
+          Crafty.e('HbMessage').hbMessage('Level Solved!');
+      }
+    }, 500);
   };
 
   Game.prototype._removeMessages = function() {
