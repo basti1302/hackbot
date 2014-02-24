@@ -123,8 +123,12 @@
       this._program(instructions, 'main', 0, callback);
     },
 
-    _program: function(instructions, register, instructionIndex, callback) {
-      var instruction = instructions[register][instructionIndex];
+    _program: function(instructions, registerName, instructionIndex, callback) {
+      var register = instructions[registerName];
+      if (register == null) {
+        return callback();
+      }
+      var instruction = register[instructionIndex];
       if (instruction == null) {
         return callback();
       }
@@ -139,7 +143,7 @@
           if (self._hasWon()) {
             return callback();
           }
-          return self._program(instructions, register, ++instructionIndex, function(err) {
+          return self._program(instructions, registerName, ++instructionIndex, function(err) {
             return callback(err);
           });
         });
@@ -149,7 +153,7 @@
         if (self._hasWon()) {
           return callback();
         }
-        self._program(instructions, register, ++instructionIndex, callback);
+        self._program(instructions, registerName, ++instructionIndex, callback);
       });
     },
 
