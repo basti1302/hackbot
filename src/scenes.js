@@ -26,12 +26,14 @@ game = (function() {
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(1, 'How To Play', 'Instructions1');
+    /*
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(2, 'Options');
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(3, 'Level Editor');
+    */
   });
 
   Crafty.scene('CategorySelect', function() {
@@ -45,9 +47,12 @@ game = (function() {
     var index = 0;
     for (var categoryId in game.levels.categories) {
       var category = game.levels.categories[categoryId];
+      if (category.hidden) {
+        continue;
+      }
       Crafty
         .e('HbCategorySelectButton')
-        .hbCategorySelectButton(index++, categoryId, category);
+        .hbCategorySelectButton(index++, category.name, category);
     }
 
     Crafty.e('HbImgButton')
@@ -67,8 +72,8 @@ game = (function() {
     ;
 
     var index = 0;
-    for (var levelId in game.category) {
-      var level = game.category[levelId];
+    for (var levelId in game.category.levels) {
+      var level = game.category.levels[levelId];
       Crafty
         .e('HbLevelSelectButton')
         .hbLevelSelectButton(index++, level.name, levelId);
@@ -94,6 +99,5 @@ game = (function() {
   Crafty.scene('LevelEditor', function() {
     throw new Error('Not yet implemented. Sorry.');
   });
-
 
 })();

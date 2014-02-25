@@ -149,11 +149,11 @@ game = (function() {
   Game.prototype._defineLevel = function() {
     // defaults
     if (this.category == null) {
-      this.category = this.levels.category.Basics;
+      this.category = this.levels.category.basics;
     }
     var levelId = this.levelId || 'first';
 
-    var level = this.category[levelId];
+    var level = this.category.levels[levelId];
     if (!level) {
       throw new Error('Unknown level: ' + levelId);
     }

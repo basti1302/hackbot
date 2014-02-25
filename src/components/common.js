@@ -170,10 +170,10 @@
       this.requires('HbTextButton');
     },
 
-    hbCategorySelectButton: function(index, categoryId, category) {
+    hbCategorySelectButton: function(index, text, category) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
-        .hbTextButton(categoryId)
+        .hbTextButton(text)
       ;
       this.onClick(function() {
         game.category = category;
