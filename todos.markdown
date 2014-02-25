@@ -1,9 +1,8 @@
-TODOs
+ODOs
 =====
 
 * [FEATURE] level editor
-* MOAR LEVELS!!! Especially more with sub routines
-* Some levels introducing subroutines gently
+* More advanced levels
 * [UX] improve level solved message:
        - block all buttons (play, reset, clear)
        - navigation: dismiss message (going back to level) / leave leve (go back to level select)
