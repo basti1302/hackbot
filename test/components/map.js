@@ -181,7 +181,7 @@ describe('The map', function() {
     });
 
     it('should remove tile', function() {
-      map.removeTile(1, 0);
+      map.removeTileStack(1, 0);
       expect(map.getTileInfo(1, 0)).to.not.exist;
     });
 
@@ -203,20 +203,20 @@ describe('The map', function() {
 
     it('should toggle tile type', function() {
       expect(map.getTileType(0, 0)).to.equal(redFloor);
-      map.toggleTileType(0, 0);
+      map.toggleRedGreen(0, 0);
       expect(map.getTileType(0, 0)).to.equal(greenFloor);
-      map.toggleTileType(0, 0);
+      map.toggleRedGreen(0, 0);
       expect(map.getTileType(0, 0)).to.equal(redFloor);
     });
 
     it('should not toggle default tile type', function() {
-      map.toggleTileType(1, 0);
+      map.toggleRedGreen(1, 0);
       expect(map.getTileType(1, 0)).to.equal(defaultFloor);
     });
 
     it('should reset map', function() {
       expect(map.getTileType(0, 0)).to.equal(redFloor);
-      map.toggleTileType(0, 0);
+      map.toggleRedGreen(0, 0);
       expect(map.getTileType(0, 0)).to.equal(greenFloor);
       map.reset();
       expect(map.getTileType(0, 0)).to.equal(redFloor);
@@ -227,7 +227,7 @@ describe('The map', function() {
     });
 
     it('should have won with no red tiles left', function() {
-      map.toggleTileType(0, 0);
+      map.toggleRedGreen(0, 0);
       expect(map.hasWon()).to.be.true;
     });
   });

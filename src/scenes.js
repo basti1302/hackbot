@@ -30,10 +30,10 @@ game = (function() {
     Crafty
       .e('HbMenuButton')
       .hbMenuButton(2, 'Options');
+    */
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(3, 'Level Editor');
-    */
+      .hbMenuButton(2, 'Level Editor', 'LevelEditor');
   });
 
   Crafty.scene('CategorySelect', function() {
@@ -97,7 +97,7 @@ game = (function() {
   });
 
   Crafty.scene('LevelEditor', function() {
-    throw new Error('Not yet implemented. Sorry.');
+    editor.startLevelEditing();
   });
 
 })();

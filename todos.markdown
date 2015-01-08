@@ -1,12 +1,11 @@
-ODOs
+TODOs
 =====
 
-* [FEATURE] level editor
 * More advanced levels
 * [UX] improve level solved message:
        - block all buttons (play, reset, clear)
        - navigation: dismiss message (going back to level) / leave leve (go back to level select)
-* [MOBILE] It looks weird/broken on mobile browsers.
+* [MOBILE] It looks weird/broken on mobile browsers - Android SDK and/or weinre
 * [FEATURE] main-call: a card which calls the main routine
             - don't add it to the default card set
             - make it available through level.cards
@@ -32,3 +31,23 @@ ODOs
 * [FEATURE/UX] Clicking execute/reset program cards *cancel* current execution - similar to hasWon check
 * [TESTS] For pixel positions during bot movements
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them. Cards get destroyed if the move out at the end.
+
+
+Level Editor
+------------
+
+* maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
+* Mark tiles/stacks as red
+* Make buttons for raise/lower/mark red/etc.
+* Move bot up/down when stack on which bot is sitting is raised/lowered
+* Set bot starting position and direction
+* Larger maxHeight and centerMapOnScreen is broken
+* Highlight and select spots with no tiles (to raise them)
+* Expand map (x/y axis)
+* Shrink map (x/y)
+* Export normalized map to JSON
+* Save levels to local storage
+* Load levels from local storage in editor
+* Load edited levesl from local storage for playing
+* Upload levels ... somehwere
+

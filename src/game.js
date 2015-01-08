@@ -28,6 +28,7 @@ game = (function() {
 
     // tile size
     this.baseSize = 64;
+    this.floorImgHeight = 48;
 
     // program card related
     this.defaultCards = [
@@ -95,11 +96,19 @@ game = (function() {
       'assets/images/buttons/delete_disabled.png',
       'assets/images/buttons/delete.png',
     ], function() {
-      Crafty.sprite(self.baseSize, 'assets/images/floor.png', {
+      Crafty.sprite(self.baseSize, self.floorImgHeight, 'assets/images/floor.png', {
         SprFloorGrey: [0, 0],
-        SprFloorRed: [1, 0],
-        SprFloorGreen: [2, 0],
-        SprFloorBlue: [3, 0],
+        SprFloorGreyMouseOver: [1, 0],
+        SprFloorGreyTileSelected: [2, 0],
+        SprFloorRed: [0, 1],
+        SprFloorRedMouseOver: [1, 1],
+        SprFloorRedTileSelected: [2, 1],
+        SprFloorGreen: [0, 2],
+        SprFloorGreenMouseOver: [1, 2],
+        SprFloorGreenTileSelected: [2, 2],
+        SprFloorBlue: [0, 3],
+        SprFloorBlueMouseOver: [1, 3],
+        SprFloorBlueTileSelected: [2, 3],
       });
       Crafty.sprite(self.baseSize, 'assets/images/robot.png', {
         SprBot: [0, 0],
@@ -149,7 +158,7 @@ game = (function() {
   Game.prototype._defineLevel = function() {
     // defaults
     if (this.category == null) {
-      this.category = this.levels.category.basics;
+      this.category = this.levels.categories.basics;
     }
     var levelId = this.levelId || 'first';
 

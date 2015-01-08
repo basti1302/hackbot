@@ -12,7 +12,53 @@
         name: 'Special',
         hidden: true,
         levels: {
-        }
+          'level-editor-template': {
+            name: 'Basic Plane',
+            description: 'template for level editor',
+            instructionAreas: {
+              main: {
+                instructions: 12,
+              },
+              subroutine1: {
+                instructions: 8,
+              },
+              subroutine2: {
+                instructions: 8,
+              },
+            },
+            bot: {
+              x: 0,
+              y: 0,
+              direction: 'downLeft',
+            },
+            terrain: [
+              [1, 1, 1, 1],
+              [1, 1, 1, 1],
+              [1, 1, 1, 1],
+              [1, 1, 1, 1],
+            ],
+          },
+
+          pillars: {
+            name: 'Pillars',
+            description: 'Test level for z-index calculation',
+            instructionAreas: {
+              main: { instructions: 12, },
+              subroutine1: { instructions: 4, },
+              subroutine2: { instructions: 4, },
+            },
+            bot: { x: 2, y: 6, z: 1, direction: 'upRight', },
+            terrain: [
+              [6, 7, 6, 7],
+              [5, 0, 5, 0],
+              [4, 6, 4, 6],
+              [3, 0, 3, 0],
+              [2, 4, 2, 4],
+              [1, 0, 1, 0],
+              [{ floor: 'red' }, 2, 0, 2],
+            ],
+          },
+        },
       },
 
       basics: {
@@ -308,28 +354,6 @@
               [1, 1, { level: 1, floor: 'red' }],
             ],
           },
-
-          /*
-          pillars: {
-            name: 'Pillars',
-            description: 'Test level for z-index calculation',
-            instructionAreas: {
-              main: { instructions: 12, },
-              subroutine1: { instructions: 4, },
-              subroutine2: { instructions: 4, },
-            },
-            bot: { x: 2, y: 6, z: 1, direction: 'upRight', },
-            terrain: [
-              [6, 7, 6, 7],
-              [5, 0, 5, 0],
-              [4, 6, 4, 6],
-              [3, 0, 3, 0],
-              [2, 4, 2, 4],
-              [1, 0, 1, 0],
-              [{ floor: 'red' }, 2, 0, 2],
-            ],
-          },
-          */
 
         }, // end of levels object
       }, // end of category subroutines

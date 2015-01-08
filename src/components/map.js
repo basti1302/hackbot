@@ -14,7 +14,7 @@
     },
 
     map: function(level) {
-      if (!this._isArray(level.terrain)) {
+      if (!isArray(level.terrain)) {
         throw new Error('level object has no terrain property or level.terrain is not an array.');
       }
 
@@ -39,7 +39,7 @@
 
       for (var y = 0; y < terrain.length; y++) {
         var row = terrain[y];
-        if (!this._isArray(row)) {
+        if (!isArray(row)) {
           throw new Error('row ' + y + ' in level.terrain is not an array.');
         }
 
@@ -70,6 +70,13 @@
       // maxHeight are greater (and not only >=) than z for the highest possible
       // z (for the bot).
       this.levelInfo.maxHeight += 2;
+
+      // if editing a level, we need enough headroom
+      if (game.editMode) {
+        this.levelInfo.maxHeight = 10;
+      }
+
+      // dimension of playing field in y-axis
       this.levelInfo.heightInTiles = this._normalizedMap.length;
     },
 
@@ -138,15 +145,6 @@
       return stack;
     },
 
-    _isArray: function(obj) {
-      if (obj === undefined || obj === null) {
-        return false;
-      } else if (Object.prototype.toString.call(obj) !== '[object Array]') {
-        return false;
-      }
-      return true;
-    },
-
       // Calculate everything needed to center map on in viewport
     _centerView: function() {
       var mapWidthPx = 0;
@@ -178,58 +176,87 @@
     },
 
     getTileZ: function(x, y) {
-      var tileInfo = this.getTileInfo(x, y);
-      if (tileInfo === null || tileInfo === undefined) {
-        return null;
-      } else {
+      return this._withTileInfo(x, y, function(tileInfo) {
         return tileInfo.level;
-      }
+      });
     },
 
-    setTileZ: function(x, y, z) {
-      var tileInfo = this.getTileInfo(x, y);
-      if (tileInfo === null || tileInfo === undefined) {
-        return null;
-      } else {
+    /* only for testing purposes */
+    _setTileZ: function(x, y, z) {
+      if (!game.testMode) {
+        throw new Error('_setTileZ must only be called in tests.');
+      }
+      this._withTileInfo(x, y, function(tileInfo) {
         tileInfo.level = z;
-      }
+      });
     },
 
-    removeTile: function(x, y, z) {
-      var tileInfo = this.getTileInfo(x, y);
-      if (tileInfo === null || tileInfo === undefined) {
-        return null;
-      } else {
-        for (var i = 0; i < tileInfo.stack.length; i++) {
-          tileInfo.stack[i].destroy();
-        }
-        this._normalizedMap[y][x] = null;
-      }
+    removeTileStack: function(x, y) {
+      this._withEachTileOfStack(x, y, function(tile) {
+        tile.destroy();
+      });
+      this._normalizedMap[y][x] = null;
     },
 
     getTileType: function(x, y) {
-      var tileInfo = this.getTileInfo(x, y);
-      if (tileInfo === null || tileInfo === undefined) {
-        return null;
-      } else {
+      return this._withTileInfo(x, y, function(tileInfo) {
         return tileInfo.floor;
-      }
+      });
     },
 
-    toggleTileType: function(x, y) {
-      var tileInfo = this.getTileInfo(x, y);
-      if (tileInfo === null || tileInfo === undefined) {
-        return;
+    toggleRedGreen: function(x, y) {
+      this._withTileInfo(x, y, function(tileInfo) {
+        this._toggleFloor(tileInfo, 'green', 'red');
+      });
+      /*
+      return this._withTileInfo(x, y, function(tileInfo) {
+        if (this._isGreen(tileInfo)) {
+          tileInfo.floor = this.tiles.red;
+          tileInfo.tile.removeComponent(this.tiles.green);
+          tileInfo.tile.addComponent(this.tiles.red);
+        } else if (this._isRed(tileInfo)) {
+          tileInfo.floor = this.tiles.green;
+          tileInfo.tile.removeComponent(this.tiles.red);
+          tileInfo.tile.addComponent(this.tiles.green);
+        }
+      });
+      */
+    },
+
+    _toggleRedGrey: function(tileInfo) {
+      this._toggleFloor(tileInfo, 'grey', 'red');
+
+      /*
+      return this._withTileInfo(x, y, function(tileInfo) {
+        if (this._isGrey(tileInfo)) {
+          tileInfo.floor = this.tiles.red;
+          tileInfo.tile.removeComponent(this.tiles.grey);
+          tileInfo.tile.addComponent(this.tiles.red);
+        } else if (this._isRed(tileInfo)) {
+          tileInfo.floor = this.tiles.grey;
+          tileInfo.tile.removeComponent(this.tiles.red);
+          tileInfo.tile.addComponent(this.tiles.grey);
+        }
+      });
+      */
+    },
+
+   _toggleFloor: function(tileInfo, color1, color2) {
+      var floor1 = this.tiles[color1];
+      var floor2 = this.tiles[color2];
+      if (tileInfo.floor === floor1) {
+        tileInfo.floor = floor2;
+        tileInfo.tile.removeComponent(floor1);
+        tileInfo.tile.addComponent(floor2);
+      } else if (tileInfo.floor === floor2) {
+        tileInfo.floor = floor1;
+        tileInfo.tile.addComponent(floor1);
+        tileInfo.tile.removeComponent(floor2);
       }
-      if (this._isGreen(tileInfo)) {
-        tileInfo.floor = this.tiles.red;
-        tileInfo.tile.removeComponent(this.tiles.green);
-        tileInfo.tile.addComponent(this.tiles.red);
-      } else if (this._isRed(tileInfo)) {
-        tileInfo.floor = this.tiles.green;
-        tileInfo.tile.removeComponent(this.tiles.red);
-        tileInfo.tile.addComponent(this.tiles.green);
-      }
+   },
+
+    _isGrey: function(tileInfo) {
+      return tileInfo.floor === this.tiles.grey;
     },
 
     _isRed: function(tileInfo) {
@@ -261,5 +288,142 @@
       return true;
     },
 
+    /***************************************************************************
+     * Level Editor related
+     */
+
+    toggleStackSelectionStatus: function(x, y, appendToSelection) {
+      var selected;
+      if (!appendToSelection) {
+        this._withSelectedStacks(function(tileInfo) {
+          tileInfo.isSelected = false;
+          tileInfo.tile.unSelect();
+        });
+      }
+      this._withTileInfo(x, y, function(tileInfo) {
+        tileInfo.isSelected = !tileInfo.isSelected;
+        selected = tileInfo.isSelected;
+      });
+      this._withEachTileOfStack(x, y, function(tile) {
+        if (selected) {
+          tile.select();
+        } else {
+          tile.unSelect();
+        }
+      });
+    },
+
+    highlightStack: function(x, y) {
+      this._withEachTileOfStack(x, y, function(tile, tileInfo) {
+        if (!tileInfo.isSelected) {
+          tile.highlight(x, y);
+        }
+      });
+    },
+
+    unHighlightStack: function(x, y) {
+      this._withEachTileOfStack(x, y, function(tile, tileInfo) {
+        if (!tileInfo.isSelected) {
+          tile.unHighlight(x, y);
+        }
+      });
+    },
+
+    raiseSelected: function() {
+      this._withSelectedStacks(function(tileInfo, x, y) {
+        this._addTileOnTop(tileInfo, x, y);
+      });
+    },
+
+    lowerSelected: function() {
+      this._withSelectedStacks(function(tileInfo, x, y) {
+        this._removeTopMostTile(tileInfo, x, y);
+      });
+    },
+
+    toggleFloorForSelected: function() {
+      this._withSelectedStacks(function(tileInfo) {
+        this._toggleRedGrey(tileInfo);
+      });
+    },
+
+    _addTileOnTop: function(tileInfo, x, y) {
+      if (!tileInfo) {
+        // TODO create a new tile at x, y and add it to _normalizedMap
+        return;
+      }
+      tileInfo.level++;
+      // TODO If tileInfo.floor != grey we need to make the former top tile grey
+      var newTile = Crafty.e('Tile').tile(x, y, tileInfo.level, tileInfo.floor, this.levelInfo);
+      if (tileInfo.isSelected) {
+        newTile.select();
+      }
+      tileInfo.stack.push(newTile);
+      tileInfo.tile = newTile;
+    },
+
+    _removeTopMostTile: function(tileInfo, x, y) {
+      if (!tileInfo) {
+        return;
+      }
+      if (tileInfo.level > 0) {
+        if (tileInfo.stack.length < 2) {
+          throw new Error('Inconsistent map state');
+        }
+        tileInfo.tile.destroy();
+        tileInfo.tile = tileInfo.stack[tileInfo.stack.length - 2];
+        tileInfo.stack = tileInfo.stack.slice(0, tileInfo.stack.length - 1);
+        tileInfo.level--;
+      } else if (tileInfo.level === 0) {
+        tileInfo.tile.destroy();
+        this._normalizedMap[y][x] = null;
+      } else {
+        throw new Error('tileInfo at ' + x + ', ' + y + ' has a weird level: '
+          + tileInfo.level);
+      }
+    },
+
+    _withTileInfo: function(x, y, fn) {
+      var tileInfo = this.getTileInfo(x, y);
+      if (tileInfo === null || tileInfo === undefined) {
+        return;
+      }
+      return fn.call(this, tileInfo);
+    },
+
+    _withEachTileOfStack: function(x, y, fn) {
+      this._withTileInfo(x, y, function(tileInfo) {
+        for (var i = 0; i < tileInfo.stack.length; i++) {
+          fn.call(this, tileInfo.stack[i], tileInfo);
+        }
+      });
+    },
+
+    _withSelectedStacks: function(fn) {
+      if (!game.editMode) {
+        throw new Error('only available in edit mode');
+      }
+      for (var i = 0; i < this._normalizedMap.length; i++) {
+        var normalizedRow = this._normalizedMap[i];
+        for (var j = 0; j < normalizedRow.length; j++) {
+          var tileInfo = normalizedRow[j];
+          if (tileInfo && tileInfo.isSelected) {
+            fn.call(this, tileInfo, tileInfo.x, tileInfo.y);
+          }
+          // TODO if tileInfo == null call fn with (null, x, y)
+        }
+      }
+    },
+
   });
+
+  function isArray(obj) {
+    if (obj === undefined || obj === null) {
+      return false;
+    } else if (Object.prototype.toString.call(obj) !== '[object Array]') {
+      return false;
+    }
+    return true;
+  }
+
 })();

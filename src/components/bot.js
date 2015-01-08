@@ -11,7 +11,7 @@
     pauseBetweenTweens: 0,
 
     // only for debugging
-    manualControl: true,
+    manualControl: false,
 
     // ordinary movement instructions
     moves: {
@@ -269,7 +269,7 @@
       // toggle floor tile red/green
       var tileType = game.map.getTileType(this.position.x, this.position.y);
       if (tileType === game.map.tiles.green || tileType === game.map.tiles.red) {
-        game.map.toggleTileType(this.position.x, this.position.y);
+        game.map.toggleRedGreen(this.position.x, this.position.y);
         return callback(null, true);
       }
       return callback(null, false);

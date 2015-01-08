@@ -94,7 +94,7 @@ describe('The bot entity', function() {
       });
 
       it('should not move up', function(done) {
-        game.map.setTileZ(2, 1, 1);
+        game.map._setTileZ(2, 1, 1);
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasNotMoved(err, moved);
           check(bot, 1, 1);
@@ -103,7 +103,7 @@ describe('The bot entity', function() {
       });
 
       it('should not move down', function(done) {
-        game.map.setTileZ(2, 1, -1);
+        game.map._setTileZ(2, 1, -1);
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasNotMoved(err, moved);
           check(bot, 1, 1);
@@ -112,7 +112,7 @@ describe('The bot entity', function() {
       });
 
       it('should not move where no tile is', function(done) {
-        game.map.removeTile(2, 1);
+        game.map.removeTileStack(2, 1);
         bot.instruct(bot.moves.forward, function(err, moved) {
           expectBotHasNotMoved(err, moved);
           check(bot, 1, 1);
@@ -121,7 +121,7 @@ describe('The bot entity', function() {
       });
 
       it('should not jump where no tile is', function(done) {
-        game.map.removeTile(2, 1);
+        game.map.removeTileStack(2, 1);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasNotMoved(err, moved);
           check(bot, 1, 1);
@@ -130,7 +130,7 @@ describe('The bot entity', function() {
       });
 
       it('should jump up one level', function(done) {
-        game.map.setTileZ(2, 1, 1);
+        game.map._setTileZ(2, 1, 1);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
           check(bot, 2, 1, 2);
@@ -139,7 +139,7 @@ describe('The bot entity', function() {
       });
 
       it('should not jump up multiple levels', function(done) {
-        game.map.setTileZ(2, 1, 2);
+        game.map._setTileZ(2, 1, 2);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasNotMoved(err, moved);
           check(bot, 1, 1);
@@ -151,7 +151,7 @@ describe('The bot entity', function() {
         // negative z levels are not allowed, so this test is a bit borked.
         // Hower, currently only rendering would be affected negatively by
         // negative z levels this is somewhat okay.
-        game.map.setTileZ(2, 1, -1);
+        game.map._setTileZ(2, 1, -1);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
           check(bot, 2, 1, 0);
@@ -161,7 +161,7 @@ describe('The bot entity', function() {
 
       it('should jump down multiple levels', function(done) {
         // negative z levels ... see above
-        game.map.setTileZ(2, 1, -2);
+        game.map._setTileZ(2, 1, -2);
         bot.instruct(bot.moves.jump, function(err, moved) {
           expectBotHasMoved(err, moved);
           check(bot, 2, 1, -1);
