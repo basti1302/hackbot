@@ -195,7 +195,7 @@ game = (function() {
   };
 
   Game.prototype._initSourcePanel = function(level) {
-    var cards = level.cards.slice() || this.defaultCards.slice();
+    var cards = level.cards ? level.cards.slice() : this.defaultCards.slice();
     if (level.instructionAreas.subroutine1) {
       cards.push('subroutine1');
     }
