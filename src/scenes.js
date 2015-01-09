@@ -10,15 +10,12 @@ game = (function() {
   Crafty.scene('Welcome', function() {
 
     // draw welcome line with text shadows
-    for (var i = 0; i < 3; i++) {
-      Crafty.e('2D, DOM, Text')
-        .text('Welcome to Hackbot')
-        .attr({ x: 0, y: 24 + i, w: game.widthPx, z: 3 - i })
-        .textFont({ size: '36px', weight: 'bold' })
-        .textColor('#' + (6 - 2*i) + '00000')
-        .css('padding', i + 'px')
-      ;
-    }
+    Crafty.e('2D, DOM, Text')
+    .text('Welcome to Hackbot')
+    .attr({ x: 0, y: 24, w: game.widthPx, z: 3, })
+    .textFont({ size: '36px', weight: 'bold' })
+    .textColor('#600000')
+    .css('text-shadow', '1px 1px 2px black, 0 0 7px #500000');
 
     Crafty
       .e('HbMenuButton')

@@ -131,7 +131,11 @@ game = (function() {
   };
 
   Game.prototype.leaveLevel = function() {
-    Crafty.scene('LevelSelect');
+    if (!this.editMode) {
+      Crafty.scene('LevelSelect');
+    } else {
+      Crafty.scene('Welcome');
+    }
   };
 
   Game.prototype.reset = function() {
@@ -191,7 +195,7 @@ game = (function() {
   };
 
   Game.prototype._initSourcePanel = function(level) {
-    var cards = level.cards || this.defaultCards;
+    var cards = level.cards.slice() || this.defaultCards.slice();
     if (level.instructionAreas.subroutine1) {
       cards.push('subroutine1');
     }
