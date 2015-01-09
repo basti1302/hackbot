@@ -55,4 +55,9 @@ body {
   -webkit-border-radius: 16px;
   border-radius: 16px;
 }
+
+
+/* level editor */
+.inline-block {
+  display: inline-block;
 }
