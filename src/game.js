@@ -81,21 +81,23 @@ game = (function() {
     /*********************************************
      * Load & initialize assets
      */
-    Crafty.load([
-      'assets/images/floor.png',
-      'assets/images/robot.png',
-      'assets/images/cards.png',
-      'assets/images/buttons/leave.png',
-      'assets/images/buttons/leave_disabled.png',
-      'assets/images/buttons/next.png',
-      'assets/images/buttons/previous.png',
-      'assets/images/buttons/play_disabled.png',
-      'assets/images/buttons/play.png',
-      'assets/images/buttons/rewind.png',
-      'assets/images/buttons/rewind_disabled.png',
-      'assets/images/buttons/delete_disabled.png',
-      'assets/images/buttons/delete.png',
-    ], function() {
+    Crafty.load({
+      images: [
+        'assets/images/floor.png',
+        'assets/images/robot.png',
+        'assets/images/cards.png',
+        'assets/images/buttons/leave.png',
+        'assets/images/buttons/leave_disabled.png',
+        'assets/images/buttons/next.png',
+        'assets/images/buttons/previous.png',
+        'assets/images/buttons/play_disabled.png',
+        'assets/images/buttons/play.png',
+        'assets/images/buttons/rewind.png',
+        'assets/images/buttons/rewind_disabled.png',
+        'assets/images/buttons/delete_disabled.png',
+        'assets/images/buttons/delete.png',
+      ]
+    }, function onLoad() {
       Crafty.sprite(self.baseSize, self.floorImgHeight, 'assets/images/floor.png', {
         SprFloorGrey: [0, 0],
         SprFloorGreyMouseOver: [1, 0],
