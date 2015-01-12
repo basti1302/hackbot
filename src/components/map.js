@@ -149,7 +149,6 @@
               tileInfo.tile = ghostTile;
             }
           }
-          console.log(tileInfo);
         }
       }
     },
@@ -378,8 +377,23 @@
       if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
         return;
       }
-      tileInfo.level++;
+      if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
+        return;
+      }
+
       // TODO If tileInfo.floor != grey we need to make the former top tile grey
+
+      // if the tile with the bot is raised, the bot needs to be raised, too.
+      if (x === game.bot.position.x && y === game.bot.position.y) {
+        if (tileInfo.level > game.map.levelInfo.maxHeight - 3) {
+          return;
+        }
+        game.bot.position.z++;
+        game.bot.setPosition(game.bot.position);
+      }
+
+      tileInfo.level++;
+
       if (tileInfo.isGhost) {
         // empty floor, we need to create a new stack
 
@@ -406,7 +420,6 @@
         tileInfo.stack.push(newTile);
         tileInfo.tile = newTile;
       }
-      console.log(tileInfo);
     },
 
     _removeTopMostTile: function(tileInfo, x, y) {
@@ -415,6 +428,12 @@
       }
       if (tileInfo.level < 0) {
         return;
+      }
+
+      // if the tile with the bot is lowered, the bot needs to be lowered, too.
+      if (x === game.bot.position.x && y === game.bot.position.y) {
+        game.bot.position.z--;
+        game.bot.setPosition(game.bot.position);
       }
 
       if (tileInfo.level > 0) {

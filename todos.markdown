@@ -41,12 +41,13 @@ TODOs
 Level Editor
 ------------
 
-* maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
+* Set bot starting position and direction => enable/disable manual control
+* Disable/enable cards
+* Disable/enable programming slots
+* Disable/enable programming areas
 * Make buttons for raise/lower/mark red/etc.
-* Move bot up/down when stack on which bot is sitting is raised/lowered
-* Set bot starting position and direction
+* maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
 * Larger maxHeight and centerMapOnScreen is broken
-* Highlight and select spots with no tiles (to raise them)
 * Expand map (x/y axis)
 * Shrink map (x/y)
 * Export normalized map to JSON
@@ -54,4 +55,3 @@ Level Editor
 * Load levels from local storage in editor
 * Load edited levesl from local storage for playing
 * Upload levels ... somehwere
-
