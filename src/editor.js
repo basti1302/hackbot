@@ -31,18 +31,26 @@ editor = (function() {
           '<h3>Editor help</h3>' +
           '<ul class="inline-block">' +
             '<li>Use mouse to select tiles</li>' +
-            '<li>Arrow up: Raise tile.</li>' +
-            '<li>Arrow down: Lower tile.</li>' +
+            '<li>Use Shift to select multiple tiles at once</li>' +
+            '<li>Arrow up: Raise selected tile(s).</li>' +
+            '<li>Arrow down: Lower tile(s).</li>' +
             '<li>CTRL: Toggle tile\'s color (red/grey).</li>' +
           '</ul>'
       );
 
+      // TODO use uninit handler instead, that is
+      // Crafty.defineScene(name, init, uninit),
+      // see http://craftyjs.com/api/Crafty-scene.html
+      // Also, use .defineScene() and enterScene() everywhere instead
+      // of .scene()
       var leaveEditor = function() {
         game.category = game.levels.categories.basics;
         game.levelId = 'first';
         game.editMode = false;
+
         this.unbind('KeyDown', editorKeyBindings);
         $('#editor-help').html('');
+
         this.unbind('SceneDestroy', leaveEditor);
       };
       this.bind('SceneDestroy', leaveEditor);

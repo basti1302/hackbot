@@ -81,6 +81,10 @@ game = (function() {
     /*********************************************
      * Load & initialize assets
      */
+    // TODO With crafty 0.6.3 now, there might be a nicer way of loading and
+    // defining sprites from the image maps, see
+    // http://craftyjs.com/api/Crafty-loader.html and the "sprites" property
+    // in the assetsObj in the example there.
     Crafty.load({
       images: [
         'assets/images/floor.png',
