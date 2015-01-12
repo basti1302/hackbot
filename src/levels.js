@@ -3,6 +3,7 @@
   'use strict';
 
   var n = null;
+  var g = { floor: 'ghost', level: -1 };
 
   game.levels = {
 
@@ -27,15 +28,16 @@
               },
             },
             bot: {
-              x: 0,
-              y: 0,
+              x: 1,
+              y: 1,
               direction: 'downLeft',
             },
             terrain: [
-              [1, 1, 1, 1],
-              [1, 1, 1, 1],
-              [1, 1, 1, 1],
-              [1, 1, 1, 1],
+              [g, g, g, g, g],
+              [g, 0, g, g, g],
+              [g, g, g, g, g],
+              [g, g, g, g, g],
+              [g, g, g, g, g],
             ],
           },
 

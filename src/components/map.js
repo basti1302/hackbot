@@ -10,6 +10,7 @@
         red: 'SprFloorRed',
         green: 'SprFloorGreen',
         blue: 'SprFloorBlue',
+        ghost: 'SprFloorGhost',
       }
     },
 
@@ -97,8 +98,12 @@
       } else {
         throw new Error('position (' + x + ', ' + y + ') has an unknown tile info type (' + (typeof tileInfo) + '): ' + JSON.stringify(tileInfo));
       }
-      if (tileLevel < 0) {
+      if (tileLevel < -1 || (!game.editMode && level < 0 )) {
         throw new Error('position (' + x + ', ' + y + ') has an illegal level of ' + tileLevel + '.');
+      }
+      if (!game.editMode && floorType === 'ghost') {
+        throw new Error('position (' + x + ', ' + y + ') has floor type ghost (empty tile), which is only allowed in edit mode.');
+
       }
       var floor = this.tiles[floorType];
       var normalizedTileInfo = {
@@ -112,6 +117,10 @@
       if (floorType === 'red') {
         this._toggleTiles.push(normalizedTileInfo);
       }
+      if (floorType === 'ghost') {
+        normalizedTileInfo.floor = this.tiles.grey;
+        normalizedTileInfo.isGhost = true;
+      }
 
       return normalizedTileInfo;
     },
@@ -122,15 +131,25 @@
         for (var j = 0; j < normalizedRow.length; j++) {
           var tileInfo = normalizedRow[j];
           if (tileInfo) {
-            var stack = this._createTileStack(
-              tileInfo.x,
-              tileInfo.y,
-              tileInfo.level,
-              tileInfo.floor
-            );
-            tileInfo.stack = stack;
-            tileInfo.tile = stack[stack.length - 1];
+            if (!tileInfo.isGhost) {
+              var stack = this._createTileStack(
+                tileInfo.x,
+                tileInfo.y,
+                tileInfo.level,
+                tileInfo.floor
+              );
+              tileInfo.stack = stack;
+              tileInfo.tile = stack[stack.length - 1];
+            } else {
+              var ghostTile =
+                  Crafty.e('Tile')
+                  .tile(tileInfo.x, tileInfo.y, -1,
+                        'SprFloorGhost', this.levelInfo);
+              tileInfo.stack = [ghostTile];
+              tileInfo.tile = ghostTile;
+            }
           }
+          console.log(tileInfo);
         }
       }
     },
@@ -295,14 +314,18 @@
     toggleStackSelectionStatus: function(x, y, appendToSelection) {
       var selected;
       if (!appendToSelection) {
+        // de-select all tiles
         this._withSelectedStacks(function(tileInfo) {
-          tileInfo.isSelected = false;
-          tileInfo.tile.unSelect();
+          // don't de-select the tile the user just clicked on (if it is
+          // selected), this would break toggling of the selection on and off.
+          if (tileInfo.x !== x || tileInfo.y !== y) {
+            tileInfo.isSelected = false;
+            tileInfo.tile.unSelect();
+          }
         });
       }
       this._withTileInfo(x, y, function(tileInfo) {
-        tileInfo.isSelected = !tileInfo.isSelected;
-        selected = tileInfo.isSelected;
+        selected = tileInfo.isSelected = !tileInfo.isSelected;
       });
       this._withEachTileOfStack(x, y, function(tile) {
         if (selected) {
@@ -352,20 +375,48 @@
         // TODO create a new tile at x, y and add it to _normalizedMap
         return;
       }
+      if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
+        return;
+      }
       tileInfo.level++;
       // TODO If tileInfo.floor != grey we need to make the former top tile grey
-      var newTile = Crafty.e('Tile').tile(x, y, tileInfo.level, tileInfo.floor, this.levelInfo);
-      if (tileInfo.isSelected) {
-        newTile.select();
+      if (tileInfo.isGhost) {
+        // empty floor, we need to create a new stack
+
+        // destroy the ghost tile
+        tileInfo.tile.destroy();
+        // create a new stack
+        tileInfo.stack = this._createTileStack(
+          x,
+          y,
+          tileInfo.level,
+          tileInfo.floor
+         );
+         // assign the top tile of the stack (stack has only one tile)
+         tileInfo.tile = tileInfo.stack[0];
+         if (tileInfo.isSelected) {
+           tileInfo.tile.select();
+         }
+         tileInfo.isGhost = false;
+      } else {
+        var newTile = Crafty.e('Tile').tile(x, y, tileInfo.level, tileInfo.floor, this.levelInfo);
+        if (tileInfo.isSelected) {
+          newTile.select();
+        }
+        tileInfo.stack.push(newTile);
+        tileInfo.tile = newTile;
       }
-      tileInfo.stack.push(newTile);
-      tileInfo.tile = newTile;
+      console.log(tileInfo);
     },
 
     _removeTopMostTile: function(tileInfo, x, y) {
       if (!tileInfo) {
         return;
       }
+      if (tileInfo.level < 0) {
+        return;
+      }
+
       if (tileInfo.level > 0) {
         if (tileInfo.stack.length < 2) {
           throw new Error('Inconsistent map state');
@@ -375,8 +426,19 @@
         tileInfo.stack = tileInfo.stack.slice(0, tileInfo.stack.length - 1);
         tileInfo.level--;
       } else if (tileInfo.level === 0) {
+        // stack of tiles is empty, create a ghost tile underneath to visualize
+        // the empty floor
         tileInfo.tile.destroy();
-        this._normalizedMap[y][x] = null;
+        var ghostTile =
+            Crafty.e('Tile')
+            .tile(x, y, -1, 'SprFloorGhost', this.levelInfo);
+        tileInfo.isGhost = true;
+        if (tileInfo.isSelected) {
+          ghostTile.select();
+        }
+        tileInfo.stack = [ghostTile];
+        tileInfo.tile = ghostTile;
+        tileInfo.level--;
       } else {
         throw new Error('tileInfo at ' + x + ', ' + y + ' has a weird level: '
           + tileInfo.level);

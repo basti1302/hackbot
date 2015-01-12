@@ -115,6 +115,9 @@ game = (function() {
         SprFloorBlue: [0, 3],
         SprFloorBlueMouseOver: [1, 3],
         SprFloorBlueTileSelected: [2, 3],
+        SprFloorGhost: [0, 4],
+        SprFloorGhostMouseOver: [1, 4],
+        SprFloorGhostTileSelected: [2, 4],
       });
       Crafty.sprite(self.baseSize, 'assets/images/robot.png', {
         SprBot: [0, 0],

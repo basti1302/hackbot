@@ -41,7 +41,6 @@ TODOs
 Level Editor
 ------------
 
-* Create new tiles where no tile is: Create selectable ghost tiles one level below base level when a stack has been reduced to height zero
 * maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
 * Make buttons for raise/lower/mark red/etc.
 * Move bot up/down when stack on which bot is sitting is raised/lowered
