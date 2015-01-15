@@ -9,7 +9,7 @@
 
   Crafty.c('HbMessage', {
     init: function() {
-      this.requires('2D, DOM, Text');
+      this.requires('2D, DOM, Text, Mouse');
       var x = (game.widthPx - game.widthProgramArea) / 2 - 175,
           y = game.heightPx/2 - 75;
       this.attr({
@@ -25,6 +25,7 @@
       this.textFont({ size: '60px', weight: 'bold' })
       this.text(text);
       this.alpha = 0.9;
+      return this;
     },
   });
 

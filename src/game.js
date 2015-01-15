@@ -395,9 +395,13 @@ game = (function() {
     // TODO Something better needs to happen here :-)
     var self = this;
     setTimeout(function() {
-      if (!this.messagePlayerHasWon) {
-        this.messagePlayerHasWon =
-          Crafty.e('HbMessage').hbMessage('Level Solved!');
+      if (!self.messagePlayerHasWon) {
+        self.messagePlayerHasWon = Crafty
+        .e('HbMessage')
+        .hbMessage('Level Solved!')
+        .bind('Click', function() {
+          game._removeMessages();
+        });
       }
     }, 500);
   };
