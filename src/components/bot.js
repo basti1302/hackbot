@@ -10,12 +10,13 @@
     pauseBetweenSteps: 100,
     pauseBetweenTweens: 0,
 
-    // only for debugging
+    // only for debugging and editor
     manualControl: false,
 
     // ordinary movement instructions
     moves: {
       forward: 'move:forward',
+      backward: 'move:backward', // only in editor
       turnLeft: 'move:turn-left',
       turnRight: 'move:turn-right',
       jump: 'move:jump',
@@ -39,7 +40,7 @@
     ],
 
     init: function() {
-      this.requires('IsoDomSprite, SpriteAnimation, Tween, SprBot');
+      this.requires('IsoDomSprite, SpriteAnimation, Tween, SprBot, Keyboard');
       var animationSpeed = this.subStepDuration / 3;
 
       this.botReels = {};
@@ -57,29 +58,8 @@
         x: 0, y: 0, z: 0, direction: this.directions.downRight,
       };
 
-      var logInstructionResult = function(err, moved) {
-        if (err) {
-          console.error(err);
-        }
-      }
-
-      // TODO Move this somewhere else... maybe refactor into component
-      // ManualControl and make Bot componet require that.
       if (this.manualControl) {
-        this.addComponent('Keyboard');
-        this.bind('KeyDown', function () {
-          if (this.isDown('UP_ARROW') || this.isDown('W')) {
-            this.instruct(this.moves.forward, logInstructionResult);
-          } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
-            this.instruct(this.moves.turnLeft, logInstructionResult);
-          } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
-            this.instruct(this.moves.turnRight, logInstructionResult);
-          } else if (this.isDown('SPACE') || this.isDown('S')) {
-            this.instruct(this.moves.jump, logInstructionResult);
-          } else if (this.isDown('CTRL')) {
-            this.instruct(this.moves.action, logInstructionResult);
-          }
-        });
+        this._enableDisableManualControl();
       }
     },
 
@@ -203,6 +183,26 @@
               return callback(new Error('Unknown direction: ' + this.position.direction));
           }
           return this._checkAndMove(step, jump, callback);
+        case this.moves.backward:
+          var step;
+          switch (this.position.direction) {
+            case this.directions.downLeft:
+              step = { y: -1 };
+              break;
+            case this.directions.downRight:
+              step = { x: -1 };
+              break;
+            case this.directions.upRight:
+              step = { y: 1 };
+              break;
+            case this.directions.upLeft:
+              step = { x: 1 };
+              break;
+            default:
+              return callback(new Error('Unknown direction: ' + this.position.direction));
+          }
+          return this._checkAndMove(step, jump, callback);
+
         case this.moves.turnLeft:
           // fall through
         case this.moves.turnRight:
@@ -240,10 +240,20 @@
       var tileInfoThen = game.map.getTileInfo(newPos.x, newPos.y);
       if (tileInfoThen == null) {
         return callback(null, false);
+      } else if (game.editMode && tileInfoThen.isGhost) {
+        return callback(null, false);
       }
 
       var zThen = tileInfoThen.level + 1;
-      if (!jump && zNow === zThen) {
+
+      // check if up/down movement is allowed
+      if (game.editMode) {
+        // any vertical movement is allowed in edit mode, even without jumping
+        step.z = zThen - zNow;
+        return this.executeStep(step, function() {
+          callback(null, true);
+        });
+      } else if (!jump && zNow === zThen) {
         return this.executeStep(step, function() {
           callback(null, true);
         });
@@ -371,5 +381,77 @@
       }
     },
 
+    /* Only for editor */
+    toggleManualControl: function() {
+      this.manualControl = !this.manualControl;
+      this._enableDisableManualControl();
+    },
+
+
+    // TODO Move everything related to manual control somewhere else...
+    // maybe refactor into component ManualControl and make Bot componet
+    // require that.
+    _enableDisableManualControl: function() {
+      if (this.manualControl) {
+        $('#editor-status').html('<strong>Manual Control: ACTIVE</strong>');
+        this._manualControlHandler = this._manualControlFn.bind(this);
+
+        // If we bind the KeyDown event in the same tick of the event loop,
+        // it gets triggered right away because key B is still down and we add
+        // another callback to the loop that triggers all callbacks for the key
+        // down event. This effectively toggles manual control off and on again
+        // immediately. Solution: Guess what, setTimeout ;-)
+        var self = this;
+        setTimeout(function() {
+          self.bind('KeyDown', self._manualControlHandler);
+        });
+      } else {
+        $('#editor-status').html('<strong>Manual Control: INACTIVE</strong>');
+        if (this._manualControlHandler) {
+          this.unbind('KeyDown', this._manualControlHandler);
+        }
+        this._manualControlHandler = null;
+      }
+    },
+
+    _manualControlHandler: null,
+
+    _manualControlFn: function() {
+      function logInstructionResult(err, moved) {
+        if (err) {
+          console.error(err);
+        }
+      }
+
+      if (game.editMode) {
+        // manual controls in edit mode
+        if (this.isDown('UP_ARROW') || this.isDown('W')) {
+          this.instruct(this.moves.forward, logInstructionResult);
+        } else if (this.isDown('DOWN_ARROW') || this.isDown('S')) {
+          this.instruct(this.moves.backward, logInstructionResult);
+        } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
+          this.instruct(this.moves.turnLeft, logInstructionResult);
+        } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
+          this.instruct(this.moves.turnRight, logInstructionResult);
+        } else if (this.isDown('B')) {
+          this.toggleManualControl();
+        }
+      } else {
+        // manual controls in game (instead of edit mode), slightly different than in edit mode
+        if (this.isDown('UP_ARROW') || this.isDown('W')) {
+          this.instruct(this.moves.forward, logInstructionResult);
+        } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
+          this.instruct(this.moves.turnLeft, logInstructionResult);
+        } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
+          this.instruct(this.moves.turnRight, logInstructionResult);
+        } else if (this.isDown('SPACE')) {
+          this.instruct(this.moves.jump, logInstructionResult);
+        } else if (this.isDown('CTRL')) {
+          this.instruct(this.moves.action, logInstructionResult);
+        }
+      }
+    },
+
   });
+
 })();

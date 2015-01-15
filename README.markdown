@@ -16,3 +16,4 @@ The instructions you can use are the following:
 The instruction area on the right has three sections, the main section (top) with 12 slots. Anytime you press execute, the program in this 12 slots is executed. The middle section and the bottom section (each with 8 slots) are subroutines. They are not executed automatically, but only if you call them (for example, from the main program) by using the subroutine cards `1` and `2`.
 
 You can place cards by clicking on them in the source panel (bottom of screen). Once a card is clicked, it is added to the currently active instruction area. You can activate an instruction area (main program or one of the subroutines) by clicking on it. You can also drag and drop cards around to place them in slots or remove cards from the program.
+

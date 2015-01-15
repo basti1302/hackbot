@@ -98,7 +98,7 @@
       } else {
         throw new Error('position (' + x + ', ' + y + ') has an unknown tile info type (' + (typeof tileInfo) + '): ' + JSON.stringify(tileInfo));
       }
-      if (tileLevel < -1 || (!game.editMode && level < 0 )) {
+      if (tileLevel < -1 || (!game.editMode && tileLevel < 0 )) {
         throw new Error('position (' + x + ', ' + y + ') has an illegal level of ' + tileLevel + '.');
       }
       if (!game.editMode && floorType === 'ghost') {
