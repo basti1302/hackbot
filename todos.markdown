@@ -27,7 +27,7 @@ TODOs
     * button area
 * [VISUAL] better colors for active and inactive instruction area!
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
-* [VISUAL] Nicer animation for bot jump
+* [VISUAL] Nicer animation for bot jump (have a look at http://opengameart.org/content/robo-welder)
 * [VISUAL] Animate bot jump even when its jumping in situ
 * [FEATURE] save levels to local storage
 * [FEATURE] load levels from local storage
@@ -37,6 +37,7 @@ TODOs
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them.
   Cards get destroyed if the move out at the end.
 
+* Sound? https://www.freesound.org/ , http://opengameart.org/
 
 Level Editor
 ------------

@@ -392,7 +392,6 @@ game = (function() {
   };
 
   Game.prototype.onPlayerHasWon = function() {
-    // TODO Something better needs to happen here :-)
     var self = this;
     setTimeout(function() {
       if (!self.messagePlayerHasWon) {

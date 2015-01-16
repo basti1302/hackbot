@@ -217,27 +217,27 @@ describe('The bot entity', function() {
         var tileInfo = game.map.getTileInfo(1, 1);
 
         // check initial state
-        expect(tileInfo.floor).to.equal(game.map.tiles.red);
-        expect(tileInfo.tile.has(game.map.tiles.green)).to.be.false;
-        expect(tileInfo.tile.has(game.map.tiles.red)).to.be.true;
+        expect(tileInfo.floor).to.equal(game.map.floorTypes.targetInactive);
+        expect(tileInfo.tile.has('SprFloorGreen')).to.be.false;
+        expect(tileInfo.tile.has('SprFloorRed')).to.be.true;
 
         // toggle from red to green
         bot.instruct(bot.moves.action, function(err, moved) {
           expectBotHasMoved(err, moved);
           check(bot, 1, 1);
           tileInfo = game.map.getTileInfo(1, 1);
-          expect(tileInfo.floor).to.equal(game.map.tiles.green);
-          expect(tileInfo.tile.has(game.map.tiles.green)).to.be.true;
-          expect(tileInfo.tile.has(game.map.tiles.red)).to.be.false;
+          expect(tileInfo.floor).to.equal(game.map.floorTypes.targetActive);
+          expect(tileInfo.tile.has('SprFloorGreen')).to.be.true;
+          expect(tileInfo.tile.has('SprFloorRed')).to.be.false;
 
           // toggle from green to red
           bot.instruct(bot.moves.action, function(err, moved) {
             expectBotHasMoved(err, moved);
             check(bot, 1, 1);
             tileInfo = game.map.getTileInfo(1, 1);
-            expect(tileInfo.floor).to.equal(game.map.tiles.red);
-            expect(tileInfo.tile.has(game.map.tiles.green)).to.be.false;
-            expect(tileInfo.tile.has(game.map.tiles.red)).to.be.true;
+            expect(tileInfo.floor).to.equal(game.map.floorTypes.targetInactive);
+            expect(tileInfo.tile.has('SprFloorGreen')).to.be.false;
+            expect(tileInfo.tile.has('SprFloorRed')).to.be.true;
             done();
           });
         });

@@ -3,20 +3,21 @@
 
   Crafty.c('Map', {
 
+    floorTypes: {
+      floor: 'floor',
+      targetInactive: 'targetInactive',
+      targetActive: 'targetActive',
+      ghost: 'ghost',
+    },
+
     init: function() {
-      this.defaultTile = 'grey';
-      this.tiles = {
-        grey: 'SprFloorGrey',
-        red: 'SprFloorRed',
-        green: 'SprFloorGreen',
-        blue: 'SprFloorBlue',
-        ghost: 'SprFloorGhost',
-      }
+      this.defaultFloorType = this.floorTypes.floor;
     },
 
     map: function(level) {
       if (!isArray(level.terrain)) {
-        throw new Error('level object has no terrain property or level.terrain is not an array.');
+        throw new Error('level object has no terrain property or ' +
+            'level.terrain is not an array.');
       }
 
       this._parseLevel(level);
@@ -35,7 +36,7 @@
       };
 
       this._normalizedMap = [];
-      this._toggleTiles =  [];
+      this._targets =  [];
       var terrain = level.terrain;
 
       for (var y = 0; y < terrain.length; y++) {
@@ -83,7 +84,7 @@
 
     _normalizeTile: function(x, y, tileInfo) {
       var tileLevel;
-      var floorType = this.defaultTile;
+      var floorType = this.defaultFloorType;
 
       // parse level and floor type from tile info object
       if (typeof tileInfo === 'number') {
@@ -94,31 +95,40 @@
         // otherwise it's an object with level and floor properties (both
         // optional)
         tileLevel = tileInfo.level || 0;
-        floorType = tileInfo.floor || this.defaultTile;
+        floorType = tileInfo.floor || this.defaultFloorType;
+        if (floorType === 'red') {
+          floorType = this.floorTypes.targetInactive;
+        }
+        if (floorType === 'green') {
+          floorType = this.floorTypes.targetActive;
+        }
       } else {
-        throw new Error('position (' + x + ', ' + y + ') has an unknown tile info type (' + (typeof tileInfo) + '): ' + JSON.stringify(tileInfo));
+        throw new Error('position (' + x + ', ' + y + ') has an unknown tile ' +
+            'info type (' + (typeof tileInfo) + '): ' +
+            JSON.stringify(tileInfo));
       }
       if (tileLevel < -1 || (!game.editMode && tileLevel < 0 )) {
         throw new Error('position (' + x + ', ' + y + ') has an illegal level of ' + tileLevel + '.');
       }
       if (!game.editMode && floorType === 'ghost') {
-        throw new Error('position (' + x + ', ' + y + ') has floor type ghost (empty tile), which is only allowed in edit mode.');
+        throw new Error('position (' + x + ', ' + y + ') has floor type ' +
+            'ghost (non-existing tile), which is only allowed in edit mode.');
 
       }
-      var floor = this.tiles[floorType];
       var normalizedTileInfo = {
         x: x,
         y: y,
         level: tileLevel,
-        floor: floor,
+        floor: floorType,
       };
 
-      // remember where red tiles are that need to be toggled to win the game
-      if (floorType === 'red') {
-        this._toggleTiles.push(normalizedTileInfo);
+      // remember where red target tiles are that need to be toggled to win the
+      // game
+      if (floorType === this.floorTypes.targetInactive) {
+        this._targets.push(normalizedTileInfo);
       }
-      if (floorType === 'ghost') {
-        normalizedTileInfo.floor = this.tiles.grey;
+      if (floorType === this.floorTypes.ghost) {
+        normalizedTileInfo.floor = this.defaultFloorType;
         normalizedTileInfo.isGhost = true;
       }
 
@@ -144,7 +154,7 @@
               var ghostTile =
                   Crafty.e('Tile')
                   .tile(tileInfo.x, tileInfo.y, -1,
-                        'SprFloorGhost', this.levelInfo);
+                        'ghost', this.levelInfo);
               tileInfo.stack = [ghostTile];
               tileInfo.tile = ghostTile;
             }
@@ -153,12 +163,15 @@
       }
     },
 
-    _createTileStack: function(x, y, tileLevel, floor) {
+    _createTileStack: function(x, y, tileLevel, floorType) {
       var stack = [];
       for (var z = 0; z < tileLevel; z++) {
-        stack.push(Crafty.e('Tile').tile(x, y, z, this.tiles[this.defaultTile], this.levelInfo));
+        // tiles below the top tile are always created with the default grey
+        // floor type
+        stack.push(Crafty.e('Tile').tile(x, y, z, this.defaultFloorType, this.levelInfo));
       }
-      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floor, this.levelInfo);
+      var topTile = Crafty.e('Tile').tile(x, y, tileLevel, floorType,
+          this.levelInfo);
       stack.push(topTile);
       return stack;
     },
@@ -216,6 +229,17 @@
       this._normalizedMap[y][x] = null;
     },
 
+    isTarget: function(x, y) {
+      return this._withTileInfo(x, y, function(tileInfo) {
+        return this._isTarget(tileInfo);
+      });
+    },
+
+    _isTarget: function(tileInfo) {
+      return tileInfo.floor === this.floorTypes.targetInactive ||
+          tileInfo.floor === this.floorTypes.targetActive;
+    },
+
     getTileType: function(x, y) {
       return this._withTileInfo(x, y, function(tileInfo) {
         return tileInfo.floor;
@@ -224,82 +248,59 @@
 
     toggleRedGreen: function(x, y) {
       this._withTileInfo(x, y, function(tileInfo) {
-        this._toggleFloor(tileInfo, 'green', 'red');
+        this._toggleFloorType(tileInfo,
+            this.floorTypes.targetInactive,
+            this.floorTypes.targetActive
+        );
       });
-      /*
-      return this._withTileInfo(x, y, function(tileInfo) {
-        if (this._isGreen(tileInfo)) {
-          tileInfo.floor = this.tiles.red;
-          tileInfo.tile.removeComponent(this.tiles.green);
-          tileInfo.tile.addComponent(this.tiles.red);
-        } else if (this._isRed(tileInfo)) {
-          tileInfo.floor = this.tiles.green;
-          tileInfo.tile.removeComponent(this.tiles.red);
-          tileInfo.tile.addComponent(this.tiles.green);
-        }
-      });
-      */
     },
 
     _toggleRedGrey: function(tileInfo) {
-      this._toggleFloor(tileInfo, 'grey', 'red');
-
-      /*
-      return this._withTileInfo(x, y, function(tileInfo) {
-        if (this._isGrey(tileInfo)) {
-          tileInfo.floor = this.tiles.red;
-          tileInfo.tile.removeComponent(this.tiles.grey);
-          tileInfo.tile.addComponent(this.tiles.red);
-        } else if (this._isRed(tileInfo)) {
-          tileInfo.floor = this.tiles.grey;
-          tileInfo.tile.removeComponent(this.tiles.red);
-          tileInfo.tile.addComponent(this.tiles.grey);
-        }
-      });
-      */
+      this._toggleFloorType(tileInfo,
+          this.floorTypes.floor,
+          this.floorTypes.targetInactive
+      );
     },
 
-   _toggleFloor: function(tileInfo, color1, color2) {
-      var floor1 = this.tiles[color1];
-      var floor2 = this.tiles[color2];
-      if (tileInfo.floor === floor1) {
-        tileInfo.floor = floor2;
-        tileInfo.tile.removeComponent(floor1);
-        tileInfo.tile.addComponent(floor2);
-      } else if (tileInfo.floor === floor2) {
-        tileInfo.floor = floor1;
-        tileInfo.tile.addComponent(floor1);
-        tileInfo.tile.removeComponent(floor2);
+   _toggleFloorType: function(tileInfo, floorType1, floorType2) {
+      if (tileInfo.floor === floorType1) {
+        tileInfo.floor = floorType2;
+        tileInfo.tile.setFloorType(floorType2);
+      } else if (tileInfo.floor === floorType2) {
+        tileInfo.floor = floorType1;
+        tileInfo.tile.setFloorType(floorType1);
       }
    },
 
-    _isGrey: function(tileInfo) {
-      return tileInfo.floor === this.tiles.grey;
+    _isDefaultFloor: function(tileInfo) {
+      return tileInfo.floor === this.defaultFloorType;
     },
 
-    _isRed: function(tileInfo) {
-      return tileInfo.floor === this.tiles.red;
+    _isTargetInactive: function(tileInfo) {
+      return tileInfo.floor === this.floorTypes.targetInactive;
     },
 
-    _isGreen: function(tileInfo) {
-      return tileInfo.floor === this.tiles.green;
+    _isTargetActive: function(tileInfo) {
+      return tileInfo.floor === this.floorTypes.targetActive;
     },
 
     reset: function() {
-      for (var i = 0; i < this._toggleTiles.length; i++) {
-        var tileInfo = this._toggleTiles[i];
-        if (this._isGreen(tileInfo)) {
-          tileInfo.floor = this.tiles.red;
-          tileInfo.tile.removeComponent(this.tiles.green);
-          tileInfo.tile.addComponent(this.tiles.red);
+      for (var i = 0; i < this._targets.length; i++) {
+        var tileInfo = this._targets[i];
+        if (this._isTargetActive(tileInfo)) {
+          tileInfo.floor = this.floorTypes.targetInactive;
+          tileInfo.tile.setFloorType(this.floorTypes.targetInactive);
         }
       }
     },
 
     hasWon: function() {
-      for (var i = 0; i < this._toggleTiles.length; i++) {
-        var tileInfo = this._toggleTiles[i];
-        if (this._isRed(tileInfo)) {
+      if (this._targets.length === 0) {
+        return false;
+      }
+      for (var i = 0; i < this._targets.length; i++) {
+        var tileInfo = this._targets[i];
+        if (this._isTargetInactive(tileInfo)) {
           return false;
         }
       }
@@ -363,9 +364,26 @@
       });
     },
 
-    toggleFloorForSelected: function() {
+    toggleTargetForSelected: function() {
       this._withSelectedStacks(function(tileInfo) {
-        this._toggleRedGrey(tileInfo);
+        if (tileInfo.isGhost) {
+          return;
+        }
+        if (this._isTarget(tileInfo)) {
+          // tile is target, convert to default floor
+          tileInfo.floor = this.floorTypes.floor;
+          // remove from target array
+          var idx = this._targets.indexOf(tileInfo);
+          if (idx >= 0) {
+            this._targets.splice(idx, 1);
+          }
+        } else {
+          // tile is not a target, convert to target
+          tileInfo.floor = this.floorTypes.targetInactive;
+          // add to target array
+          this._targets.push(tileInfo);
+        }
+        tileInfo.tile.setFloorType(tileInfo.floor);
       });
     },
 
@@ -377,23 +395,31 @@
       if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
         return;
       }
-      if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
-        return;
-      }
 
-      // TODO If tileInfo.floor != grey we need to make the former top tile grey
-
-      // if the tile with the bot is raised, the bot needs to be raised, too.
+      // if the tile with the bot is raised, the bot needs to be raised, too
       if (x === game.bot.position.x && y === game.bot.position.y) {
-        if (tileInfo.level > game.map.levelInfo.maxHeight - 3) {
+        // but we also have a smaller upper bound for the height of the tile
+        // stack, otherwise the bot entity is too high
+        if ( tileInfo.level > game.map.levelInfo.maxHeight - 3) {
           return;
         }
         game.bot.position.z++;
         game.bot.setPosition(game.bot.position);
       }
 
+      // If the tile is not standard floor, we need to convert the former top
+      // tile to standard floor. The basic assumption (also when initializing/
+      // loading a level) is, that only the top-most tile on a tile stack can be
+      // non-standard floor (for example, a target tile), the tiles below are
+      // always grey.
+      if (!this._isDefaultFloor(tileInfo)) {
+        tileInfo.tile.setFloorType(this.floorTypes.floor);
+      }
+
+      // raise level
       tileInfo.level++;
 
+      // now create a new tile on top of the stack
       if (tileInfo.isGhost) {
         // empty floor, we need to create a new stack
 
@@ -413,7 +439,9 @@
          }
          tileInfo.isGhost = false;
       } else {
-        var newTile = Crafty.e('Tile').tile(x, y, tileInfo.level, tileInfo.floor, this.levelInfo);
+        // not empty floor, just add a tile on top of the stack
+        var newTile = Crafty.e('Tile').tile(x, y, tileInfo.level,
+            tileInfo.floor, this.levelInfo);
         if (tileInfo.isSelected) {
           newTile.select();
         }
@@ -444,13 +472,18 @@
         tileInfo.tile = tileInfo.stack[tileInfo.stack.length - 2];
         tileInfo.stack = tileInfo.stack.slice(0, tileInfo.stack.length - 1);
         tileInfo.level--;
+
+        // Restore the correct floor type on the tile below
+        if (!this._isDefaultFloor(tileInfo)) {
+          tileInfo.tile.setFloorType(tileInfo.floor);
+        }
       } else if (tileInfo.level === 0) {
         // stack of tiles is empty, create a ghost tile underneath to visualize
         // the empty floor
         tileInfo.tile.destroy();
         var ghostTile =
             Crafty.e('Tile')
-            .tile(x, y, -1, 'SprFloorGhost', this.levelInfo);
+            .tile(x, y, -1, this.floorTypes.ghost, this.levelInfo);
         tileInfo.isGhost = true;
         if (tileInfo.isSelected) {
           ghostTile.select();

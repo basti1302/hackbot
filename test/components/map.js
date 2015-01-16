@@ -4,7 +4,7 @@ describe('The map', function() {
   var expect = chai.expect;
   var map;
 
-  var defaultFloor;
+  var defaultFloorType;
   var redFloor;
   var greenFloor;
 
@@ -21,9 +21,9 @@ describe('The map', function() {
     game.reset(true);
     map = Crafty.e('Map');
     game.map = map;
-    defaultFloor = map.tiles[map.defaultTile];
-    redFloor = map.tiles['red'];
-    greenFloor = map.tiles['green'];
+    defaultFloorType = map.defaultFloorType;
+    redFloor = map.floorTypes.targetInactive;
+    greenFloor = map.floorTypes.targetActive;
   });
 
   describe('initialization', function() {
@@ -34,10 +34,12 @@ describe('The map', function() {
 
     it('should accept a single tile map', function() {
       map.map({ terrain: [[0]] });
-      var tile = map.getTileInfo(0, 0);
-      expect(tile).to.exist;
-      expect(tile.level).to.equal(0);
-      expect(tile.floor).to.equal('SprFloorGrey');
+      var tileInfo = map.getTileInfo(0, 0);
+      expect(tileInfo).to.exist;
+      expect(tileInfo.level).to.equal(0);
+      expect(tileInfo.floor).to.equal(map.floorTypes.floor);
+      expect(tileInfo.tile._floorType).to.equal(map.floorTypes.floor);
+      expect(tileInfo.tile._sprite).to.equal('SprFloorGrey');
 
       expect(map.getTileInfo(-1, 0)).to.not.exist;
       expect(map.getTileInfo(0, -1)).to.not.exist;
@@ -53,14 +55,16 @@ describe('The map', function() {
         ],
       }
       map.map(level);
-      var tile00 = map.getTileInfo(0, 0);
-      var tile01 = map.getTileInfo(0, 1);
-      var tile10 = map.getTileInfo(1, 0);
-      var tile11 = map.getTileInfo(1, 1);
-      [tile00, tile01, tile10, tile11].forEach(function(tile) {
-        expect(tile).to.exist;
-        expect(tile.level).to.equal(0);
-        expect(tile.floor).to.equal('SprFloorGrey');
+      var tileInfo00 = map.getTileInfo(0, 0);
+      var tileInfo01 = map.getTileInfo(0, 1);
+      var tileInfo10 = map.getTileInfo(1, 0);
+      var tileInfo11 = map.getTileInfo(1, 1);
+      [tileInfo00, tileInfo01, tileInfo10, tileInfo11].forEach(function(tileInfo) {
+        expect(tileInfo).to.exist;
+        expect(tileInfo.level).to.equal(0);
+        expect(tileInfo.floor).to.equal(map.floorTypes.floor);
+        expect(tileInfo.tile._floorType).to.equal(map.floorTypes.floor);
+        expect(tileInfo.tile._sprite).to.equal('SprFloorGrey');
       });
       expect(map.getTileInfo(-1, 0)).to.not.exist;
       expect(map.getTileInfo(0, -1)).to.not.exist;
@@ -131,7 +135,7 @@ describe('The map', function() {
     it('should accept null tiles', function() {
       map.map({ terrain: [[null, 0]] });
       expect(map.getTileInfo(0, 0)).to.not.exist;
-      checkTile(1, 0, 0, 'grey');
+      checkTile(1, 0, 0, map.floorTypes.floor);
     });
 
     it('should figure out max height level', function() {
@@ -151,8 +155,8 @@ describe('The map', function() {
         ],
       };
       map.map(level);
-      checkTile(0, 0, 1, 'red');
-      checkTile(1, 0, 1, 'grey');
+      checkTile(0, 0, 1, map.floorTypes.targetInactive);
+      checkTile(1, 0, 1, map.floorTypes.floor);
     });
 
     it('should figure out dimension in tiles', function() {
@@ -187,8 +191,8 @@ describe('The map', function() {
 
     it('should get tile info', function() {
       var tileInfo = map.getTileInfo(0, 0);
-      checkTile(0, 0, 0, 'red');
-      checkTile(1, 0, 1, 'grey');
+      checkTile(0, 0, 0, map.floorTypes.targetInactive);
+      checkTile(1, 0, 1, map.floorTypes.floor);
     });
 
     it('should get tile level', function() {
@@ -198,7 +202,7 @@ describe('The map', function() {
 
     it('should get tile type', function() {
       expect(map.getTileType(0, 0)).to.equal(redFloor);
-      expect(map.getTileType(1, 0)).to.equal(defaultFloor);
+      expect(map.getTileType(1, 0)).to.equal(defaultFloorType);
     });
 
     it('should toggle tile type', function() {
@@ -211,7 +215,7 @@ describe('The map', function() {
 
     it('should not toggle default tile type', function() {
       map.toggleRedGreen(1, 0);
-      expect(map.getTileType(1, 0)).to.equal(defaultFloor);
+      expect(map.getTileType(1, 0)).to.equal(defaultFloorType);
     });
 
     it('should reset map', function() {
@@ -232,22 +236,24 @@ describe('The map', function() {
     });
   });
 
-  function checkTile(x, y, level, floor) {
-    var tile = map.getTileInfo(x, y);
-    expect(tile).to.exist;
-    expect(tile.x).to.equal(x);
-    expect(tile.y).to.equal(y);
-    expect(tile.level).to.equal(level);
-    expect(tile.floor).to.equal(map.tiles[floor]);
-    expect(tile.stack).to.exist;
-    expect(tile.stack.length).to.equal(level + 1);
-    for (var i = 0; i < tile.stack.length - 1; i++) {
-      var stackTile = tile.stack[i];
-      expect(stackTile.has(defaultFloor)).to.be.true;
+  function checkTile(x, y, level, floorType, sprite) {
+    var tileInfo = map.getTileInfo(x, y);
+    expect(tileInfo).to.exist;
+    expect(tileInfo.x).to.equal(x);
+    expect(tileInfo.y).to.equal(y);
+    expect(tileInfo.level).to.equal(level);
+    expect(tileInfo.floor).to.equal(floorType);
+    expect(tileInfo.stack).to.exist;
+    expect(tileInfo.stack.length).to.equal(level + 1);
+    for (var i = 0; i < tileInfo.stack.length - 1; i++) {
+      var stackTile = tileInfo.stack[i];
+      expect(stackTile._floorType).to.equal(map.defaultFloorType);
+      expect(stackTile.has('SprFloorGrey')).to.be.true;
     }
-    expect(tile.stack[tile.stack.length - 1].has(map.tiles[floor])).to.be.true;
-    expect(tile.tile).to.exist;
-    expect(tile.tile.has(map.tiles[floor])).to.be.true;
+    var topTile = tileInfo.stack[tileInfo.stack.length - 1];
+    expect(topTile._floorType).to.equal(floorType);
+    expect(tileInfo.tile).to.exist;
+    expect(tileInfo.tile._floorType).to.equal(floorType);
   }
 
 });

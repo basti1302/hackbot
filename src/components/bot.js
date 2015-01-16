@@ -277,8 +277,7 @@
     _doAction: function _doAction(callback) {
 
       // toggle floor tile red/green
-      var tileType = game.map.getTileType(this.position.x, this.position.y);
-      if (tileType === game.map.tiles.green || tileType === game.map.tiles.red) {
+      if (game.map.isTarget(this.position.x, this.position.y)) {
         game.map.toggleRedGreen(this.position.x, this.position.y);
         return callback(null, true);
       }
@@ -393,7 +392,7 @@
     // require that.
     _enableDisableManualControl: function() {
       if (this.manualControl) {
-        $('#editor-status').html('<strong>Manual Control: ACTIVE</strong>');
+        $('#editor-status').html('<strong>Control Bot: ACTIVE</strong>');
         this._manualControlHandler = this._manualControlFn.bind(this);
 
         // If we bind the KeyDown event in the same tick of the event loop,
@@ -406,7 +405,7 @@
           self.bind('KeyDown', self._manualControlHandler);
         });
       } else {
-        $('#editor-status').html('<strong>Manual Control: INACTIVE</strong>');
+        $('#editor-status').html('<strong>Control Bot: INACTIVE</strong>');
         if (this._manualControlHandler) {
           this.unbind('KeyDown', this._manualControlHandler);
         }

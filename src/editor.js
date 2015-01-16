@@ -26,7 +26,7 @@ editor = (function() {
         } else if (this.isDown('DOWN_ARROW')) {
           game.map.lowerSelected();
         } else if (this.isDown('CTRL')) {
-          game.map.toggleFloorForSelected();
+          game.map.toggleTargetForSelected();
         } else if (this.isDown('B')) {
           game.bot.toggleManualControl();
         }
