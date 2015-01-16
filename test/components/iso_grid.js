@@ -15,6 +15,12 @@ describe('Coordinate mapping', function() {
 
   beforeEach(function() {
     game.reset(true);
+    game.map = {
+      levelInfo: {
+        xOffset: 3,
+        yOffset: 2,
+      }
+    };
     tile = Crafty.e('IsoTranslator').setLength2d(5);
   });
 
@@ -159,6 +165,7 @@ describe('Coordinate mapping', function() {
       expect(coordinates2d.y).to.equal(y2d);
     }
 
+
   });
 
   function test5x4Field(check) {
@@ -186,5 +193,48 @@ describe('Coordinate mapping', function() {
     check(tile, 3, 3, 2, 6);
     check(tile, 3, 4, 1, 7);
   }
+
+  describe('from isometric to pixel', function() {
+
+    it('should work for 5 x 4 tile field', function() {
+      test5x4FieldPixel(check2dToPixel);
+    });
+
+    function check2dToPixel(tile, x2d, y2d, xPixel, yPixel) {
+      var coordinatesPixel = tile._calcPixelCoords(x2d, y2d, 2, 1);
+      expect(coordinatesPixel.x).to.equal(xPixel);
+      expect(coordinatesPixel.y).to.equal(yPixel);
+    }
+  });
+
+  function test5x4FieldPixel(check) {
+    // This test coordinates and their respective expecations just represent the
+    // status quo. They haven't been checked for correctness.
+
+    check(tile, 0, 0, 131, -29);
+    check(tile, 0, 1, 99, -13);
+    check(tile, 0, 2, 67, 3);
+    check(tile, 0, 3, 35, 19);
+    check(tile, 0, 4, 3, 35);
+
+    check(tile, 1, 0, 163, -13);
+    check(tile, 1, 1, 131, 3);
+    check(tile, 1, 2, 99, 19);
+    check(tile, 1, 3, 67, 35);
+    check(tile, 1, 4, 35, 51);
+
+    check(tile, 2, 0, 195, 3);
+    check(tile, 2, 1, 163, 19);
+    check(tile, 2, 2, 131, 35);
+    check(tile, 2, 3, 99, 51);
+    check(tile, 2, 4, 67, 67);
+
+    check(tile, 3, 0, 227, 19);
+    check(tile, 3, 1, 195, 35);
+    check(tile, 3, 2, 163, 51);
+    check(tile, 3, 3, 131, 67);
+    check(tile, 3, 4, 99, 83);
+  }
+
 });
 

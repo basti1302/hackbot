@@ -2,12 +2,7 @@ TODOs
 =====
 
 * More advanced levels
-* [UX] it's a SPA - have some after-#-path in URL on navigation (/edit,
-  /play/{level}) etc. so that a reload does not make you go to the start screen
-  everytime.
-* [UX] improve level solved message:
-       - block all buttons (play, reset, clear)
-       - navigation: dismiss message (going back to level) / leave leve (go back to level select)
+* [UX] when dropping cards in occupied spaces, insert them instead of replace them.
 * [MOBILE] It looks weird/broken on mobile browsers - Android SDK and/or weinre
 * [FEATURE] main-call: a card which calls the main routine
             - don't add it to the default card set
@@ -27,32 +22,31 @@ TODOs
     * button area
 * [VISUAL] better colors for active and inactive instruction area!
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
-* [VISUAL] Nicer animation for bot jump
+ [VISUAL] Nicer animation for bot jump (have a look at http://opengameart.org/content/robo-welder)
 * [VISUAL] Animate bot jump even when its jumping in situ
-* [FEATURE] save levels to local storage
-* [FEATURE] load levels from local storage
 * [FEATURE] export/import levels from local storage to/from file
 * [FEATURE/UX] Clicking execute/reset program cards *cancel* current execution - similar to hasWon check
 * [TESTS] For pixel positions during bot movements
-* [UX] when dropping cards in occupied spaces, insert them instead of replace them.
-  Cards get destroyed if the move out at the end.
+ Cards get destroyed if the move out at the end.
+* [Refactoring] All global objects should be moved to the hb namespace, so that hb is the only global object. That is hb.game instead of game etc.
 
+* Sound? https://www.freesound.org/ , http://opengameart.org/
 
 Level Editor
 ------------
 
-* Create new tiles where no tile is.
-* maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
-* Make buttons for raise/lower/mark red/etc.
-* Move bot up/down when stack on which bot is sitting is raised/lowered
-* Set bot starting position and direction
-* Larger maxHeight and centerMapOnScreen is broken
-* Highlight and select spots with no tiles (to raise them)
-* Expand map (x/y axis)
-* Shrink map (x/y)
-* Export normalized map to JSON
+ Disable/enable cards
+* Disable/enable programming slots
+* Disable/enable programming areas
+
+* Export normalized map to JSON, including bot position, cards, programming slots & areas.
 * Save levels to local storage
 * Load levels from local storage in editor
 * Load edited levesl from local storage for playing
 * Upload levels ... somehwere
 
+* Make buttons for raise/lower/mark and so forth -> enables using the editor without remembering weird keyboard commands
+* maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
+* Larger maxHeight and centerMapOnScreen is broken
+* Expand map (x/y axis)
+* Shrink map (x/y)

@@ -9,7 +9,7 @@
 
   Crafty.c('HbMessage', {
     init: function() {
-      this.requires('2D, DOM, Text');
+      this.requires('2D, DOM, Text, Mouse');
       var x = (game.widthPx - game.widthProgramArea) / 2 - 175,
           y = game.heightPx/2 - 75;
       this.attr({
@@ -25,6 +25,7 @@
       this.textFont({ size: '60px', weight: 'bold' })
       this.text(text);
       this.alpha = 0.9;
+      return this;
     },
   });
 
@@ -33,16 +34,6 @@
     init: function() {
       this.requires('2D, DOM, Color, Mouse');
     },
-
-    /*
-     * Crafty.c('Color', ...) contains line
-     * 6797 e.style.lineHeight = 0;
-     * which messes up the vertical alignment of text in the box. Not sure
-     * why it has that. I patched it locally for now. See also:
-     * https://groups.google.com/forum/#!topic/craftyjs/7uOiHZBNKtQ
-     * Should allegedly be fixed in 0.6.2, but I'm not sure about the Color
-     * component.
-     */
 
     hbButton: function(x, y, w, h) {
       this.attr({ x : x, y: y, w: w, h: h, });
@@ -114,7 +105,7 @@
       var w = this.attr('w');
       var h = this.attr('h');
 
-      this.image('assets/images/buttons/' + name + '.png');
+      this.image('/assets/images/buttons/' + name + '.png');
       // Overrides Crafty's behaviour to resizes the DOM element to image
       // dimensions unless it is a repeated image. Bad design decision,
       // if you ask me. Next to lines are for the case where image asset is
@@ -149,13 +140,16 @@
       this.requires('HbTextButton');
     },
 
-    hbMenuButton: function(index, text, scene) {
+    hbMenuButton: function(index, text, scene, url) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 48, 256, 32)
         .hbTextButton(text, '24px', 'bold')
       ;
       if (scene) {
         this.onClick(function() {
+          if (url) {
+            history.pushState(null, null, url);
+          }
           Crafty.scene(scene);
         });
       } else {
@@ -170,13 +164,15 @@
       this.requires('HbTextButton');
     },
 
-    hbCategorySelectButton: function(index, text, category) {
+    hbCategorySelectButton: function(index, text, category, categoryId) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
         .hbTextButton(text)
       ;
       this.onClick(function() {
+        history.pushState(null, null, '#/play/' + categoryId);
         game.category = category;
+        game.category.id = categoryId;
         Crafty.scene('LevelSelect');
       });
       return this;
@@ -188,12 +184,13 @@
       this.requires('HbTextButton');
     },
 
-    hbLevelSelectButton: function(index, text, levelId) {
+    hbLevelSelectButton: function(index, text, categoryId, levelId) {
       this
         .hbButton(game.widthPx/2 - 128, 120 + index * 32, 256, 24)
         .hbTextButton(text)
       ;
       this.onClick(function() {
+        history.pushState(null, null, '#/play/' + categoryId + '/' + levelId);
         game.levelId = levelId;
         Crafty.scene('Play');
       });
@@ -211,6 +208,7 @@
         .hbButton(game.widthPx - 212, game.heightPx - 48, 48, 32)
         .hbImgButton('previous')
         .onClick(function() {
+          history.pushState(null, null, '#/instructions/' + (index - 1));
           Crafty.scene('Instructions' + (index - 1));
         })
         .css({ 'background-position': '16px 5px' })
@@ -228,6 +226,7 @@
         .hbButton(game.widthPx - 152, game.heightPx - 48, 48, 32)
         .hbImgButton('leave')
         .onClick(function() {
+          history.pushState(null, null, '#');
           Crafty.scene('Welcome');
         })
         .css({ 'background-position': '16px 5px' })
@@ -245,6 +244,7 @@
         .hbButton(game.widthPx - 92, game.heightPx - 48, 48, 32)
         .hbImgButton('next')
         .onClick(function() {
+          history.pushState(null, null, '#/instructions/' + (index + 1));
           Crafty.scene('Instructions' + (index + 1));
         })
         .css({ 'background-position': '16px 5px' })

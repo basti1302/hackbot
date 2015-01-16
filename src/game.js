@@ -81,21 +81,27 @@ game = (function() {
     /*********************************************
      * Load & initialize assets
      */
-    Crafty.load([
-      'assets/images/floor.png',
-      'assets/images/robot.png',
-      'assets/images/cards.png',
-      'assets/images/buttons/leave.png',
-      'assets/images/buttons/leave_disabled.png',
-      'assets/images/buttons/next.png',
-      'assets/images/buttons/previous.png',
-      'assets/images/buttons/play_disabled.png',
-      'assets/images/buttons/play.png',
-      'assets/images/buttons/rewind.png',
-      'assets/images/buttons/rewind_disabled.png',
-      'assets/images/buttons/delete_disabled.png',
-      'assets/images/buttons/delete.png',
-    ], function() {
+    // TODO With crafty 0.6.3 now, there might be a nicer way of loading and
+    // defining sprites from the image maps, see
+    // http://craftyjs.com/api/Crafty-loader.html and the "sprites" property
+    // in the assetsObj in the example there.
+    Crafty.load({
+      images: [
+        'assets/images/floor.png',
+        'assets/images/robot.png',
+        'assets/images/cards.png',
+        'assets/images/buttons/leave.png',
+        'assets/images/buttons/leave_disabled.png',
+        'assets/images/buttons/next.png',
+        'assets/images/buttons/previous.png',
+        'assets/images/buttons/play_disabled.png',
+        'assets/images/buttons/play.png',
+        'assets/images/buttons/rewind.png',
+        'assets/images/buttons/rewind_disabled.png',
+        'assets/images/buttons/delete_disabled.png',
+        'assets/images/buttons/delete.png',
+      ]
+    }, function onLoad() {
       Crafty.sprite(self.baseSize, self.floorImgHeight, 'assets/images/floor.png', {
         SprFloorGrey: [0, 0],
         SprFloorGreyMouseOver: [1, 0],
@@ -109,6 +115,9 @@ game = (function() {
         SprFloorBlue: [0, 3],
         SprFloorBlueMouseOver: [1, 3],
         SprFloorBlueTileSelected: [2, 3],
+        SprFloorGhost: [0, 4],
+        SprFloorGhostMouseOver: [1, 4],
+        SprFloorGhostTileSelected: [2, 4],
       });
       Crafty.sprite(self.baseSize, 'assets/images/robot.png', {
         SprBot: [0, 0],
@@ -132,8 +141,10 @@ game = (function() {
 
   Game.prototype.leaveLevel = function() {
     if (!this.editMode) {
+     history.pushState(null, null, '#/play/' + game.category.id);
       Crafty.scene('LevelSelect');
     } else {
+      history.pushState(null, null, '#');
       Crafty.scene('Welcome');
     }
   };
@@ -383,12 +394,15 @@ game = (function() {
   };
 
   Game.prototype.onPlayerHasWon = function() {
-    // TODO Something better needs to happen here :-)
     var self = this;
     setTimeout(function() {
-      if (!this.messagePlayerHasWon) {
-        this.messagePlayerHasWon =
-          Crafty.e('HbMessage').hbMessage('Level Solved!');
+      if (!self.messagePlayerHasWon) {
+        self.messagePlayerHasWon = Crafty
+        .e('HbMessage')
+        .hbMessage('Level Solved!')
+        .bind('Click', function() {
+          game._removeMessages();
+        });
       }
     }, 500);
   };

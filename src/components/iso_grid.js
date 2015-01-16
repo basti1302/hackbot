@@ -2,10 +2,11 @@
   'use strict';
 
   /*
-   * Component to translate coordinates between a 2D grid system with finite
-   * length (finite range of y-coordinates) and the coordinate system used by
-   * Crafty.isometric.
+   * Component to translate coordinates between the coordinate system used by
+   * Hackbot and the coordinate system used by Crafty.isometric.
    *
+   * Hackbot uses a 2D grid system with finite length (finite range of
+   * y-coordinates).
    *
    * The isometric coordinate system used by Crafty isometric looks like this:
    *
@@ -35,7 +36,7 @@
    * y-axis
    *
    *
-   * The 2D coordinates origin (0, 0) is assumed to be in the upper left corner.
+   * The Hackbot 2D coordinates origin (0, 0) is assumed to be in the upper left corner.
    * The x axis goes to the right, the y axis down. This is how it looks like:
    *
    *     0      1     2     3
@@ -52,9 +53,12 @@
    *   -------------------------
    *
    *
-   * Assuming a finite 2D grid of length 5 (y-coordinates 0 to 4), this is how
-   * 2D coordinates are mapped to the isometric grid. The pair in each cell
-   * represent the 2D grid coordinates for the given isometric field.
+   * Assuming a finite Hackbot 2D grid of length 5 (y-coordinates 0 to 4), this
+   * is how Hackbot 2D coordinates are mapped to the Crafty.isometric grid.
+   *
+   * The numbers on the axes represent the Crafty.isometric coordinates.
+   * The pair in each cell represents the Hackbot 2D grid coordinates for the
+   * given isometric field.
    *
    *     |  0   |  1  |  2  |  3  |
    *   -------------------------------> x-axis
@@ -92,9 +96,11 @@
    * y-axis
    *
    *
-   * Vice versa this is how the isometric coordinates are mapped to the 2D grid.
-   * The values in each cell represent the isometric coordinates for the given
-   * 2D grid field.
+   * Vice versa this is how the Crafty.isometric coordinates are mapped to the
+   * Hackbot 2D grid.
+   * The numbers on the axes represent the Hackbot 2D coordinates, the values in
+   * each cell represent the Crafty.isometric coordinates for the given Hackbot
+   * grid field.
    *
    *      0      1     2     3
    *   -------------------------
@@ -162,17 +168,16 @@
       return coordinates2d;
     },
 
-    _calcPixelCoords: function(x, y, z, zPxPosition) {
-      this.toIso(x, y);
+    _calcPixelCoords: function(x2d, y2d, z, zPxPosition) {
+      this.toIso(x2d, y2d);
       var pos = game.iso.pos2px(this.xIso, this.yIso);
-      // pos.top -= z * (this._tile.height / 2);
       pos.top -= z * game.pixelPerHeightLevel;
       if (!(zPxPosition === null || zPxPosition === undefined)) {
         pos.top += zPxPosition;
       }
       return {
-          x: pos.left + game.map.levelInfo.xOffset,
-          y: pos.top + game.map.levelInfo.yOffset,
+        x: pos.left + game.map.levelInfo.xOffset,
+        y: pos.top + game.map.levelInfo.yOffset,
       };
     },
 

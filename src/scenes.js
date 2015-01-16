@@ -3,7 +3,8 @@ game = (function() {
 
   Crafty.scene('Loading', function() {
     game.loadAssets(function() {
-      Crafty.scene('Welcome');
+      var scene = hb.router.route();
+      Crafty.scene(scene);
     });
   });
 
@@ -19,18 +20,18 @@ game = (function() {
 
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(0, 'Play', 'CategorySelect');
+      .hbMenuButton(0, 'Play', 'CategorySelect', '#/play');
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(1, 'How To Play', 'Instructions1');
+      .hbMenuButton(1, 'How To Play', 'Instructions1', '#/instructions/1');
     /*
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(2, 'Options');
+      .hbMenuButton(2, 'Options', '#/options');
     */
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(2, 'Level Editor', 'LevelEditor');
+      .hbMenuButton(2, 'Level Editor', 'LevelEditor', '#/editor');
   });
 
   Crafty.scene('CategorySelect', function() {
@@ -49,13 +50,16 @@ game = (function() {
       }
       Crafty
         .e('HbCategorySelectButton')
-        .hbCategorySelectButton(index++, category.name, category);
+        .hbCategorySelectButton(index++, category.name, category, categoryId);
     }
 
     Crafty.e('HbImgButton')
       .hbButton(5, 5, 48, 24)
       .hbImgButton('leave')
-      .bind('Click', function() { Crafty.scene('Welcome'); })
+      .bind('Click', function() {
+        history.pushState(null, null, '#');
+        Crafty.scene('Welcome');
+      })
       .css({ 'background-position': '14px 3px' })
     ;
   });
@@ -73,14 +77,17 @@ game = (function() {
       var level = game.category.levels[levelId];
       Crafty
         .e('HbLevelSelectButton')
-        .hbLevelSelectButton(index++, level.name, levelId);
-      // use levels description?
+        .hbLevelSelectButton(index++, level.name, game.category.id, levelId);
+      // TODO use levels description?
     }
 
     Crafty.e('HbImgButton')
       .hbButton(5, 5, 48, 24)
       .hbImgButton('leave')
-      .bind('Click', function() { Crafty.scene('CategorySelect'); })
+      .bind('Click', function() {
+        history.pushState(null, null, '#/play');
+        Crafty.scene('CategorySelect');
+      })
       .css({ 'background-position': '14px 3px' })
     ;
   });

@@ -2,14 +2,40 @@
   'use strict';
 
   Crafty.c('Tile', {
+
+    _spriteNames: {
+      floor:   {
+        base: 'SprFloorGrey',
+        highlighted: 'SprFloorGreyMouseOver',
+        selected: 'SprFloorGreyTileSelected',
+      },
+      targetInactive: {
+        base: 'SprFloorRed',
+        highlighted: 'SprFloorRedMouseOver',
+        selected: 'SprFloorRedTileSelected',
+      },
+      targetActive: {
+        base: 'SprFloorGreen',
+        highlighted: 'SprFloorGreenMouseOver',
+        selected: 'SprFloorGreenTileSelected',
+      },
+      ghost:  {
+        base: 'SprFloorGhost',
+        highlighted: 'SprFloorGhostMouseOver',
+        selected: 'SprFloorGhostTileSelected',
+      },
+    },
+
     init: function() {
       this.requires('IsoDomSprite');
     },
 
-    tile: function(x, y, z, floor, levelInfo) {
+    tile: function(x, y, z, floorType, levelInfo) {
       this.levelInfo = levelInfo;
-      this.floor = floor;
-      this.addComponent(this.floor);
+      this._floorType = floorType;
+      this.isSelected = false;
+      this.isHighlighted = false;
+      this._setSprite();
       this.setLength2d(this.levelInfo.length2d)
       this.x2d = x;
       this.y2d = y;
@@ -19,10 +45,6 @@
       // events for level editor
       if (game.editMode) {
         this.addComponent('Mouse, Keyboard');
-
-        this.isSelected = false;
-        this.floorMouseOver = floor + 'MouseOver';
-        this.floorTileSelected = floor + 'TileSelected';
 
         this.bind('Click', function(e) {
           if (this.isDown('SHIFT')) {
@@ -45,26 +67,57 @@
       return this;
     },
 
+    _setSprite: function() {
+      // Calculate new floor sprite
+      var spriteList = this._spriteNames[this._floorType];
+      if (!spriteList) {
+        throw new Error('Could not find sprite list for floor type ' +
+            this._floorType);
+      }
+      var sprite;
+      if (this.isSelected) {
+        sprite = spriteList.selected;
+      } else if (this.isHighlighted) {
+        sprite = spriteList.highlighted;
+      } else {
+        sprite = spriteList.base;
+      }
+
+      // If different from current floor sprite
+      if (sprite !== this._sprite) {
+        // remove current sprite, if any
+        if (this._sprite) {
+          this.removeComponent(this._sprite);
+        }
+        // set new sprite
+        this.addComponent(sprite);
+        this._sprite = sprite;
+      }
+    },
+
+    setFloorType: function(floorType) {
+      this._floorType = floorType;
+      this._setSprite();
+    },
+
     select: function() {
-      this.removeComponent(this.floor);
-      this.removeComponent(this.floorMouseOver);
-      this.addComponent(this.floorTileSelected);
+      this.isSelected = true;
+      this._setSprite();
     },
 
     unSelect: function() {
-      this.addComponent(this.floor);
-      this.removeComponent(this.floorMouseOver);
-      this.removeComponent(this.floorTileSelected);
+      this.isSelected = false;
+      this._setSprite();
     },
 
     highlight: function() {
-      this.removeComponent(this.floor);
-      this.addComponent(this.floorMouseOver);
+      this.isHighlighted = true;
+      this._setSprite();
     },
 
     unHighlight: function() {
-      this.addComponent(this.floor);
-      this.removeComponent(this.floorMouseOver);
+      this.isHighlighted = false;
+      this._setSprite();
     },
 
     _placeOnStage: function() {
