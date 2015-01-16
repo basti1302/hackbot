@@ -2,12 +2,7 @@ TODOs
 =====
 
 * More advanced levels
-* [UX] it's a SPA - have some after-#-path in URL on navigation (/edit,
-  /play/{level}) etc. so that a reload does not make you go to the start screen
-  everytime.
-* [UX] improve level solved message:
-       - block all buttons (play, reset, clear)
-       - navigation: dismiss message (going back to level) / leave leve (go back to level select)
+* [UX] when dropping cards in occupied spaces, insert them instead of replace them.
 * [MOBILE] It looks weird/broken on mobile browsers - Android SDK and/or weinre
 * [FEATURE] main-call: a card which calls the main routine
             - don't add it to the default card set
@@ -29,13 +24,11 @@ TODOs
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
 * [VISUAL] Nicer animation for bot jump (have a look at http://opengameart.org/content/robo-welder)
 * [VISUAL] Animate bot jump even when its jumping in situ
-* [FEATURE] save levels to local storage
-* [FEATURE] load levels from local storage
 * [FEATURE] export/import levels from local storage to/from file
 * [FEATURE/UX] Clicking execute/reset program cards *cancel* current execution - similar to hasWon check
 * [TESTS] For pixel positions during bot movements
-* [UX] when dropping cards in occupied spaces, insert them instead of replace them.
   Cards get destroyed if the move out at the end.
+* [Refactoring] All global objects should be moved to the hb namespace, so that hb is the only global object. That is hb.game instead of game etc.
 
 * Sound? https://www.freesound.org/ , http://opengameart.org/
 

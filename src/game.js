@@ -141,8 +141,10 @@ game = (function() {
 
   Game.prototype.leaveLevel = function() {
     if (!this.editMode) {
+      history.pushState(null, null, '#/play/' + game.category.id);
       Crafty.scene('LevelSelect');
     } else {
+      history.pushState(null, null, '#');
       Crafty.scene('Welcome');
     }
   };
