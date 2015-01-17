@@ -10,7 +10,7 @@ game = (function() {
 
   Crafty.scene('Welcome', function() {
 
-    // draw welcome line with text shadows
+    // draw welcome line
     Crafty.e('2D, DOM, Text')
     .text('Welcome to Hackbot')
     .attr({ x: 0, y: 24, w: game.widthPx, z: 3, })
@@ -53,15 +53,13 @@ game = (function() {
         .hbCategorySelectButton(index++, category.name, category, categoryId);
     }
 
-    Crafty.e('HbImgButton')
-      .hbButton(5, 5, 48, 24)
-      .hbImgButton('leave')
-      .bind('Click', function() {
-        history.pushState(null, null, '#');
-        Crafty.scene('Welcome');
-      })
-      .css({ 'background-position': '14px 3px' })
-    ;
+    Crafty.e('HbSpriteButton')
+    .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')
+    .hbButton(5, 5, 48, 25)
+    .bind('Click', function() {
+      history.pushState(null, null, '#');
+      Crafty.scene('Welcome');
+    });
   });
 
   Crafty.scene('LevelSelect', function() {
@@ -81,15 +79,13 @@ game = (function() {
       // TODO use levels description?
     }
 
-    Crafty.e('HbImgButton')
-      .hbButton(5, 5, 48, 24)
-      .hbImgButton('leave')
-      .bind('Click', function() {
-        history.pushState(null, null, '#/play');
-        Crafty.scene('CategorySelect');
-      })
-      .css({ 'background-position': '14px 3px' })
-    ;
+    Crafty.e('HbSpriteButton')
+    .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')
+    .hbButton(5, 5, 48, 25)
+    .bind('Click', function() {
+      history.pushState(null, null, '#/play');
+      Crafty.scene('CategorySelect');
+    });
   });
 
   Crafty.scene('Play', function() {

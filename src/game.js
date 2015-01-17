@@ -46,7 +46,15 @@ game = (function() {
     // buttons
     this.buttonPadding = 5;
     this.buttonWidth = 48;
-    this.buttonHeight = 24;
+    this.buttonHeight = 25;
+    this.buttons = {
+      play: 'SprButtonPlay',
+      rewind: 'SprButtonRewind',
+      'delete': 'SprButtonDelete',
+      leave: 'SprButtonLeave',
+      previous: 'SprButtonPrevious',
+      next: 'SprButtonNext',
+    };
 
     // viewport size
     this.width = 12;
@@ -90,16 +98,7 @@ game = (function() {
         'assets/images/floor.png',
         'assets/images/robot.png',
         'assets/images/cards.png',
-        'assets/images/buttons/leave.png',
-        'assets/images/buttons/leave_disabled.png',
-        'assets/images/buttons/next.png',
-        'assets/images/buttons/previous.png',
-        'assets/images/buttons/play_disabled.png',
-        'assets/images/buttons/play.png',
-        'assets/images/buttons/rewind.png',
-        'assets/images/buttons/rewind_disabled.png',
-        'assets/images/buttons/delete_disabled.png',
-        'assets/images/buttons/delete.png',
+        'assets/images/buttons.png',
       ]
     }, function onLoad() {
       Crafty.sprite(self.baseSize, self.floorImgHeight, 'assets/images/floor.png', {
@@ -130,6 +129,20 @@ game = (function() {
         SprCardAction: [4, 0],
         SprCardSubroutine1: [5, 0],
         SprCardSubroutine2: [6, 0],
+      });
+      Crafty.sprite(48, 25, 'assets/images/buttons.png', {
+        SprButtonPlay: [0, 0],
+        SprButtonPlayDisabled: [1, 0],
+        SprButtonRewind: [0, 1],
+        SprButtonRewindDisabled: [1, 1],
+        SprButtonDelete: [0, 2],
+        SprButtonDeleteDisabled: [1, 2],
+        SprButtonLeave: [0, 3],
+        SprButtonLeaveDisabled: [1, 3],
+        SprButtonPrevious: [0, 4],
+        SprButtonPreviousDisabled: [1, 4],
+        SprButtonNext: [0, 5],
+        SprButtonNextDisabled: [1, 5],
       });
       callback();
     });
@@ -290,12 +303,11 @@ game = (function() {
   };
 
   Game.prototype._createButton = function(x, y, name, action) {
-    var button =
-      Crafty.e('HbImgButton')
-      .hbButton(x, y, this.buttonWidth, this.buttonHeight)
-      .hbImgButton(name)
-      .bind('Click', action.bind(game))
-      .css({ 'background-position': '14px 3px' })
+    var sprite = this.buttons[name];
+    var button = Crafty.e('HbSpriteButton')
+    .hbSpriteButton(sprite, sprite + 'Disabled')
+    .hbButton(x, y, this.buttonWidth, this.buttonHeight)
+    .bind('Click', action.bind(game))
     ;
     return button;
   };
