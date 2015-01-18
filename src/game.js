@@ -374,6 +374,17 @@ game = (function() {
     });
   };
 
+  Game.prototype.removeInstructionTypeFromProgram = function(instruction) {
+    this._withEachSlot(function(slot) {
+      if (slot.card && slot.card.instruction === instruction) {
+        var card = slot.card;
+        slot.unlinkCard();
+        card.destroy();
+      }
+    });
+    this.reorderInstructionAreas();
+  };
+
   Game.prototype._withEachSlot = function(fn) {
     for (var instrAreaName in this.instructionAreas) {
       if (this.instructionAreas.hasOwnProperty(instrAreaName)) {

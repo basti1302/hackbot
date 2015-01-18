@@ -92,10 +92,6 @@ game = (function() {
     game.startLevel();
   });
 
-  Crafty.scene('LevelSolved', function() {
-    throw new Error('Not yet implemented. Sorry.');
-  });
-
   Crafty.scene('LevelEditor', function() {
     editor.startLevelEditing();
   });

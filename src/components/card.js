@@ -29,6 +29,7 @@
       this.bind('StopDrag', function() {
         self._onStopDrag();
       });
+      this._enabled = true;
     },
 
     card: function(instruction) {
@@ -64,6 +65,50 @@
       this.attr({ x: this.xOrig, y: this.yOrig });
       this.sourcePanel[cardIndex] = this;
       this.cardIndex = cardIndex;
+
+      // in edit mode, cards can be disabled with a checkbox
+      var self = this;
+      if (game.editMode) {
+        var checkbox = $('<input type="checkbox" name="cards" ' +
+            'checked="checked" ' +
+            'class="card-enable-disable" ' +
+            'style="' +
+            'left: ' + (this.xOrig + 15) + 'px; ' +
+            'top: ' + (this.yOrig - 25) + 'px; "/>')
+        .appendTo('#cr-stage')
+        .click(function() {
+          self._toggle();
+        });
+        // action card can not be disabled
+        if (cardIndex === 4) {
+          checkbox.prop('disabled', true);
+        }
+      }
+    },
+
+    _toggle: function() {
+      if (!game.editMode) {
+        return;
+      }
+      if (this._enabled) {
+        this.overlay = $('<div ' +
+            'class="card-overlay"' +
+            'style="' +
+            'left: ' + this.xOrig + 'px; ' +
+            'top: ' + this.yOrig + 'px; ' +
+            '"/>')
+        .appendTo('#cr-stage')
+        .click(function() {
+          self._toggle();
+        });
+        this.removeComponent('Draggable'); // TODO has no effect
+        this._enabled = false;
+        game.removeInstructionTypeFromProgram(this.instruction);
+      } else {
+        this.overlay.remove();
+        this.addComponent('Draggable');
+        this._enabled = true;
+      }
     },
 
     /*
@@ -104,6 +149,12 @@
     },
 
     _onDragging: function() {
+      // Disable dragging in editor when card has been disabled for this map
+      // Unfortunately, this.removeComponent('Draggable') has no effect.
+      if (!this._enabled) {
+        this.attr({ x: this.xOrig, y: this.yOrig });
+      }
+
       // now we know that it is a dragging event and not a simple mouse click
       // without dragging
       this._reallyDragging = true;
@@ -127,9 +178,10 @@
           this.highlightedSlots.push(slot);
           slot.highlight();
         }
-        return;
+      } else {
+        this._clearHighlightedSlots();
       }
-      this._clearHighlightedSlots();
+
     },
 
     _onStopDrag: function() {
@@ -151,6 +203,7 @@
      * handle mouse click (no dragging happened)
      */
     _handleMouseClick: function() {
+      if (!this._enabled) { return; }
       if (this._draggingSource === 'sourcePanel') {
         var activeInstructionArea = game.activeInstructionArea;
         if (activeInstructionArea) {

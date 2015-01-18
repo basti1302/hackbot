@@ -61,3 +61,15 @@ body {
 .inline-block {
   display: inline-block;
 }
+.card-enable-disable {
+  position: absolute;
+}
+.card-overlay {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  background-color: gray;
+  opacity: 0.5;
+  border: solid white;
+  z-index: 1001;
+}
