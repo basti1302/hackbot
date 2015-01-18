@@ -253,9 +253,14 @@ game = (function() {
         hasMain = true;
       }
       var areaInfo = level.instructionAreas[name];
-      var instructionArea = Crafty.e('InstructionArea').instructionArea(name, areaInfo.instructions, yOffset);
+      var instructionArea =
+        Crafty.e('InstructionArea')
+        .instructionArea(name, areaInfo.instructions, yOffset);
       yOffset += instructionArea.height + this.areaPadding;
       this.instructionAreas[name] = instructionArea;
+      if (this.editMode && name !== 'main') {
+        instructionArea.disable();
+      }
     }
     if (!hasMain) {
       throw new Error('Every level needs an instructionArea with name main');

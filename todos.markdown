@@ -29,15 +29,12 @@ TODOs
 * [TESTS] For pixel positions during bot movements
   Cards get destroyed if the move out at the end.
 * [Refactoring] All global objects should be moved to the hb namespace, so that hb is the only global object. That is hb.game instead of game etc.
+* Build a small non-Crafty SPA around the game (and the editor), so that all other pages (menu, level select, etc.) are not build on Crafty but simple pages. Game is started/initialized by URL parameters.
 
 * Sound? https://www.freesound.org/ , http://opengameart.org/
 
 Level Editor
 ------------
-
-* Disable/enable cards
-* Disable/enable programming slots
-* Disable/enable programming areas
 
 * Export normalized map to JSON, including bot position, cards, programming slots & areas.
 * Save levels to local storage

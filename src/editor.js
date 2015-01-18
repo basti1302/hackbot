@@ -64,8 +64,8 @@ editor = (function() {
 
         // Remove checkboxes to enable/disable cards, those have been added via
         // jQuery, not via Crafty
-        $('.card-enable-disable').remove();
-        $('.card-overlay').remove();
+        $('.editor-enable-disable').remove();
+        $('.editor-card-overlay').remove();
       };
       this.bind('SceneDestroy', leaveEditor);
     },

@@ -61,10 +61,10 @@ body {
 .inline-block {
   display: inline-block;
 }
-.card-enable-disable {
+.editor-enable-disable {
   position: absolute;
 }
-.card-overlay {
+.editor-card-overlay {
   position: absolute;
   width: 42px;
   height: 42px;
@@ -72,4 +72,8 @@ body {
   opacity: 0.5;
   border: solid white;
   z-index: 1001;
+}
+.editor-instr-slots {
+  width: 3em;
+  text-align: right;
 }

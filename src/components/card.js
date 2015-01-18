@@ -70,11 +70,11 @@
       var self = this;
       if (game.editMode) {
         var checkbox = $('<input type="checkbox" name="cards" ' +
-            'checked="checked" ' +
-            'class="card-enable-disable" ' +
-            'style="' +
-            'left: ' + (this.xOrig + 15) + 'px; ' +
-            'top: ' + (this.yOrig - 25) + 'px; "/>')
+          'checked="checked" ' +
+          'class="editor-enable-disable" ' +
+          'style="' +
+          'left: ' + (this.xOrig + 15) + 'px; ' +
+          'top: ' + (this.yOrig - 25) + 'px; "/>')
         .appendTo('#cr-stage')
         .click(function() {
           self._toggle();
@@ -92,11 +92,11 @@
       }
       if (this._enabled) {
         this.overlay = $('<div ' +
-            'class="card-overlay"' +
-            'style="' +
-            'left: ' + this.xOrig + 'px; ' +
-            'top: ' + this.yOrig + 'px; ' +
-            '"/>')
+          'class="editor-card-overlay"' +
+          'style="' +
+          'left: ' + this.xOrig + 'px; ' +
+          'top: ' + this.yOrig + 'px; ' +
+          '"/>')
         .appendTo('#cr-stage')
         .click(function() {
           self._toggle();
