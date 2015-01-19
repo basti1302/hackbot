@@ -61,3 +61,19 @@ body {
 .inline-block {
   display: inline-block;
 }
+.editor-enable-disable {
+  position: absolute;
+}
+.editor-card-overlay {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  background-color: gray;
+  opacity: 0.5;
+  border: solid white;
+  z-index: 1001;
+}
+.editor-instr-slots {
+  width: 3em;
+  text-align: right;
+}

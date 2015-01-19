@@ -64,6 +64,7 @@
     },
 
     bot: function(position) {
+      this._startPosition = Crafty.clone(position);
       this.setPosition(position);
       return this;
     },
@@ -87,6 +88,10 @@
 
       this.animate(this.botReels[position.direction], 0);
       return this;
+    },
+
+    resetPosition: function() {
+      this.setPosition(Crafty.clone(this._startPosition));
     },
 
     /*
@@ -386,7 +391,6 @@
       this._enableDisableManualControl();
     },
 
-
     // TODO Move everything related to manual control somewhere else...
     // maybe refactor into component ManualControl and make Bot componet
     // require that.
@@ -435,6 +439,7 @@
         } else if (this.isDown('B')) {
           this.toggleManualControl();
         }
+        this._startPosition = this.position;
       } else {
         // manual controls in game (instead of edit mode), slightly different than in edit mode
         if (this.isDown('UP_ARROW') || this.isDown('W')) {
@@ -448,6 +453,14 @@
         } else if (this.isDown('CTRL')) {
           this.instruct(this.moves.action, logInstructionResult);
         }
+      }
+    },
+
+    exportStartPosition: function() {
+      return {
+        x: this._startPosition.x,
+        y: this._startPosition.y,
+        direction: this._startPosition.direction,
       }
     },
 

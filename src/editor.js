@@ -29,6 +29,8 @@ editor = (function() {
           game.map.toggleTargetForSelected();
         } else if (this.isDown('B')) {
           game.bot.toggleManualControl();
+        } else if (this.isDown('X')) {
+          game.exportLevel();
         }
       };
       this.bind('KeyDown', editorKeyBindings);
@@ -41,7 +43,8 @@ editor = (function() {
           'Arrow up: Raise selected tile(s), ' +
           'Arrow down: Lower tile(s), ' +
           'CTRL: Toggle tile\'s color (red/grey).<br>' +
-          'B: Toggle manual control for bot (to set bot\'s starting position). Use WSAD/&uarr;&darr;&larr;&rarr; to move.<br>'
+          'B: Toggle manual control for bot (to set bot\'s starting position). Use WSAD/&uarr;&darr;&larr;&rarr; to move.<br>' +
+          'X: Export'
       );
 
       $('#editor-status').html('<strong>Control Bot: INACTIVE</strong>');
@@ -61,6 +64,11 @@ editor = (function() {
         $('#editor-help').html('');
 
         this.unbind('SceneDestroy', leaveEditor);
+
+        // Remove checkboxes to enable/disable cards, those have been added via
+        // jQuery, not via Crafty
+        $('.editor-enable-disable').remove();
+        $('.editor-card-overlay').remove();
       };
       this.bind('SceneDestroy', leaveEditor);
     },
