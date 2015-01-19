@@ -33,11 +33,12 @@
               direction: 'downLeft',
             },
             terrain: [
-              [g, g, g, g, g],
-              [g, 0, 0, 0, g],
-              [g, 0, 0, 0, g],
-              [g, 0, 0, 0, g],
-              [g, g, g, g, g],
+              [g, g, g, g, g, g],
+              [g, 0, 0, 0, g, g],
+              [g, 0, 0, 0, g, g],
+              [g, 0, 0, 0, g, g],
+              [g, g, g, g, g, g],
+              [g, g, g, g, g, g],
             ],
           },
 
@@ -360,7 +361,15 @@
         }, // end of levels object
       }, // end of category subroutines
 
+      editor: {
+        name: 'Made with editor',
+        hidden: true,
+        levels: {
+          test: {"name":"A  new Hackbot level","description":"","instructionAreas":{"main":{"instructions":12}},"bot":{"x":2,"y":3,"direction":"upLeft"},"cards":["forward","turnLeft","turnRight","jump","action"],"terrain":[[null,null,null,null,null,null],[null,{"floor":"targetInactive","level":2},{"floor":"floor","level":2},{"floor":"floor","level":1},null,null],[null,{"floor":"floor","level":2},null,{"floor":"targetInactive","level":0},null,null],[null,{"floor":"floor","level":1},{"floor":"floor","level":0},null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null]]}
+        }, // end of levels object
+      }, // end of category editor
+
     } // end of categories object
-  }; // end of levels object literal
+  }; // end of game.levels object literal
 
 })(game);

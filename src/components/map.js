@@ -7,6 +7,8 @@
       floor: 'floor',
       targetInactive: 'targetInactive',
       targetActive: 'targetActive',
+      // ghost tiles are only used in the level editor to visualize spots
+      // where no tile is but where a new tile can be created.
       ghost: 'ghost',
     },
 
@@ -495,6 +497,36 @@
         throw new Error('tileInfo at ' + x + ', ' + y + ' has a weird level: '
           + tileInfo.level);
       }
+    },
+
+    exportTerrain: function() {
+      var terrain = [];
+      for (var y = 0; y < this._normalizedMap.length; y++) {
+        var normalizedRow = this._normalizedMap[y];
+        var row = [];
+        for (var x = 0; x < normalizedRow.length; x++) {
+          var tileInfo = normalizedRow[x];
+          // handle spots where no tile is, including ghost tiles
+          if (tileInfo === null ||
+              tileInfo === undefined ||
+              tileInfo.isGhost) {
+            row.push(null);
+          } else {
+            row.push(this._exportTileInfo(tileInfo));
+          }
+        }
+        // TODO Check if row is completely made of null values, don't push row then. But keep in mind that bot position needs to be adjusted.
+        // What about all-null columns?
+        terrain.push(row);
+      }
+      return terrain;
+    },
+
+    _exportTileInfo: function(tileInfo) {
+      return {
+        floor: tileInfo.floor,
+        level: tileInfo.level,
+      };
     },
 
     _withTileInfo: function(x, y, fn) {

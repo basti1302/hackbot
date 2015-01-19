@@ -29,7 +29,7 @@
       this.bind('StopDrag', function() {
         self._onStopDrag();
       });
-      this._enabled = true;
+      this.enabled = true;
     },
 
     card: function(instruction) {
@@ -69,7 +69,7 @@
       // in edit mode, cards can be disabled with a checkbox
       var self = this;
       if (game.editMode) {
-        var checkbox = $('<input type="checkbox" name="cards" ' +
+        this.checkbox = $('<input type="checkbox" name="cards" ' +
           'checked="checked" ' +
           'class="editor-enable-disable" ' +
           'style="' +
@@ -77,37 +77,47 @@
           'top: ' + (this.yOrig - 25) + 'px; "/>')
         .appendTo('#cr-stage')
         .click(function() {
-          self._toggle();
+          self.toggleEnabled(false);
         });
-        // action card can not be disabled
-        if (cardIndex === 4) {
-          checkbox.prop('disabled', true);
+        this.checkbox.instruction = this.instruction;
+
+        // action card can not be disabled, neither can subroutineX card
+        // Reason: action is always needed to toggle target tiles. subroutineX
+        // cards are dynamically added to card set on level init when the
+        // corresponding instruction area is present
+        if (this.instruction === 'action' ||
+            this.instruction.indexOf('subroutine') === 0) {
+          this.checkbox.prop('disabled', true);
         }
       }
+      return this;
     },
 
-    _toggle: function() {
+    toggleEnabled: function(updateCheckbox) {
       if (!game.editMode) {
         return;
       }
-      if (this._enabled) {
+      this.enabled = !this.enabled;
+
+      if (!this.enabled) {
         this.overlay = $('<div ' +
           'class="editor-card-overlay"' +
           'style="' +
           'left: ' + this.xOrig + 'px; ' +
           'top: ' + this.yOrig + 'px; ' +
           '"/>')
-        .appendTo('#cr-stage')
-        .click(function() {
-          self._toggle();
-        });
+        .appendTo('#cr-stage');
         this.removeComponent('Draggable'); // TODO has no effect
-        this._enabled = false;
         game.removeInstructionTypeFromProgram(this.instruction);
       } else {
-        this.overlay.remove();
+        if (this.overlay) {
+          this.overlay.remove();
+        }
         this.addComponent('Draggable');
-        this._enabled = true;
+      }
+
+      if (updateCheckbox) {
+        this.checkbox.prop('checked', this.enabled);
       }
     },
 
@@ -151,7 +161,7 @@
     _onDragging: function() {
       // Disable dragging in editor when card has been disabled for this map
       // Unfortunately, this.removeComponent('Draggable') has no effect.
-      if (!this._enabled) {
+      if (!this.enabled) {
         this.attr({ x: this.xOrig, y: this.yOrig });
       }
 
@@ -203,7 +213,7 @@
      * handle mouse click (no dragging happened)
      */
     _handleMouseClick: function() {
-      if (!this._enabled) { return; }
+      if (!this.enabled) { return; }
       if (this._draggingSource === 'sourcePanel') {
         var activeInstructionArea = game.activeInstructionArea;
         if (activeInstructionArea) {

@@ -167,8 +167,8 @@ game = (function() {
       var level = this._defineLevel();
       this._createMap(level);
       this.bot = this._createBot(level.bot, level);
-      this._initInstructionAreas(level);
       this._initSourcePanel(level);
+      this._initInstructionAreas(level);
       this._initButtons();
     }
     this.pristine = true;
@@ -213,12 +213,15 @@ game = (function() {
     if (this.map) {
       botPosition.z = this.map.getTileZ(botPosition.x, botPosition.y) + 1;
     }
-    this._originalBotPosition = Crafty.clone(botPosition);
     var botEntity = Crafty.e('Bot').bot(botPosition);
     return botEntity;
   };
 
   Game.prototype._initSourcePanel = function(level) {
+    // Clone cards from level definition or clone default cards.
+    // We modify the array (pushing action subroutineX into it) on each reset.
+    // Without the clone we would double and triple the subroutine cards on each
+    // subsequent reset.
     var cards = level.cards ? level.cards.slice() : this.defaultCards.slice();
     if (level.instructionAreas.subroutine1) {
       cards.push('subroutine1');
@@ -226,9 +229,11 @@ game = (function() {
     if (level.instructionAreas.subroutine2) {
       cards.push('subroutine2');
     }
+    var c = []
     cards.forEach(function(instruction, cardIndex) {
-      Crafty.e('Card').card(instruction).place(cardIndex);
+      c.push(Crafty.e('Card').card(instruction).place(cardIndex));
     });
+    this.cards = c;
   };
 
   Game.prototype._initInstructionAreas = function(level) {
@@ -286,6 +291,14 @@ game = (function() {
         instructionArea.reorder();
       }
     }
+  };
+
+  Game.prototype.toggleCardInSourcePanel = function(instruction) {
+    this.cards.forEach(function(card) {
+      if (card.instruction === instruction) {
+        card.toggleEnabled(true);
+      }
+    });
   };
 
   Game.prototype._initButtons = function() {
@@ -358,14 +371,9 @@ game = (function() {
     if (!this.executing) {
       this._removeMessages();
       this.map.reset();
-      this._resetBotPosition();
+      this.bot.resetPosition();
       this.pristine = true;
     }
-  };
-
-  Game.prototype._resetBotPosition = function() {
-    var position = Crafty.clone(this._originalBotPosition);
-    this.bot.setPosition(position);
   };
 
   Game.prototype.clearProgram = function() {
@@ -440,6 +448,61 @@ game = (function() {
       this.messagePlayerHasWon.destroy();
       this.messagePlayerHasWon = null;
     }
+  };
+
+  Game.prototype.exportLevel = function() {
+    var level = {
+      name: 'A  new Hackbot level', // TODO input fields
+      description: '', // TODO input fields
+      instructionAreas: {
+        main: {
+          instructions: this.instructionAreas.main.numberOfSlots
+        },
+      },
+      bot: this.bot.exportStartPosition(),
+      cards: this._exportCards(),
+      terrain: this.map.exportTerrain(),
+    };
+    this._exportSubroutines(level);
+    this._startDownload(level);
+  };
+
+  Game.prototype._exportCards = function() {
+    return this.cards
+    .filter(function(card) {
+      return card.enabled
+    }).filter(function(card) {
+      return card.instruction.indexOf('subroutine') !== 0;
+    }).map(function(card) {
+      return card.instruction;
+    });
+  };
+
+  Game.prototype._exportSubroutines = function(level) {
+    if (this.instructionAreas.subroutine1 &&
+        this.instructionAreas.subroutine1.numberOfSlots > 0) {
+      level.instructionAreas.subroutine1 = {
+        instructions: this.instructionAreas.subroutine1.numberOfSlots
+      }
+    }
+    if (this.instructionAreas.subroutine2 &&
+        this.instructionAreas.subroutine2.numberOfSlots > 0) {
+      level.instructionAreas.subroutine2 = {
+        instructions: this.instructionAreas.subroutine2.numberOfSlots
+      }
+    }
+  };
+
+  Game.prototype._startDownload = function(level) {
+    var download = JSON.stringify(level);
+    var href = 'data:text/plain,' + encodeURIComponent(download);
+    var link = $('<a id="download" href="' + href + '" download="level.json">Download</a>')
+    link.click(function() {
+      // remove the bogus link once download has started
+      link.remove();
+    });
+    $('#editor-download').append(link);
+    link[0].click();
   };
 
   return new Game();

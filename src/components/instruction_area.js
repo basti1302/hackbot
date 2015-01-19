@@ -115,6 +115,10 @@
         }
       }
 
+      if (this.name !== 'main') {
+        game.toggleCardInSourcePanel(this.name);
+      }
+
       // Let drawSlots() add more slots if needed
       this.drawSlots(numberOfSlots);
       return numberOfSlots;
@@ -154,6 +158,7 @@
         w: game.widthPx,
         h: this.height,
       });
+      this.numberOfSlots = numberOfSlots;
     },
 
     onClick: function() {

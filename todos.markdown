@@ -24,7 +24,6 @@ TODOs
 * [VISUAL] correct instruction area and slot sizes, so that cards fit perfectly
 * [VISUAL] Nicer animation for bot jump (have a look at http://opengameart.org/content/robo-welder)
 * [VISUAL] Animate bot jump even when its jumping in situ
-* [FEATURE] export/import levels from local storage to/from file
 * [FEATURE/UX] Clicking execute/reset program cards *cancel* current execution - similar to hasWon check
 * [TESTS] For pixel positions during bot movements
   Cards get destroyed if the move out at the end.
@@ -36,11 +35,17 @@ TODOs
 Level Editor
 ------------
 
-* Export normalized map to JSON, including bot position, cards, programming slots & areas.
+* Load levels from disk for playing
+* Load levels from disk for editing
+* Export levels JSON to base64 and turn into url query param
+* Deserialize level JSON from query param for playing
+* Deserialize level JSON from query param for editing
+
+* Upload levels ... somehwere - Hoodie? Firebase? Gist?
+
 * Save levels to local storage
 * Load levels from local storage in editor
 * Load edited levesl from local storage for playing
-* Upload levels ... somehwere
 
 * Make buttons for raise/lower/mark and so forth -> enables using the editor without remembering weird keyboard commands
 * maxHeight currently needs to be a fixed value, but can change dynamically in edit mode
