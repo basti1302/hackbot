@@ -17,6 +17,15 @@ game = (function() {
     Crafty.scene('Loading');
   };
 
+  Game.prototype.loadLevelFromJson = function(jsonString) {
+    try {
+      this.levelFromJson = JSON.parse(jsonString);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   Game.prototype.init = function(testMode) {
 
     /*********************************************
@@ -154,8 +163,13 @@ game = (function() {
 
   Game.prototype.leaveLevel = function() {
     if (!this.editMode) {
-      history.pushState(null, null, '#/play/' + game.category.id);
-      Crafty.scene('LevelSelect');
+      if (this.levelFromJson) {
+        history.pushState(null, null, '#/play');
+        Crafty.scene('CategorySelect');
+      } else {
+        history.pushState(null, null, '#/play/' + game.category.id);
+        Crafty.scene('LevelSelect');
+      }
     } else {
       history.pushState(null, null, '#');
       Crafty.scene('Welcome');
@@ -184,17 +198,22 @@ game = (function() {
   };
 
   Game.prototype._defineLevel = function() {
-    // defaults
-    if (this.category == null) {
-      this.category = this.levels.categories.basics;
-    }
-    var levelId = this.levelId || 'first';
+    if (this.levelFromJson) {
+      // already loaded level from file or from query parameter
+      return this.levelFromJson;
+    } else {
+      // defaults
+      if (this.category == null) {
+        this.category = this.levels.categories.basics;
+      }
+      var levelId = this.levelId || 'first';
 
-    var level = this.category.levels[levelId];
-    if (!level) {
-      throw new Error('Unknown level: ' + levelId);
+      var level = this.category.levels[levelId];
+      if (!level) {
+        throw new Error('Unknown level: ' + levelId);
+      }
+      return level;
     }
-    return level;
   };
 
   /*

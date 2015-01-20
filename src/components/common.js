@@ -90,29 +90,6 @@
     },
   });
 
-  Crafty.c('HbSpriteButton', {
-    init: function() {
-      this.requires('HbButton');
-    },
-
-    hbSpriteButton: function(spriteEnabled, spriteDisabled) {
-      this._spriteEnabled = spriteEnabled;
-      this._spriteDisabled = spriteDisabled;
-      this.enableSprite();
-      return this;
-    },
-
-    enableSprite: function() {
-      this.removeComponent(this._spriteDisabled);
-      this.addComponent(this._spriteEnabled);
-    },
-
-    disableSprite: function() {
-      this.removeComponent(this._spriteEnabled);
-      this.addComponent(this._spriteDisabled);
-    },
-  });
-
   Crafty.c('HbMenuButton', {
     init: function() {
       this.requires('HbTextButton');
@@ -134,6 +111,29 @@
         this.disable();
       }
       return this;
+    },
+  });
+
+  Crafty.c('HbSpriteButton', {
+    init: function() {
+      this.requires('HbButton');
+    },
+
+    hbSpriteButton: function(spriteEnabled, spriteDisabled) {
+      this._spriteEnabled = spriteEnabled;
+      this._spriteDisabled = spriteDisabled;
+      this.enableSprite();
+      return this;
+    },
+
+    enableSprite: function() {
+      this.removeComponent(this._spriteDisabled);
+      this.addComponent(this._spriteEnabled);
+    },
+
+    disableSprite: function() {
+      this.removeComponent(this._spriteEnabled);
+      this.addComponent(this._spriteDisabled);
     },
   });
 

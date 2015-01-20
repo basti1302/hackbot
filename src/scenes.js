@@ -36,10 +36,10 @@ game = (function() {
 
   Crafty.scene('CategorySelect', function() {
     Crafty.e('2D, DOM, Text')
-      .text('Choose a level category')
-      .attr({ x: 0, y: 24, w: game.widthPx })
-      .textFont({ size: '24px', weight: 'bold' })
-      .textColor('#600000')
+    .text('Choose a level category')
+    .attr({ x: 0, y: 24, w: game.widthPx })
+    .textFont({ size: '24px', weight: 'bold' })
+    .textColor('#600000')
     ;
 
     var index = 0;
@@ -49,9 +49,36 @@ game = (function() {
         continue;
       }
       Crafty
-        .e('HbCategorySelectButton')
-        .hbCategorySelectButton(index++, category.name, category, categoryId);
+      .e('HbCategorySelectButton')
+      .hbCategorySelectButton(index++, category.name, category, categoryId);
     }
+
+    Crafty
+    .e('HbTextButton')
+    .hbButton(game.widthPx/2 - 128, 120 + (index + 1) * 32, 256, 24)
+    .hbTextButton('Load Level From File')
+    .onClick(function() {
+      $('<input type="file" id="level-upload" style="display: none">')
+      .appendTo($('body'))
+      .change(function() {
+        if (this.files && this.files.length >= 1) {
+          var reader = new FileReader();
+          reader.onload = (function(file) {
+            return function(e) {
+              var validLevel = game.loadLevelFromJson(e.target.result);
+              if (validLevel) {
+                var base64 = btoa(e.target.result);
+                history.pushState(null, null,
+                    '?level=' + base64 + '#/play');
+                Crafty.scene('Play');
+              }
+            };
+          })(this.files[0]);
+          reader.readAsText(this.files[0]);
+        }
+      })
+      .click();
+    });
 
     Crafty.e('HbSpriteButton')
     .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')

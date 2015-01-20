@@ -35,9 +35,7 @@ TODOs
 Level Editor
 ------------
 
-* Load levels from disk for playing
 * Load levels from disk for editing
-* Export levels JSON to base64 and turn into url query param
 * Deserialize level JSON from query param for playing
 * Deserialize level JSON from query param for editing
 
