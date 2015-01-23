@@ -20,18 +20,13 @@ game = (function() {
 
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(0, 'Play', 'CategorySelect', '#/play');
+      .hbMenuButton(0, 'Play', 'CategorySelect', '?#/play');
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(1, 'How To Play', 'Instructions1', '#/instructions/1');
-    /*
+      .hbMenuButton(1, 'How To Play', 'Instructions1', '?#/instructions/1');
     Crafty
       .e('HbMenuButton')
-      .hbMenuButton(2, 'Options', '#/options');
-    */
-    Crafty
-      .e('HbMenuButton')
-      .hbMenuButton(2, 'Level Editor', 'LevelEditor', '#/editor');
+      .hbMenuButton(2, 'Level Editor', 'LevelEditor', '?#/editor');
   });
 
   Crafty.scene('CategorySelect', function() {
@@ -84,7 +79,7 @@ game = (function() {
     .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')
     .hbButton(5, 5, 48, 25)
     .bind('Click', function() {
-      history.pushState(null, null, '#');
+      history.pushState(null, null, '?#');
       Crafty.scene('Welcome');
     });
   });
@@ -110,7 +105,7 @@ game = (function() {
     .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')
     .hbButton(5, 5, 48, 25)
     .bind('Click', function() {
-      history.pushState(null, null, '#/play');
+      history.pushState(null, null, '?#/play');
       Crafty.scene('CategorySelect');
     });
   });

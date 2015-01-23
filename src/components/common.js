@@ -148,7 +148,7 @@
         .hbTextButton(text)
       ;
       this.onClick(function() {
-        history.pushState(null, null, '#/play/' + categoryId);
+        history.pushState(null, null, '?#/play/' + categoryId);
         game.category = category;
         game.category.id = categoryId;
         Crafty.scene('LevelSelect');
@@ -168,7 +168,7 @@
         .hbTextButton(text)
       ;
       this.onClick(function() {
-        history.pushState(null, null, '#/play/' + categoryId + '/' + levelId);
+        history.pushState(null, null, '?#/play/' + categoryId + '/' + levelId);
         game.levelId = levelId;
         Crafty.scene('Play');
       });
@@ -186,7 +186,7 @@
       .hbSpriteButton('SprButtonPrevious', 'SprButtonPreviousDisabled')
       .hbButton(game.widthPx - 212, game.heightPx - 48, 48, 25)
       .onClick(function() {
-        history.pushState(null, null, '#/instructions/' + (index - 1));
+        history.pushState(null, null, '?#/instructions/' + (index - 1));
         Crafty.scene('Instructions' + (index - 1));
       });
       return this;
@@ -202,7 +202,7 @@
       .hbSpriteButton('SprButtonLeave', 'SprButtonLeaveDisabled')
       .hbButton(game.widthPx - 152, game.heightPx - 48, 48, 25)
       .onClick(function() {
-        history.pushState(null, null, '#');
+        history.pushState(null, null, '?#');
         Crafty.scene('Welcome');
       });
       return this;
@@ -218,7 +218,7 @@
       .hbSpriteButton('SprButtonNext', 'SprButtonNextDisabled')
       .hbButton(game.widthPx - 92, game.heightPx - 48, 48, 25)
       .onClick(function() {
-        history.pushState(null, null, '#/instructions/' + (index + 1));
+        history.pushState(null, null, '?#/instructions/' + (index + 1));
         Crafty.scene('Instructions' + (index + 1));
       });
       return this;

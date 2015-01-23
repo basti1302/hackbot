@@ -44,6 +44,11 @@
       var page = segments[1] || '1'
       return 'Instructions' + page;
     } else if (segments[0] === 'editor') {
+      // is there a base64 encoded level in the query params?
+      var levelJson = convertBase64QueryToJson(window.location.search);
+      if (levelJson) {
+        game.loadLevelFromJson(levelJson);
+      }
       return 'LevelEditor';
     }
 

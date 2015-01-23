@@ -164,14 +164,14 @@ game = (function() {
   Game.prototype.leaveLevel = function() {
     if (!this.editMode) {
       if (this.levelFromJson) {
-        history.pushState(null, null, '#/play');
+        history.pushState(null, null, '?#/play');
         Crafty.scene('CategorySelect');
       } else {
-        history.pushState(null, null, '#/play/' + game.category.id);
+        history.pushState(null, null, '?#/play/' + game.category.id);
         Crafty.scene('LevelSelect');
       }
     } else {
-      history.pushState(null, null, '#');
+      history.pushState(null, null, '?#');
       Crafty.scene('Welcome');
     }
   };
@@ -221,6 +221,10 @@ game = (function() {
    */
   Game.prototype._createMap = function(level) {
     this._originalLevel = Crafty.clone(level);
+    if (this.map) {
+      this.map.destroyAllEntities();
+      this.map.destroy();
+    }
     this.map = Crafty.e('Map');
     this.map.map(level);
   };

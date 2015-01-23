@@ -3,7 +3,6 @@
   'use strict';
 
   var n = null;
-  var g = { floor: 'ghost', level: -1 };
 
   game.levels = {
 
@@ -33,12 +32,12 @@
               direction: 'downLeft',
             },
             terrain: [
-              [g, g, g, g, g, g],
-              [g, 0, 0, 0, g, g],
-              [g, 0, 0, 0, g, g],
-              [g, 0, 0, 0, g, g],
-              [g, g, g, g, g, g],
-              [g, g, g, g, g, g],
+              [n, n, n, n, n, n],
+              [n, 0, 0, 0, n, n],
+              [n, 0, 0, 0, n, n],
+              [n, 0, 0, 0, n, n],
+              [n, n, n, n, n, n],
+              [n, n, n, n, n, n],
             ],
           },
 

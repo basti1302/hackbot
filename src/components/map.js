@@ -36,7 +36,10 @@
         xOffset: 0,
         yOffset: 0,
       };
+      this._normalizeLevel(level);
+    },
 
+    _normalizeLevel: function(level) {
       this._normalizedMap = [];
       this._targets =  [];
       var terrain = level.terrain;
@@ -54,8 +57,12 @@
 
           // handle spots where no tile is
           if (tileInfo === null || tileInfo === undefined) {
-            normalizedRow.push(null);
-            continue;
+            if (game.editMode) {
+              tileInfo = { floor: this.floorTypes.ghost, level: -1 };
+            } else {
+              normalizedRow.push(null);
+              continue;
+            }
           }
           var normalizedTileInfo = this._normalizeTile(x, y, tileInfo);
           normalizedRow.push(normalizedTileInfo);
@@ -83,6 +90,7 @@
       // dimension of playing field in y-axis
       this.levelInfo.heightInTiles = this._normalizedMap.length;
     },
+
 
     _normalizeTile: function(x, y, tileInfo) {
       var tileLevel;
@@ -390,10 +398,6 @@
     },
 
     _addTileOnTop: function(tileInfo, x, y) {
-      if (!tileInfo) {
-        // TODO create a new tile at x, y and add it to _normalizedMap
-        return;
-      }
       if (tileInfo.level > game.map.levelInfo.maxHeight - 2) {
         return;
       }
@@ -559,6 +563,29 @@
           // TODO if tileInfo == null call fn with (null, x, y)
         }
       }
+    },
+
+    _withAll: function(fn) {
+      for (var i = 0; i < this._normalizedMap.length; i++) {
+        var normalizedRow = this._normalizedMap[i];
+        for (var j = 0; j < normalizedRow.length; j++) {
+          var tileInfo = normalizedRow[j];
+          if (tileInfo) {
+            fn.call(this, tileInfo, tileInfo.x, tileInfo.y);
+          }
+        }
+      }
+    },
+
+    destroyAllEntities: function() {
+      this._withAll(function(tileInfo) {
+        if (tileInfo.tile) {
+          tileInfo.tile.destroy();
+        }
+        if (tileInfo.stack) {
+          // TODO destroy each entity on stack
+        }
+      });
     },
 
   });
