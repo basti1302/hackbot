@@ -1,6 +1,18 @@
 TODOs
 =====
 
+Bugs:
+* Dragging a card all the way back to the source panel, leaving it "nearly"
+  in its original slot leaves the card hanging just there, without putting it
+  back in the slot and without killing the superfluous clone in the source
+  panel.
+* Moving the bot (up arrow) does not work in editor.
+* Playing a program in the editor does not observe the same rules as in the game
+  but the rules from moving the bot manually.
+* Reset bot position/rewind does not correct z-level.
+
+Features:
+
 * More advanced levels
 * [UX] when dropping cards in occupied spaces, insert them instead of replace them.
 * [MOBILE] It looks weird/broken on mobile browsers - Android SDK and/or weinre
@@ -34,10 +46,6 @@ TODOs
 
 Level Editor
 ------------
-
-* Load levels from disk for editing
-* Deserialize level JSON from query param for playing
-* Deserialize level JSON from query param for editing
 
 * Upload levels ... somehwere - Hoodie? Firebase? Gist?
 
