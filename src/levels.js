@@ -348,6 +348,12 @@
               y: 4,
               direction: 'downRight',
             },
+            cards: [
+              'forward',
+              'action',
+              'turnLeft',
+              'turnRight',
+            ],
             terrain: [
               [{ level: 1, floor: 'red' }, 1, { level: 1, floor: 'red' }],
               [1],
