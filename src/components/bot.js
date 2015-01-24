@@ -133,7 +133,7 @@
           });
         });
       }
-      this.instruct(instruction, function(err, moved) {
+      this.instruct(instruction, false, function(err, moved) {
         if (err) { return callback(err); }
         if (self._hasWon()) {
           return callback();
@@ -162,7 +162,7 @@
      * (forward, rotate, jump, action), not a subroutine call or loop
      * instruction.
      */
-    instruct: function(instruction, callback) {
+    instruct: function(instruction, manualMove, callback) {
       callback = this._ensureCallback(callback);
       var jump = false;
       switch (instruction) {
@@ -187,7 +187,7 @@
             default:
               return callback(new Error('Unknown direction: ' + this.position.direction));
           }
-          return this._checkAndMove(step, jump, callback);
+          return this._checkAndMove(step, jump, manualMove, callback);
         case this.moves.backward:
           var step;
           switch (this.position.direction) {
@@ -206,7 +206,7 @@
             default:
               return callback(new Error('Unknown direction: ' + this.position.direction));
           }
-          return this._checkAndMove(step, jump, callback);
+          return this._checkAndMove(step, jump, manualMove, callback);
 
         case this.moves.turnLeft:
           // fall through
@@ -239,7 +239,7 @@
      * Checks if a movement step is possible (due to map layout and current bot
      * position) and if so, executes it.
      */
-    _checkAndMove: function(step, jump, callback) {
+    _checkAndMove: function(step, jump, manualMove, callback) {
       var zNow = this.position.z;
       var newPos = this._calculateNewPosition(step);
       var tileInfoThen = game.map.getTileInfo(newPos.x, newPos.y);
@@ -252,8 +252,9 @@
       var zThen = tileInfoThen.level + 1;
 
       // check if up/down movement is allowed
-      if (game.editMode) {
-        // any vertical movement is allowed in edit mode, even without jumping
+      if (game.editMode && manualMove) {
+        // any vertical movement is allowed in edit mode when manually
+        // controlling the bot, even without jumping.
         step.z = zThen - zNow;
         return this.executeStep(step, function() {
           callback(null, true);
@@ -429,13 +430,13 @@
       if (game.editMode) {
         // manual controls in edit mode
         if (this.isDown('UP_ARROW') || this.isDown('W')) {
-          this.instruct(this.moves.forward, logInstructionResult);
+          this.instruct(this.moves.forward, true, logInstructionResult);
         } else if (this.isDown('DOWN_ARROW') || this.isDown('S')) {
-          this.instruct(this.moves.backward, logInstructionResult);
+          this.instruct(this.moves.backward, true, logInstructionResult);
         } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
-          this.instruct(this.moves.turnLeft, logInstructionResult);
+          this.instruct(this.moves.turnLeft, true, logInstructionResult);
         } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
-          this.instruct(this.moves.turnRight, logInstructionResult);
+          this.instruct(this.moves.turnRight, true, logInstructionResult);
         } else if (this.isDown('B')) {
           this.toggleManualControl();
         }
@@ -443,15 +444,15 @@
       } else {
         // manual controls in game (instead of edit mode), slightly different than in edit mode
         if (this.isDown('UP_ARROW') || this.isDown('W')) {
-          this.instruct(this.moves.forward, logInstructionResult);
+          this.instruct(this.moves.forward, true, logInstructionResult);
         } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
-          this.instruct(this.moves.turnLeft, logInstructionResult);
+          this.instruct(this.moves.turnLeft, true, logInstructionResult);
         } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
-          this.instruct(this.moves.turnRight, logInstructionResult);
+          this.instruct(this.moves.turnRight, true, logInstructionResult);
         } else if (this.isDown('SPACE')) {
-          this.instruct(this.moves.jump, logInstructionResult);
+          this.instruct(this.moves.jump, true, logInstructionResult);
         } else if (this.isDown('CTRL')) {
-          this.instruct(this.moves.action, logInstructionResult);
+          this.instruct(this.moves.action, true, logInstructionResult);
         }
       }
     },
