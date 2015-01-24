@@ -94,6 +94,7 @@ editor = (function() {
             return function(e) {
               var validLevel = game.loadLevelFromJson(e.target.result);
               if (validLevel) {
+                self._destroyAllEntities();
                 self._leaveEditor();
                 var base64 = btoa(e.target.result);
                 history.pushState(null, null,
@@ -108,6 +109,10 @@ editor = (function() {
         }
       })
       .click();
+    },
+
+    _destroyAllEntities: function() {
+      game.destroyAllEntities();
     },
 
   });

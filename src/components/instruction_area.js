@@ -196,6 +196,21 @@
       }
     },
 
+    destroyAllCardsAndSlots: function() {
+      for (var row = 0; row < this.slots.length; row++) {
+        var rowArray = this.slots[row];
+        for (var column = 0; column < rowArray.length; column++) {
+          var slot = rowArray[column];
+          if (slot.isOccupied()) {
+            var card = slot.card;
+            slot.unlinkCard();
+            card.destroy();
+            slot.destroy();
+          }
+        }
+      }
+    },
+
   });
 
 })();

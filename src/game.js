@@ -222,7 +222,6 @@ game = (function() {
   Game.prototype._createMap = function(level) {
     this._originalLevel = Crafty.clone(level);
     if (this.map) {
-      this.map.destroyAllEntities();
       this.map.destroy();
     }
     this.map = Crafty.e('Map');
@@ -526,6 +525,19 @@ game = (function() {
     });
     $('#editor-download').append(link);
     link[0].click();
+  };
+
+  Game.prototype.destroyAllEntities = function() {
+    this.map.destroyAllEntities();
+    this.bot.destroy();
+    for (var instrAreaName in this.instructionAreas) {
+      if (this.instructionAreas.hasOwnProperty(instrAreaName)) {
+        var instructionArea = this.instructionAreas[instrAreaName];
+        instructionArea.destroyAllCardsAndSlots();
+        instructionArea.destroy();
+      }
+    }
+
   };
 
   return new Game();
