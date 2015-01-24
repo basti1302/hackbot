@@ -65,11 +65,11 @@
 
     bot: function(position) {
       this._startPosition = Crafty.clone(position);
-      this.setPosition(position);
+      this.setBotPosition(position);
       return this;
     },
 
-    setPosition: function(position) {
+    setBotPosition: function(position, saveAsStartPosition) {
       this.position = position || this.position;
       this.position.x = this.position.x || 0;
       this.position.y = this.position.y || 0;
@@ -87,11 +87,16 @@
       this.attr('z', zIndex);
 
       this.animate(this.botReels[position.direction], 0);
+
+      if (saveAsStartPosition) {
+        this._startPosition = Crafty.clone(this.position);
+      }
+
       return this;
     },
 
-    resetPosition: function() {
-      this.setPosition(Crafty.clone(this._startPosition));
+    resetBotPosition: function() {
+      this.setBotPosition(Crafty.clone(this._startPosition));
     },
 
     /*
@@ -421,7 +426,8 @@
     _manualControlHandler: null,
 
     _manualControlFn: function() {
-      function logInstructionResult(err, moved) {
+      function moveCallback(err, moved) {
+        game.bot._startPosition = Crafty.clone(game.bot.position);
         if (err) {
           console.error(err);
         }
@@ -430,29 +436,28 @@
       if (game.editMode) {
         // manual controls in edit mode
         if (this.isDown('UP_ARROW') || this.isDown('W')) {
-          this.instruct(this.moves.forward, true, logInstructionResult);
+          this.instruct(this.moves.forward, true, moveCallback);
         } else if (this.isDown('DOWN_ARROW') || this.isDown('S')) {
-          this.instruct(this.moves.backward, true, logInstructionResult);
+          this.instruct(this.moves.backward, true, moveCallback);
         } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
-          this.instruct(this.moves.turnLeft, true, logInstructionResult);
+          this.instruct(this.moves.turnLeft, true, moveCallback);
         } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
-          this.instruct(this.moves.turnRight, true, logInstructionResult);
+          this.instruct(this.moves.turnRight, true, moveCallback);
         } else if (this.isDown('B')) {
           this.toggleManualControl();
         }
-        this._startPosition = this.position;
       } else {
         // manual controls in game (instead of edit mode), slightly different than in edit mode
         if (this.isDown('UP_ARROW') || this.isDown('W')) {
-          this.instruct(this.moves.forward, true, logInstructionResult);
+          this.instruct(this.moves.forward, true);
         } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
-          this.instruct(this.moves.turnLeft, true, logInstructionResult);
+          this.instruct(this.moves.turnLeft, true);
         } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
-          this.instruct(this.moves.turnRight, true, logInstructionResult);
+          this.instruct(this.moves.turnRight, true);
         } else if (this.isDown('SPACE')) {
-          this.instruct(this.moves.jump, true, logInstructionResult);
+          this.instruct(this.moves.jump, true);
         } else if (this.isDown('CTRL')) {
-          this.instruct(this.moves.action, true, logInstructionResult);
+          this.instruct(this.moves.action, true);
         }
       }
     },

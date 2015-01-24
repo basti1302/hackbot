@@ -1,16 +1,6 @@
 TODOs
 =====
 
-Bugs:
-
-* Dragging a card all the way back to the source panel, leaving it "nearly"
-  in its original slot leaves the card hanging just there, without putting it
-  back in the slot and without killing the superfluous clone in the source
-  panel.
-* Moving the bot (up arrow) does not work in editor.
-* Reset bot position/rewind does not correct z-level.
-
-
 Features:
 
 * More advanced levels

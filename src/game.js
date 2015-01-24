@@ -393,7 +393,7 @@ game = (function() {
     if (!this.executing) {
       this._removeMessages();
       this.map.reset();
-      this.bot.resetPosition();
+      this.bot.resetBotPosition();
       this.pristine = true;
     }
   };

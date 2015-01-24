@@ -410,7 +410,7 @@
           return;
         }
         game.bot.position.z++;
-        game.bot.setPosition(game.bot.position);
+        game.bot.setBotPosition(game.bot.position, true);
       }
 
       // If the tile is not standard floor, we need to convert the former top
@@ -467,7 +467,7 @@
       // if the tile with the bot is lowered, the bot needs to be lowered, too.
       if (x === game.bot.position.x && y === game.bot.position.y) {
         game.bot.position.z--;
-        game.bot.setPosition(game.bot.position);
+        game.bot.setBotPosition(game.bot.position, true);
       }
 
       if (tileInfo.level > 0) {
