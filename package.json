@@ -1,0 +1,53 @@
+{
+  "name": "hackbot",
+  "version": "1.0.0",
+  "type": "app",
+  "description": "A light bot clone",
+  "repository": "https://github.com/basti1302/hackbot.git",
+  "authors": [
+    "Bastian Krol <bastian.krol@web.de>"
+  ],
+  "keywords": [
+    "Game",
+    "Programming"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "hoodie-server": "^0.9.24",
+    "hoodie-plugin-appconfig": "^0.1.0",
+    "hoodie-plugin-email": "^0.1.1",
+    "hoodie-plugin-users": "^0.1.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.16.2",
+    "chai": "~1.8.1",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0"
+  },
+  "foo": {},
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "engines": {
+    "node": ">=0.10.22"
+  },
+  "subdomain": "hoodie-test",
+  "domains": [
+    "admin.hackbot.game",
+    "couch.hackbot.game"
+  ],
+  "scripts": {
+    "start": "node node_modules/hoodie-server/bin/start"
+  },
+  "hoodie": {
+    "plugins": [
+      "hoodie-plugin-appconfig",
+      "hoodie-plugin-email",
+      "hoodie-plugin-users"
+    ]
+  }
+}

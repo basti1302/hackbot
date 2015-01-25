@@ -1,5 +1,2 @@
-bower_components
-
-# vim tmp files
-*.swp
-*.un~
+node_modules
+data
