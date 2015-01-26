@@ -21,8 +21,8 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right">
-              <li><a href="#" data-hoodie-action="signin">Sign In</a></li>
-              <li><a href="#" data-hoodie-action="resetpassword">Reset Password</a></li>
+              <li><a data-hoodie-action="signin">Sign In</a></li>
+              <li><a data-hoodie-action="resetpassword">Reset Password</a></li>
             </ul>
           </span>
         </div><!-- /.hoodie-account-signedout -->
@@ -36,8 +36,8 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right">
-              <li><a href="#" data-hoodie-action="changepassword">Change Password</a></li>
-              <li><a href="#" data-hoodie-action="changeusername">Change Username</a></li>
+              <li><a data-hoodie-action="changepassword">Change Password</a></li>
+              <li><a data-hoodie-action="changeusername">Change Username</a></li>
             </ul>
           </span>
         </div><!-- /.hoodie-account-signedin -->
@@ -59,7 +59,6 @@
 
       <div class="game">
         <div id="cr-stage"></div>
-        <div id="editor-status"></div>
         <div id="editor-help"></div>
         <div id="editor-download"></div>
       </div>
@@ -101,7 +100,7 @@
     <script src="src/history.js"></script>
     <script>
       // initialize Hoodie
-      var hoodie  = new Hoodie()
+      var hoodie = new Hoodie();
       window.addEventListener('load', game.start.bind(game));
     </script>
   </body>

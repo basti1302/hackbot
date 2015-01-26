@@ -392,8 +392,13 @@
     },
 
     /* Only for editor */
-    toggleManualControl: function() {
-      this.manualControl = !this.manualControl;
+    enableManualControl: function() {
+      this.manualControl = true;
+      this._enableDisableManualControl();
+    },
+
+    disableManualControl: function() {
+      this.manualControl = false;
       this._enableDisableManualControl();
     },
 
@@ -402,7 +407,6 @@
     // require that.
     _enableDisableManualControl: function() {
       if (this.manualControl) {
-        $('#editor-status').html('<strong>Control Bot: ACTIVE</strong>');
         this._manualControlHandler = this._manualControlFn.bind(this);
 
         // If we bind the KeyDown event in the same tick of the event loop,
@@ -415,7 +419,6 @@
           self.bind('KeyDown', self._manualControlHandler);
         });
       } else {
-        $('#editor-status').html('<strong>Control Bot: INACTIVE</strong>');
         if (this._manualControlHandler) {
           this.unbind('KeyDown', this._manualControlHandler);
         }
@@ -425,7 +428,8 @@
 
     _manualControlHandler: null,
 
-    _manualControlFn: function() {
+    _manualControlFn: function(e) {
+
       function moveCallback(err, moved) {
         game.bot._startPosition = Crafty.clone(game.bot.position);
         if (err) {
@@ -435,16 +439,14 @@
 
       if (game.editMode) {
         // manual controls in edit mode
-        if (this.isDown('UP_ARROW') || this.isDown('W')) {
+        if (this.isDown('UP_ARROW')) {
           this.instruct(this.moves.forward, true, moveCallback);
-        } else if (this.isDown('DOWN_ARROW') || this.isDown('S')) {
+        } else if (this.isDown('DOWN_ARROW')) {
           this.instruct(this.moves.backward, true, moveCallback);
-        } else if (this.isDown('LEFT_ARROW') || this.isDown('A')) {
+        } else if (this.isDown('LEFT_ARROW')) {
           this.instruct(this.moves.turnLeft, true, moveCallback);
-        } else if (this.isDown('RIGHT_ARROW') || this.isDown('D')) {
+        } else if (this.isDown('RIGHT_ARROW')) {
           this.instruct(this.moves.turnRight, true, moveCallback);
-        } else if (this.isDown('B')) {
-          this.toggleManualControl();
         }
       } else {
         // manual controls in game (instead of edit mode), slightly different than in edit mode

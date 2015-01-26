@@ -583,7 +583,11 @@
           tileInfo.tile.destroy();
         }
         if (tileInfo.stack) {
-          // TODO destroy each entity on stack
+          for (var i = 0; i < tileInfo.stack.length; i++) {
+            if (tileInfo.stack[i]) {
+              tileInfo.stack[i].destroy();
+            }
+          }
         }
       });
     },

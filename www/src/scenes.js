@@ -60,7 +60,7 @@ game = (function() {
           var reader = new FileReader();
           reader.onload = (function(file) {
             return function(e) {
-              var validLevel = game.loadLevelFromJson(e.target.result);
+              var validLevel = game.loadLevelFromJsonString(e.target.result);
               if (validLevel) {
                 var base64 = btoa(e.target.result);
                 history.pushState(null, null,

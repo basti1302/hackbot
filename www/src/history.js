@@ -21,7 +21,7 @@
       // is there a base64 encoded level in the query params?
       var levelJson = convertBase64QueryToJson(window.location.search);
       if (levelJson) {
-        if (game.loadLevelFromJson(levelJson)) {
+        if (game.loadLevelFromJsonString(levelJson)) {
           return 'Play';
         }
       }
@@ -47,7 +47,7 @@
       // is there a base64 encoded level in the query params?
       var levelJson = convertBase64QueryToJson(window.location.search);
       if (levelJson) {
-        game.loadLevelFromJson(levelJson);
+        game.loadLevelFromJsonString(levelJson);
       }
       return 'LevelEditor';
     }

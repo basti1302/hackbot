@@ -17,13 +17,17 @@ game = (function() {
     Crafty.scene('Loading');
   };
 
-  Game.prototype.loadLevelFromJson = function(jsonString) {
+  Game.prototype.loadLevelFromJsonString = function(jsonString) {
     try {
-      this.levelFromJson = JSON.parse(jsonString);
+      this.loadLevel(JSON.parse(jsonString));
       return true;
     } catch (e) {
       return false;
     }
+  };
+
+  Game.prototype.loadLevel = function(level) {
+    this.levelFromJson = level;
   };
 
   Game.prototype.init = function(testMode) {
@@ -472,7 +476,22 @@ game = (function() {
     }
   };
 
-  Game.prototype.exportLevel = function() {
+  Game.prototype.exportLevelToFile = function() {
+    this._startDownload(this._exportLevel());
+  };
+
+  Game.prototype.saveLevelToHoodie = function() {
+    var level = this._exportLevel();
+    console.log(level);
+    var self = this;
+    hoodie.store.add('hb-level', level)
+    .done(function(storedLevel) {
+        console.log(storedLevel);
+        self.hoodieLevelId = storedLevel.id;
+    }).fail();
+  };
+
+  Game.prototype._exportLevel = function() {
     var level = {
       name: 'A  new Hackbot level', // TODO input fields
       description: '', // TODO input fields
@@ -486,7 +505,7 @@ game = (function() {
       terrain: this.map.exportTerrain(),
     };
     this._exportSubroutines(level);
-    this._startDownload(level);
+    return level;
   };
 
   Game.prototype._exportCards = function() {

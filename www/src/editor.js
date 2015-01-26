@@ -18,44 +18,43 @@ editor = (function() {
     _initEditor: function() {
       game.editMode = true;
       game.reset();
+      game.bot.enableManualControl();
       this.reset();
     },
 
     reset: function() {
-      editorKeyBindings = function() {
-        // don't modify board when bot is in manual control mode
-        if (game.bot.manualControl) {
-          return;
-        }
-        if (this.isDown('UP_ARROW')) {
+      editorKeyBindings = function(e) {
+
+        if (this.isDown('PLUS')) {
           game.map.raiseSelected();
-        } else if (this.isDown('DOWN_ARROW')) {
+        } else if (this.isDown('MINUS')) {
           game.map.lowerSelected();
-        } else if (this.isDown('CTRL')) {
+        } else if (this.isDown('T')) {
           game.map.toggleTargetForSelected();
-        } else if (this.isDown('B')) {
-          game.bot.toggleManualControl();
-        } else if (this.isDown('X')) {
-          game.exportLevel();
         } else if (this.isDown('L')) {
-          this._loadLevel(this);
+          this._loadLevelFromHoodie();
+        } else if (this.isDown('S')) {
+          game.saveLevelToHoodie();
+        } else if (this.isDown('P')) {
+          game.publishLevel(this);
+        } else if (this.isDown('X')) {
+          game.exportLevelToFile();
+        } else if (this.isDown('O')) {
+          this._openLevelFromFile();
         }
       };
       this.bind('KeyDown', editorKeyBindings);
 
-      $('#editor-status').html('<strong>Control Bot: INACTIVE</strong>');
+      $('.hoodie-accountbar').css('visibility', 'visible');
       $('#editor-help').html(
           '<h3>Editor help</h3>' +
           'Use mouse to select tiles,' +
           'Use Shift to select multiple tiles at once<br>' +
-          'Arrow up: Raise selected tile(s), ' +
-          'Arrow down: Lower tile(s), ' +
-          'CTRL: Toggle tile\'s color (red/grey).<br>' +
-          'B: Toggle manual control for bot (to set bot\'s starting position). Use WSAD/&uarr;&darr;&larr;&rarr; to move.<br>' +
-          'X: Export, L: Load'
+          '+ (plus): Raise selected tile(s), - (minus): Lower tile(s),' +
+          'T: Toggle tile\'s color (red/grey).<br>' +
+          'Use arrow keys &uarr;&darr;&larr;&rarr; to set bot\'s starting position.<br>' +
+          'L: Load, S: Save, P: Publish, X: Export to file, O: Open from file'
       );
-
-      $('#editor-status').html('<strong>Control Bot: INACTIVE</strong>');
 
       // TODO use uninit handler instead, that is
       // Crafty.defineScene(name, init, uninit),
@@ -70,9 +69,10 @@ editor = (function() {
       game.levelId = 'first';
       game.editMode = false;
 
+      game.bot.disableManualControl();
       this.unbind('KeyDown', editorKeyBindings);
-      $('#editor-status').html('');
       $('#editor-help').html('');
+      $('.hoodie-accountbar').css('visibility', 'hidden');
 
       this.unbind('SceneDestroy', this._leaveEditor);
 
@@ -82,7 +82,7 @@ editor = (function() {
       $('.editor-card-overlay').remove();
     },
 
-    _loadLevel: function() {
+    _openLevelFromFile: function() {
       // TODO Similar to level loading for playing (scenes.js), refactor
       var self = this;
       $('<input type="file" id="level-upload" style="display: none">')
@@ -92,23 +92,51 @@ editor = (function() {
           var reader = new FileReader();
           reader.onload = (function(file) {
             return function(e) {
-              var validLevel = game.loadLevelFromJson(e.target.result);
-              if (validLevel) {
-                self._destroyAllEntities();
-                self._leaveEditor();
-                var base64 = btoa(e.target.result);
-                history.pushState(null, null,
-                    '?level=' + base64 + '#/editor');
-                game.category = null;
-                game.levelId = null;
-                self._initEditor();
-              }
+              self._loadLevelFromJsonString(e.target.result);
             };
           })(this.files[0]);
           reader.readAsText(this.files[0]);
         }
       })
       .click();
+    },
+
+    _loadLevelFromJsonString: function(levelAsJsonString) {
+      var validLevel = game.loadLevelFromJsonString(levelAsJsonString);
+      if (validLevel) {
+        this._destroyAllEntities();
+        this._leaveEditor();
+        var base64 = btoa(levelAsJsonString);
+        history.pushState(null, null,
+            '?level=' + base64 + '#/editor');
+        game.category = null;
+        game.levelId = null;
+        this._initEditor();
+      }
+    },
+
+    _loadLevelFromHoodie: function() {
+      console.log(game.hoodieLevelId);
+      if (!game.hoodieLevelId) {
+        return;
+      }
+      var self = this;
+      hoodie.store.find('hb-level', game.hoodieLevelId)
+      .done(function(level) {
+        console.log(level);
+        if (level) {
+          game.loadLevel(level);
+          self._destroyAllEntities();
+          self._leaveEditor();
+          // TODO Remember hoodie id in query param, history.pushState
+          game.category = null;
+          game.levelId = null;
+          self._initEditor();
+        }
+      }).fail(function(err) {
+        // TODO Proper error handling
+        console.log(err);
+      });
     },
 
     _destroyAllEntities: function() {

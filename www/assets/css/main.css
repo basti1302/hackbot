@@ -24,6 +24,7 @@ html[data-hoodie-account-status=signedout] .hoodie-account-signedout {
 }
 
 .hoodie-accountbar {
+  visibility: hidden;
   text-align: right;
 }
 
