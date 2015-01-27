@@ -481,14 +481,30 @@ game = (function() {
   };
 
   Game.prototype.saveLevelToHoodie = function() {
-    var level = this._exportLevel();
-    console.log(level);
+    editor.unbindKeys();
+    var form = $.modalForm({
+      fields: [ 'name', 'description' ],
+      submit: 'Save'
+    });
     var self = this;
-    hoodie.store.add('hb-level', level)
-    .done(function(storedLevel) {
-        console.log(storedLevel);
+    form.on('submit', function(event, inputs) {
+      editor.rebindKeys();
+      var modal = $(event.target);
+
+      var level = self._exportLevel();
+      // TODO Validate inputs (name must not be empty)
+      level.id = inputs.name;
+      level.name = inputs.name;
+      level.description = inputs.description;
+      hoodie.store.add('hb-level', level)
+      .done(function(storedLevel) {
+        modal.modal('hide');
         self.hoodieLevelId = storedLevel.id;
-    }).fail();
+      }).fail(function(err) {
+        // TODO proper error handling
+        console.log(err);
+      });
+    });
   };
 
   Game.prototype._exportLevel = function() {
