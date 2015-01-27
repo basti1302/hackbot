@@ -143,6 +143,14 @@ editor = (function() {
       game.destroyAllEntities();
     },
 
+    unbindKeys: function() {
+      this.unbind('KeyDown', editorKeyBindings);
+    },
+
+    rebindKeys: function() {
+      this.bind('KeyDown', editorKeyBindings);
+    },
+
   });
 
   return new Crafty.e('LevelEditor');

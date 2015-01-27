@@ -12,16 +12,28 @@ body {
 
 /* hide contents until we know if user is signed in or not */
 body .hoodie-account-signedin,
-body .hoodie-account-signedout,
 body .hoodie-account-error {
   display: none;
 }
+
+body .hoodie-account-signedout {
+  display: block;
+}
+
+/*
+These html[data-hoodie-account-status=x] things somehow
+break Crafty.js' offset calculation so that mouse clicks on Crafty elements
+are only registered if you click approximately 30-50 px above the actual
+element. Also, one account bar state needs to be visible initially.
+Sounds weird, right? To appease the gods of dirty hacks, we switch visibility
+via manually JQuery in hoodie.accountbar.bootstrap.js.
 
 html[data-hoodie-account-status=signedin]  .hoodie-account-signedin,
 html[data-hoodie-account-status=error]     .hoodie-account-error,
 html[data-hoodie-account-status=signedout] .hoodie-account-signedout {
   display: block;
 }
+*/
 
 .hoodie-accountbar {
   visibility: hidden;

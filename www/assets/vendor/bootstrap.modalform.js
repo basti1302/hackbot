@@ -63,7 +63,11 @@
 
       $modal.on('shown', function() {
         $modal.find('input').eq(0).focus()
-      })
+      });
+
+      $modal.on('hide.bs.modal', function(e){
+        editor.rebindKeys();
+      });
 
       return $modal;
     };

@@ -32,17 +32,33 @@
       handleUserAuthenticated: function(username) {
         $('html').attr('data-hoodie-account-status', 'signedin');
         $('.hoodie-accountbar').find('.hoodie-username').text(username);
+        $('.hoodie-account-signedout').hide();
+        $('.hoodie-account-signedin').show();
+        $('.hoodie-account-error').hide();
       },
 
       //
       handleUserUnauthenticated: function() {
         $('html').attr('data-hoodie-account-status', 'signedout');
+        $('.hoodie-account-signedout').show();
+        $('.hoodie-account-signedin').hide();
+        $('.hoodie-account-error').hide();
       },
+
       handleUserAuthenticationError: function() {
         $('.hoodie-accountbar').find('.hoodie-username').text(this.hoodie.account.username);
         $('html').attr('data-hoodie-account-status', 'error');
+        $('.hoodie-account-signedout').hide();
+        $('.hoodie-account-signedin').hide();
+        $('.hoodie-account-error').show();
       }
     };
+
+    if (hoodie.account.username) {
+      $('.hoodie-account-signedout').hide();
+      $('.hoodie-account-signedin').show();
+      $('.hoodie-account-error').hide();
+    }
 
     new Hoodstrap(hoodie);
   });
@@ -58,6 +74,7 @@
           action   = $element.data('hoodie-action'),
           $form;
 
+      editor.unbindKeys();
       switch(action) {
         case 'signup':
           $form = $.modalForm({
@@ -106,6 +123,8 @@
 
     var handleSubmit = function(action) {
       return function(event, inputs) {
+
+        editor.rebindKeys();
 
         var $modal = $(event.target);
         var magic;
