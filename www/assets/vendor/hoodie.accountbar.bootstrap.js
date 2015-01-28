@@ -74,6 +74,7 @@
           action   = $element.data('hoodie-action'),
           $form;
 
+      // Remove that here and put it into a event listener for 'show' in the modal
       editor.unbindKeys();
       switch(action) {
         case 'signup':

@@ -481,6 +481,7 @@ game = (function() {
   };
 
   Game.prototype.saveLevelToHoodie = function() {
+    // Remove that here and put it into a event listener for 'show' in the modal
     editor.unbindKeys();
     var form = $.modalForm({
       fields: [ 'name', 'description' ],

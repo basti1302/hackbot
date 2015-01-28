@@ -116,25 +116,42 @@ editor = (function() {
     },
 
     _loadLevelFromHoodie: function() {
-      console.log(game.hoodieLevelId);
-      if (!game.hoodieLevelId) {
-        return;
-      }
       var self = this;
-      hoodie.store.find('hb-level', game.hoodieLevelId)
-      .done(function(level) {
-        console.log(level);
-        if (level) {
-          game.loadLevel(level);
-          self._destroyAllEntities();
-          self._leaveEditor();
-          // TODO Remember hoodie id in query param, history.pushState
-          game.category = null;
-          game.levelId = null;
-          self._initEditor();
+      hoodie.store.findAll('hb-level')
+      .done(function(levels) {
+        // Remove that here and put it into a event listener for 'show' in the
+        // modal form
+        self.unbind('KeyDown', editorKeyBindings);
+        var form = $.loadLevelForm(levels);
+        if (!form) {
+          editor.rebindKeys();
+        } else {
+          form.on('submit', function(event, inputs) {
+            game.hoodieLevelId = inputs.levelId;
+            hoodie.store.find('hb-level', game.hoodieLevelId)
+            .done(function(level) {
+              form.modal('hide');
+              editor.rebindKeys();
+              if (level) {
+                game.loadLevel(level);
+                self._destroyAllEntities();
+                self._leaveEditor();
+                // TODO Remember hoodie id in query param, history.pushState
+                game.category = null;
+                game.levelId = null;
+                self._initEditor();
+              }
+            }).fail(function(err) {
+              // TODO Proper error handling
+              console.log(err);
+              form.modal('hide');
+              editor.rebindKeys();
+            });
+
+          });
         }
       }).fail(function(err) {
-        // TODO Proper error handling
+        // TODO proper error handling
         console.log(err);
       });
     },
