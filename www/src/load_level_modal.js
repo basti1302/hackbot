@@ -7,8 +7,9 @@
     var container = $('<div id="' + modalId + '"></div>');
     $('body').append(container);
 
-    $.loadLevelForm = function(levels) {
-      if (!levels || levels.length === 0) {
+    $.loadLevelForm = function(levels, sharedLevels) {
+      if ((!levels || levels.length === 0) &&
+          (!sharedLevels || sharedLevels.length === 0)) {
         alert('No levels found, create some levels first :-)');
         return null;
       }
@@ -27,8 +28,20 @@
 
         html += '<option label="' + levels[i].name + '">' + levels[i].id + '</option>';
       }
+      // TODO Group shared levels by creator (maybe not here, though)
+      if (sharedLevels) {
+        for (i = 0; i < sharedLevels.length; i++) {
+
+          html += '<option label="' +
+                   (sharedLevels[i].createdByName || sharedLevels[i].createdBy) +
+                   '/' + sharedLevels[i].name + '">' +
+                   sharedLevels[i].createdBy + '/' +
+                   sharedLevels[i].id + '</option>';
+        }
+      }
+
       /*
-      Like this, when global shares are also loaded...
+      Like this, when global shares are also grouped by creator...
       html += '        <optgroup label="Bart Simpson\'s levels">';
       html += '          <option label="name">id</option>';
       html += '        </optgroup>';

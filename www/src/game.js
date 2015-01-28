@@ -474,6 +474,8 @@ game = (function() {
   Game.prototype.saveLevelToHoodie = function() {
     // Remove that here and put it into a event listener for 'show' in the modal
     editor.unbindKeys();
+    // TODO Pre-fill form with name and description if available (this.hoodieLevelName, this.hoodieLevelDescription)
+    // TODO Giving it a new name should probably work like Save-As, currently overwrites.
     var form = $.modalForm({
       fields: [ 'name', 'description' ],
       submit: 'Save'
@@ -485,13 +487,15 @@ game = (function() {
 
       var level = self._exportLevel();
       // TODO Validate inputs (name must not be empty)
-      level.id = inputs.name;
       level.name = inputs.name;
       level.description = inputs.description;
+      level.createdByName = hoodie.account.username;
       hoodie.store.add('hb-level', level)
       .done(function(storedLevel) {
         modal.modal('hide');
         self.hoodieLevelId = storedLevel.id;
+        self.hoodieLevelName = storedLevel.name;
+        self.hoodieLevelDescription = storedLevel.description;
       }).fail(function(err) {
         // TODO proper error handling
         console.log(err);
@@ -552,6 +556,23 @@ game = (function() {
     });
     $('#editor-download').append(link);
     link[0].click();
+  };
+
+  Game.prototype.publishLevel = function() {
+    if (!this.hoodieLevelId) {
+      return alert('Please save the level before publishing');
+    }
+
+    var self = this;
+    hoodie.store
+    .find('hb-level', this.hoodieLevelId)
+    .publish()
+    .then(function(result) {
+      alert('Level ' + self.hoodieLevelName + ' published successfully.');
+    }, function(err) {
+      alert('Level ' + self.hoodieLevelName + ' could not be published.');
+      console.log(err);
+    });
   };
 
   Game.prototype.destroyAllEntities = function() {
