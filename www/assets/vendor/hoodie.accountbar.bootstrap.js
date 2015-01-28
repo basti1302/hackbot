@@ -111,7 +111,7 @@
           window.hoodie.account.signOut();
           break;
         case 'destroy':
-          if( window.confirm('you sure?') ) {
+          if( window.confirm('Are you sure? All the levels you created will be lost!') ) {
             window.hoodie.account.destroy();
           }
           break;
