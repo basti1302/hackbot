@@ -1,6 +1,6 @@
 A little JavaScript based browser game. It's quite unfinished, but already playable.
 
-You can play it at http://basti1302.github.io/hackbot/
+You can play it at https://hackbot-game.com
 
 The goal of the game is to program the robot's movement so that it walks to all red tiles and toggles each to become a green tile. You can control the robot by placing cards from the source panel (bottom) to the instruction areas on the right side. Actually, the game idea is not mine, it's a clone of a lightbot, which is in turn a clone of robozzle. I just used this idea to play around with game programming in JavaScript. If you want to play something like this, I heartily recommend buying the lightbot app in an AppStore near you, it's very well done. Robozzle also looks very nice, and seems to have tons of (community-created) levels, so give it a try.
 
