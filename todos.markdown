@@ -1,6 +1,10 @@
 TODOs
 =====
 
+Deployment:
+* Close couch ports, (6000-6002, I think), only open port 443 and maybe 80 for redirect to ssl.
+  (couch is bound to 127.0.0.1, so there's no pressure, though)
+ 
 Features:
 
 * More advanced levels
